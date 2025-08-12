@@ -1,7 +1,7 @@
 return {
     allowedKeys = {
         ["uxNHSMAXbIgDdlMeqIPnQxddWoCNFBjS"] = true,
-        ["NWJeFrSjpqYfhNqpvNIJVyissPQFFtid"] = true,
+        ["XOAkJBYIZbCXWLdAtPviucUxsQezFwLK"] = true,
         ["HbRrweIBzZEZsHnPnUDjwMqVNlmvlyfI"] = true,
         ["ZdyjUydUWPNmVrUqgTVgYtWlElFyOKnv"] = true,
         ["CzLmkjFKbTgXQNfywXjjjtOOoecBVXFj"] = true,
@@ -46,7 +46,7 @@ return {
             title = "Administrator: Steam",
             icon = "rbxassetid://86605325544978"
         },
-        ["BgsIpJDzIpwoaxFHYsLYguBnHlSgdkce"] = {
+        ["XOAkJBYIZbCXWLdAtPviucUxsQezFwLK"] = {
             title = "Administrator: Brave",
             icon = "rbxassetid://80190199999918"
         }
