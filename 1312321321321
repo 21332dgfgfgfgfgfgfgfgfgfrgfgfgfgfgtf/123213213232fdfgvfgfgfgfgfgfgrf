@@ -1,6 +1,6 @@
 return {
     allowedKeys = {
-        ["shvNaCdFJytGXUYJLeSWboIYkSHJNGQP"] = true,
+        ["uxNHSMAXbIgDdlMeqIPnQxddWoCNFBjS"] = true,
         ["NWJeFrSjpqYfhNqpvNIJVyissPQFFtid"] = true,
         ["HbRrweIBzZEZsHnPnUDjwMqVNlmvlyfI"] = true,
         ["ZdyjUydUWPNmVrUqgTVgYtWlElFyOKnv"] = true,
@@ -14,7 +14,7 @@ return {
         ["zHJYXLVMZAlmoEzzeSMWnHHFZeYnVamF"] = true
     },
     customKeys = {
-        ["12233"] = {
+        ["uxNHSMAXbIgDdlMeqIPnQxddWoCNFBjS"] = {
             title = "Administrator: spotify",
             icon = "rbxassetid://136223202824711"
         },
