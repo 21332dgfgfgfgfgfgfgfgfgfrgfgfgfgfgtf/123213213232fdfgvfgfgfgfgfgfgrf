@@ -1,0 +1,54 @@
+return {
+    allowedKeys = {
+        ["shvNaCdFJytGXUYJLeSWboIYkSHJNGQP"] = true,
+        ["NWJeFrSjpqYfhNqpvNIJVyissPQFFtid"] = true,
+        ["HbRrweIBzZEZsHnPnUDjwMqVNlmvlyfI"] = true,
+        ["ZdyjUydUWPNmVrUqgTVgYtWlElFyOKnv"] = true,
+        ["CzLmkjFKbTgXQNfywXjjjtOOoecBVXFj"] = true,
+        ["BgsIpJDzIpwoaxFHYsLYguBnHlSgdkce"] = true,
+        ["lWpnamohUNXZBexpNSvsCvtlBdExcYZN"] = true,
+        ["FpWaqKpvpGlncyXIywFzjwnynXnLHdxV"] = true,
+        ["sEHCSSREcrZUCCfJspbFHNvqiLcJxUDh"] = true,
+        ["floSPJMUXVZDcbTdOtvAUrVZyTXLvRiW"] = true,
+        ["vRnmWSwMgTdhtbaOohaGrzgLncLYeTBI"] = true,
+        ["zHJYXLVMZAlmoEzzeSMWnHHFZeYnVamF"] = true
+    },
+    customKeys = {
+        ["12233"] = {
+            title = "Administrator: spotify",
+            icon = "rbxassetid://136223202824711"
+        },
+        ["123333333"] = {
+            title = "Administrator: Logitech G HUB",
+            icon = "rbxassetid://84326738436914"
+        },
+        ["123"] = {
+            title = "Administrator: Discord",
+            icon = "rbxassetid://89484350082652"
+        },
+        ["1243324343"] = {
+            title = "Administrator: Google Chrome",
+            icon = "rbxassetid://117079489191104"
+        },
+        ["343432423142314"] = {
+            title = "Administrator: Discord",
+            icon = "rbxassetid://89484350082652"
+        },
+        ["34353245324123213"] = {
+            title = "Administrator: spotify",
+            icon = "rbxassetid://136223202824711"
+        },
+        ["CzLmkjFKbTgXQNfywXjjjtOOoecBVXFj"] = {
+            title = "Administrator: Purge Build",
+            icon = "rbxassetid://84326738436914"
+        },
+        ["dgsegfgghtrht"] = {
+            title = "Administrator: Steam",
+            icon = "rbxassetid://86605325544978"
+        },
+        ["BgsIpJDzIpwoaxFHYsLYguBnHlSgdkce"] = {
+            title = "Administrator: Brave",
+            icon = "rbxassetid://80190199999918"
+        }
+    }
+}
