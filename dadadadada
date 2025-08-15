@@ -580,6 +580,16 @@
                     Padding = dim(0, 5);
                     SortOrder = Enum.SortOrder.LayoutOrder
                 });
+
+                items[ "inline" ] = library:create( "Frame" , {
+                    Parent = items[ "dropdown" ];
+                    Size = dim2(1, 0, 1, 0);
+                    Name = "\0";
+                    ClipsDescendants = true;
+                    BorderColor3 = rgb(0, 0, 0);
+                    BorderSizePixel = 0;
+                    BackgroundColor3 = rgb(22, 22, 24)
+                });
                 
                 library:create( "UIPadding" , {
                     PaddingTop = dim(0, 16);
