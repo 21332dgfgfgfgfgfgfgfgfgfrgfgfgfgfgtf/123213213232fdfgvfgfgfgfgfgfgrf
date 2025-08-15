@@ -712,7 +712,7 @@
                     BorderColor3 = rgb(0, 0, 0);
                     Text = '<font color="rgb(72, 72, 73)">/Getpivot, </font>';
                     Size = dim2(1, 0, 0, 0);
-                    Position = dim2(-0, -10, 0.5, -1)
+                    Position = dim2(-0, -10, 0.5, -1);
                     AnchorPoint = vec2(0, 0.5);
                     BorderSizePixel = 0;
                     BackgroundTransparency = 1;
@@ -724,7 +724,7 @@
                 }); library:apply_theme(items[ "other_info" ], "accent", "TextColor3");        
             end 
 
-            do -- Other
+            do
                 library:draggify(items[ "main" ])
                 library:resizify(items[ "main" ])
             end 
