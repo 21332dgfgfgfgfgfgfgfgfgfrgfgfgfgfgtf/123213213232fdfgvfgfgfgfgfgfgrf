@@ -703,7 +703,8 @@
                     AutomaticSize = Enum.AutomaticSize.XY;
                     TextSize = 14;
                     BackgroundColor3 = rgb(255, 255, 255)
-                });
+                }); 
+
                 items[ "other_info" ] = library:create( "TextLabel" , {
                     Parent = items[ "info" ];
                     RichText = true;
@@ -712,7 +713,7 @@
                     BorderColor3 = rgb(0, 0, 0);
                     Text = '<font color="rgb(92, 144, 144)">/getpivot</font>'; -- Changed this line
                     Size = dim2(1, 0, 0, 0);
-                    Position = dim2(-0, -10, 0.5, -1);
+                    Position = dim2(0, -10, 0.5, -1);  -- Adjusted this line if needed
                     AnchorPoint = vec2(0, 0.5);
                     BorderSizePixel = 0;
                     BackgroundTransparency = 1;
@@ -724,7 +725,7 @@
                 }); library:apply_theme(items[ "other_info" ], "accent", "TextColor3");        
             end 
 
-            do
+            do -- Other
                 library:draggify(items[ "main" ])
                 library:resizify(items[ "main" ])
             end 
@@ -1188,19 +1189,6 @@
                     BackgroundColor3 = rgb(25, 25, 29)
                 });
 
-                items[ "tick" ] = library:create( "ImageLabel" , {
-                    ImageTransparency = 1;
-                    BorderColor3 = rgb(0, 0, 0);
-                    Image = "rbxassetid://111862698467575";
-                    BackgroundTransparency = 1;
-                    Position = dim2(0, -1, 0, 0);
-                    Parent = items[ "outline" ];
-                    Size = dim2(1, 2, 1, 2);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(255, 255, 255);
-                    ZIndex = 1;
-                });
-
                 library:create( "UICorner" , {
                     Parent = items[ "outline" ];
                     CornerRadius = dim(0, 7)
@@ -1556,6 +1544,18 @@
                             BackgroundColor3 = rgb(22, 22, 24)
                         }); library:apply_theme(items[ "outline" ], "accent", "BackgroundColor3");
 
+                        items[ "tick" ] = library:create( "ImageLabel" , {
+                            ImageTransparency = 1;
+                            BorderColor3 = rgb(0, 0, 0);
+                            Image = "rbxassetid://111862698467575";
+                            BackgroundTransparency = 1;
+                            Position = dim2(0, -1, 0, 0);
+                            Parent = items[ "outline" ];
+                            Size = dim2(1, 2, 1, 2);
+                            BorderSizePixel = 0;
+                            BackgroundColor3 = rgb(255, 255, 255);
+                            ZIndex = 1;
+                        });
 
                         library:create( "UICorner" , {
                             Parent = items[ "outline" ];
@@ -2055,7 +2055,7 @@
                         BorderColor3 = rgb(0, 0, 0);
                         Parent = items[ "dropdown" ];
                         AnchorPoint = vec2(1, 0.5);
-                        Image = "rbxassetid://123";
+                        Image = "rbxassetid://101025591575185";
                         BackgroundTransparency = 1;
                         Position = dim2(1, -5, 0.5, 0);
                         Name = "\0";
@@ -2624,7 +2624,7 @@
                         ScaleType = Enum.ScaleType.Tile;
                         BorderColor3 = rgb(0, 0, 0);
                         Parent = items[ "alpha_gradient" ];
-                        Image = "rbxassetid://123";
+                        Image = "rbxassetid://18274452449";
                         BackgroundTransparency = 1;
                         Name = "\0";
                         Size = dim2(1, 0, 1, 0);
@@ -2638,12 +2638,11 @@
                         Transparency = numseq{numkey(0, 0.8062499761581421), numkey(1, 0)};
                         Parent = items[ "alpha_indicator" ]
                     });
-                    
+
                     library:create( "UICorner" , {
                         Parent = items[ "alpha_indicator" ];
                         CornerRadius = dim(0, 6)
                     });
-
 
                     library:create( "UIGradient" , {
                         Rotation = 90;
