@@ -704,25 +704,7 @@
                     TextSize = 14;
                     BackgroundColor3 = rgb(255, 255, 255)
                 }); 
-                
-                items[ "other_info" ] = library:create( "TextLabel" , {
-                    Parent = items[ "info" ];
-                    RichText = true;
-                    Name = "\0";
-                    TextColor3 = themes.preset.accent;
-                    BorderColor3 = rgb(0, 0, 0);
-                    Text = '<font color="rgb(72, 72, 73)">32 days left, </font>' .. cfg.name .. cfg.suffix;
-                    Size = dim2(1, 0, 0, 0);
-                    Position = dim2(0, -10, 0.5, -1);
-                    AnchorPoint = vec2(0, 0.5);
-                    BorderSizePixel = 0;
-                    BackgroundTransparency = 1;
-                    TextXAlignment = Enum.TextXAlignment.Right;
-                    AutomaticSize = Enum.AutomaticSize.XY;
-                    FontFace = fonts.font;
-                    TextSize = 14;
-                    BackgroundColor3 = rgb(255, 255, 255)
-                }); library:apply_theme(items[ "other_info" ], "accent", "TextColor3");        
+                   
             end 
 
             do -- Other
@@ -1589,16 +1571,6 @@
                             CornerRadius = dim(0, 999)
                         });
                         
-                        items[ "inline" ] = library:create( "Frame" , {
-                            Parent = items[ "toggle_button" ];
-                            Size = dim2(1, -2, 1, -2);
-                            Name = "\0";
-                            BorderMode = Enum.BorderMode.Inset;
-                            BorderColor3 = rgb(0, 0, 0);
-                            Position = dim2(0, 1, 0, 1);
-                            BorderSizePixel = 0;
-                            BackgroundColor3 = themes.preset.accent
-                        }); library:apply_theme(items[ "inline" ], "accent", "BackgroundColor3");
                         
                         library:create( "UICorner" , {
                             Parent = items[ "inline" ];
