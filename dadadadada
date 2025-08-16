@@ -645,7 +645,7 @@
                     BackgroundColor3 = rgb(255, 255, 255);
                     Size = dim2(1, 75, 1, 75);
                     AnchorPoint = vec2(0.5, 0.5);
-                    Image = "rbxassetid://12344";
+                    Image = "rbxassetid://112971167999062";
                     BackgroundTransparency = 1;
                     Position = dim2(0.5, 0, 0.5, 0);
                     SliceScale = 0.75;
@@ -720,7 +720,7 @@
                     Name = "\0";
                     TextColor3 = themes.preset.accent;
                     BorderColor3 = rgb(0, 0, 0);
-                    Text = ''; -- Changed this line
+                    Text = '<font color="rgb(92, 144, 144)">/getpivot</font>'; -- Changed this line
                     Size = dim2(1, 0, 0, 0);
                     Position = dim2(0.5, -10, 0.5, -1);  -- Adjusted this line if needed
                     AnchorPoint = vec2(0, 0.5);
@@ -758,7 +758,7 @@
         function library:tab(properties)
             local cfg = {
                 name = properties.name or properties.Name or "visuals"; 
-                icon = properties.icon or properties.Icon or "";
+                icon = properties.icon or properties.Icon or "http://www.roblox.com/asset/?id=6034767608";
 
                 -- multi 
                 tabs = properties.tabs or properties.Tabs or {"Main", "Misc.", "Settings"};
@@ -802,7 +802,7 @@
                         BorderColor3 = rgb(0, 0, 0);
                         Parent = items[ "button" ];
                         AnchorPoint = vec2(0, 0.5);
-                        Image = "";
+                        Image = "http://www.roblox.com/asset/?id=6034767608";
                         BackgroundTransparency = 1;
                         Position = dim2(0, 10, 0.5, 0);
                         Name = "\0";
@@ -1556,7 +1556,7 @@
                         items[ "tick" ] = library:create( "ImageLabel" , {
                             ImageTransparency = 1;
                             BorderColor3 = rgb(0, 0, 0);
-                            Image = "rbxassetid://123";
+                            Image = "rbxassetid://111862698467575";
                             BackgroundTransparency = 1;
                             Position = dim2(0, -1, 0, 0);
                             Parent = items[ "outline" ];
@@ -1667,7 +1667,7 @@
                 cfg.set(cfg.enabled)
             end)
 
-            if cfg.seperator then -- ok bro my lua either sucks or this was a pain in the ass to make (simple if statement aswell 💔)
+            if cfg.seperator then 
                 library:create( "Frame" , {
                     AnchorPoint = vec2(0, 1);
                     Parent = self.items[ "elements" ];
@@ -1694,7 +1694,7 @@
                 callback = options.callback or function() end, 
                 info = options.info or nil; 
 
-                -- value settings
+                
                 min = options.min or options.minimum or 0,
                 max = options.max or options.maximum or 100,
                 intervals = options.interval or options.decimal or 1,
@@ -2064,7 +2064,7 @@
                         BorderColor3 = rgb(0, 0, 0);
                         Parent = items[ "dropdown" ];
                         AnchorPoint = vec2(1, 0.5);
-                        Image = "rbxassetid://123";
+                        Image = "rbxassetid://101025591575185";
                         BackgroundTransparency = 1;
                         Position = dim2(1, -5, 0.5, 0);
                         Name = "\0";
@@ -2632,7 +2632,7 @@
                         ScaleType = Enum.ScaleType.Tile;
                         BorderColor3 = rgb(0, 0, 0);
                         Parent = items[ "alpha_gradient" ];
-                        Image = "rbxassetid://123";
+                        Image = "rbxassetid://18274452449";
                         BackgroundTransparency = 1;
                         Name = "\0";
                         Size = dim2(1, 0, 1, 0);
@@ -2719,8 +2719,6 @@
 
                 local Color = hsv(h, s, v)
 
-                -- Ok so quick story, should I cache any of this? no...?? anyways I know this code is very bad but its your fault for buying a ui with animations (on a serious note im too lazy to make this look nice)
-                -- Also further note, yeah I kind of did this scale_factor * size-valuesize.plane because then I would have to do tomfoolery to make it clip properly.
                 library:tween(items[ "hue_picker" ], {Position = dim2(0, (items[ "hue_gradient" ].AbsoluteSize.X - items[ "hue_picker" ].AbsoluteSize.X) * h, 0.5, 0)}, Enum.EasingStyle.Linear, 0.05)
                 library:tween(items[ "alpha_picker" ], {Position = dim2(0, (items[ "alpha_gradient" ].AbsoluteSize.X - items[ "alpha_picker" ].AbsoluteSize.X) * (1 - a), 0.5, 0)}, Enum.EasingStyle.Linear, 0.05)
                 library:tween(items[ "satvalpicker" ], {Position = dim2(0, s * (items[ "saturation_holder" ].AbsoluteSize.X - items[ "satvalpicker" ].AbsoluteSize.X), 1, 1 - v * (items[ "saturation_holder" ].AbsoluteSize.Y - items[ "satvalpicker" ].AbsoluteSize.Y))}, Enum.EasingStyle.Linear, 0.05)
@@ -3419,7 +3417,7 @@
                 });
 
                 items[ "tick" ] = library:create( "ImageButton" , {
-                    Image = "rbxassetid://1233";
+                    Image = "rbxassetid://128797200442698";
                     Name = "\0";
                     AutoButtonColor = false;
                     Parent = self.items[ "right_components" ];
