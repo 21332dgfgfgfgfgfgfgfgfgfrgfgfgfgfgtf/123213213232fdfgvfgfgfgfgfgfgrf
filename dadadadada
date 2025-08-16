@@ -431,18 +431,27 @@
             insert(themes.utility[theme][property], instance)
         end
 
-        function library:update_theme(theme, color)
-            for _, property in themes.utility[theme] do 
-
-                for m, object in property do 
-                    if object[_] == themes.preset[theme] then 
-                        object[_] = color 
-                    end 
-                end 
-            end 
-
-            themes.preset[theme] = color 
-        end 
+        function library:update_theme(theme, color, alpha)
+            if themes.utility[theme] then
+                for property, objects in pairs(themes.utility[theme]) do
+                    for _, object in ipairs(objects) do
+                        if object[property] == themes.preset[theme] then
+                            object[property] = color
+                            if alpha then
+                                if property == "BackgroundColor3" then
+                                    object.BackgroundTransparency = 1 - alpha
+                                elseif property == "TextColor3" then
+                                    object.TextTransparency = 1 - alpha
+                                elseif property == "ImageColor3" then
+                                    object.ImageTransparency = 1 - alpha
+                                end
+                            end
+                        end
+                    end
+                end
+                themes.preset[theme] = color
+            end
+        end
 
         function library:connection(signal, callback)
             local connection = signal:Connect(callback)
@@ -1677,8 +1686,6 @@
             return setmetatable(cfg, library)
         end 
 
-        
-
         function library:slider(options) 
             local cfg = {
                 name = options.name or nil,
@@ -2676,11 +2683,11 @@
                         CornerRadius = dim(0, 3)
                     });
 
-                    items[ "UICorenr" ] = library:create( "UICorner" , { -- fire misstypo (im not fixing this RAWR)
-                        Parent = items[ "colorpicker_holder" ];
-                        Name = "\0";
+                    items["UICorner"] = library:create("UICorner", { -- Fixed typo from UICorenr
+                        Parent = items["colorpicker_holder"],
+                        Name = "\0",
                         CornerRadius = dim(0, 4)
-                    });
+                    })
                 --                  
             end;
 
