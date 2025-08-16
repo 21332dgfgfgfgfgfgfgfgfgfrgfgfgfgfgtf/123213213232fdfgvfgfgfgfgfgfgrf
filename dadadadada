@@ -720,7 +720,7 @@
                     Name = "\0";
                     TextColor3 = themes.preset.accent;
                     BorderColor3 = rgb(0, 0, 0);
-                    Text = '<font color="rgb(92, 144, 144)">/getpivot</font>'; -- Changed this line
+                    Text = ''; -- Changed this line
                     Size = dim2(1, 0, 0, 0);
                     Position = dim2(0.5, -10, 0.5, -1);  -- Adjusted this line if needed
                     AnchorPoint = vec2(0, 0.5);
