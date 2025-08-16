@@ -2229,17 +2229,12 @@
         end
 
 
-
-
         function library:label(options)
             local cfg = {
-                enabled = options.enabled or nil,
-                name = options.name or "Toggle",
-                color = options.color or rgb(245, 245, 245),
-                seperator = options.seperator or options.Seperator or false;
-                info = options.info or nil; 
-
-                items = {};
+                name = options.name or "Label",
+                seperator = options.seperator or false,
+                color = options.color or rgb(245, 245, 245), -- Default to white if no color is specified
+                items = {},
             }
 
             local items = cfg.items; do 
