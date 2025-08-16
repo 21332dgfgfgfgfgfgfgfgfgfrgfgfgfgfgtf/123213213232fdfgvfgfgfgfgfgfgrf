@@ -2228,10 +2228,14 @@
             return setmetatable(cfg, library)
         end
 
+
+
+
         function library:label(options)
             local cfg = {
                 enabled = options.enabled or nil,
                 name = options.name or "Toggle",
+                color = options.color or rgb(245, 245, 245),
                 seperator = options.seperator or options.Seperator or false;
                 info = options.info or nil; 
 
@@ -2304,6 +2308,28 @@
                     Size = dim2(0, 0, 1, 0);
                     BorderSizePixel = 0;
                     BackgroundColor3 = rgb(255, 255, 255)
+                });
+
+                items["label"] = library:create("TextLabel", {
+                    FontFace = fonts.font,
+                    TextColor3 = cfg.color, -- Use the provided color
+                    BorderColor3 = rgb(0, 0, 0),
+                    Text = cfg.name,
+                    Parent = self.items["elements"],
+                    Name = "\0",
+                    Size = dim2(1, 0, 0, 0),
+                    BackgroundTransparency = 1,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    BorderSizePixel = 0,
+                    AutomaticSize = Enum.AutomaticSize.XY,
+                    TextSize = 16,
+                    BackgroundColor3 = rgb(255, 255, 255),
+                });
+
+                library:create("UIPadding", {
+                    Parent = items["label"],
+                    PaddingRight = dim(0, 5),
+                    PaddingLeft = dim(0, cfg.seperator and 15 or 5),
                 });
 
                 library:create( "UIListLayout" , {
