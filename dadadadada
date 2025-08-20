@@ -3563,7 +3563,7 @@
             name = "Configs",
             size = 1,
             default = true,
-            icon = "rbxassetid://139628202576511"
+            icon = 'rbxassetid://93219473003142'
         })
 
         local config_holder = config_section:list({
@@ -3579,7 +3579,7 @@
             side = "right",
             size = 1,
             default = true,
-            icon = "rbxassetid://129380150574313"
+            icon = 'rbxassetid://93219473003142'
         })
 
         settings_section:textbox({
