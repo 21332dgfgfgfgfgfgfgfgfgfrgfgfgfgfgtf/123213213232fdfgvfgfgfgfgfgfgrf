@@ -3556,6 +3556,7 @@
         end
 
         function library:init_config(window) 
+            window:seperator({})
             local main = window:tab({name = "Configs", tabs = {"Main"}})
             
             local column = main:column({})
