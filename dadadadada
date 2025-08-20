@@ -3367,7 +3367,7 @@
                     AutomaticSize = Enum.AutomaticSize.Y;
                     BackgroundColor3 = rgb(25, 25, 29)
                 });
-
+                
                 items[ "inline" ] = library:create( "Frame" , {
                     Parent = items[ "outline" ];
                     Name = "\0";
@@ -3377,12 +3377,12 @@
                     BorderSizePixel = 0;
                     BackgroundColor3 = rgb(22, 22, 24)
                 });
-
+                
                 library:create( "UICorner" , {
                     Parent = items[ "inline" ];
                     CornerRadius = dim(0, 7)
                 });
-
+                
                 items[ "elements" ] = library:create( "Frame" , {
                     BorderColor3 = rgb(0, 0, 0);
                     Parent = items[ "inline" ];
@@ -3394,28 +3394,28 @@
                     AutomaticSize = Enum.AutomaticSize.Y;
                     BackgroundColor3 = rgb(255, 255, 255)
                 });
-
+                
                 library:create( "UIListLayout" , {
                     Parent = items[ "elements" ];
                     Padding = dim(0, 10);
                     SortOrder = Enum.SortOrder.LayoutOrder
                 });
-
+                
                 library:create( "UIPadding" , {
                     PaddingBottom = dim(0, 15);
                     Parent = items[ "elements" ]
                 });
-
+                
                 library:create( "UICorner" , {
                     Parent = items[ "outline" ];
                     CornerRadius = dim(0, 7)
                 });
-
+                
                 library:create( "UICorner" , {
                     Parent = items[ "fade" ];
                     CornerRadius = dim(0, 7)
                 });
-
+                
                 items[ "tick" ] = library:create( "ImageButton" , {
                     Image = "rbxassetid://128797200442698";
                     Name = "\0";
@@ -3433,7 +3433,7 @@
                 items[ "outline" ].Position = dim_offset(items[ "tick" ].AbsolutePosition.X, items[ "tick" ].AbsolutePosition.Y + 90)
                 library:close_element(cfg)
             end
-
+            
             items[ "tick" ].MouseButton1Click:Connect(function()
                 cfg.open = not cfg.open
 
@@ -3464,13 +3464,13 @@
                     AutomaticSize = Enum.AutomaticSize.XY;
                     BackgroundColor3 = rgb(255, 255, 255)
                 });
-
+                
                 library:create( "UIListLayout" , {
                     Parent = items[ "list" ];
                     Padding = dim(0, 10);
                     SortOrder = Enum.SortOrder.LayoutOrder
                 });
-
+                
                 library:create( "UIPadding" , {
                     Parent = items[ "list" ];
                     PaddingRight = dim(0, 4);
@@ -3514,7 +3514,7 @@
                         TextSize = 14;
                         BackgroundColor3 = rgb(255, 255, 255)
                     });
-
+                    
                     library:create( "UICorner" , {
                         Parent = button;
                         CornerRadius = dim(0, 3)
@@ -3553,10 +3553,10 @@
             cfg.refresh_options(cfg.options)
 
             return setmetatable(cfg, library)
-        end
+        end 
 
         function library:init_config(window) 
-            window:seperator({name = ""})
+            window:seperator({name = "Settings"})
             local main = window:tab({name = "Configs", tabs = {"Main"}})
             
             local column = main:column({})
@@ -3572,7 +3572,9 @@
             section:colorpicker({name = "Menu Accent", callback = function(color, alpha) library:update_theme("accent", color) end, color = themes.preset.accent})
             section:keybind({name = "Menu Bind", callback = function(bool) window.toggle_menu(bool) end, default = true})
         end
+    --
 
+    -- Notification Library
         function notifications:refresh_notifs() 
             local offset = 50
 
