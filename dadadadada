@@ -383,6 +383,8 @@
             config_holder.refresh_options(list)
         end 
 
+        
+
         function library:get_config()
             local Config = {}
 
@@ -1911,6 +1913,8 @@
 
             return setmetatable(cfg, library)
         end 
+        
+        
 
         function library:dropdown(options) 
             local cfg = {
@@ -3553,99 +3557,6 @@
             cfg.refresh_options(cfg.options)
 
             return setmetatable(cfg, library)
-        end 
-
-        function library:init_config(window)
-        local Main, Configurations = window:tab({name = 'Config', tabs = {'Main', 'Configurations'}})
-
-        local main_column = Main:column({})
-        local config_section = main_column:section({
-            name = "Configs",
-            size = 1,
-            default = true,
-            icon = 'rbxassetid://93219473003142'
-        })
-
-        local config_holder = config_section:list({
-            options = {"Default Configurations"},
-            callback = function(option) end,
-            flag = "config_name_list"
-        })
-        library:update_config_list()
-
-        local settings_column = Configurations:column({})
-        local settings_section = settings_column:section({
-           name = "Settings",
-            side = "right",
-            size = 1,
-            default = true,
-            icon = 'rbxassetid://93219473003142'
-        })
-
-        settings_section:textbox({
-            name = "Config name:",
-            flag = "config_name_text"
-        })
-
-        settings_section:button({
-            name = "Save",
-            callback = function()
-                local config_name = flags["config_name_text"] or flags["config_name_list"]
-                if config_name then
-                    writefile(library.directory .. "/configs/" .. config_name .. ".cfg", library:get_config())
-                    library:update_config_list()
-                    notifications:create_notification({
-                        name = "Configs",
-                        info = "Saved config to:\n" .. config_name
-                    })
-                else
-                    notifications:create_notification({
-                        name = "Configs",
-                        info = "Error: No config name selected"
-                    })
-                end
-            end
-        })
-
-        settings_section:button({
-            name = "Load",
-            callback = function()
-                local config_name = flags["config_name_list"]
-                if config_name and readfile(library.directory .. "/configs/" .. config_name .. ".cfg") then
-                     library:load_config(readfile(library.directory .. "/configs/" .. config_name .. ".cfg"))
-                    library:update_config_list()
-                    notifications:create_notification({
-                        name = "Configs",
-                        info = "Loaded config:\n" .. config_name
-                    })
-                else
-                    notifications:create_notification({
-                        name = "Configs",
-                        info = "Error: Failed to load config"
-                    })
-                end
-            end
-        })
-
-        settings_section:button({
-            name = "Delete",
-                callback = function()
-                local config_name = flags["config_name_list"]
-                if config_name and delfile(library.directory .. "/configs/" .. config_name .. ".cfg") then
-                    library:update_config_list()
-                    notifications:create_notification({
-                        name = "Configs",
-                        info = "Deleted config:\n" .. config_name
-                    })
-                else
-                    notifications:create_notification({
-                       name = "Configs",
-                        info = "Error: Failed to delete config"
-                    })
-                end
-            end
-        })
-        
         end
     --
 
@@ -3683,6 +3594,8 @@
                 end
             end
         end 
+
+        
 
         function notifications:create_notification(options)
             local cfg = {
@@ -3803,9 +3716,240 @@
                 task.wait(1)
 
                 items[ "notification" ]:Destroy() 
-            end)
+    end)
+end
+
+function library:init_config(properties)
+    local cfg = {
+        name = properties.name or "Configs",
+        size = properties.size or 0.5,
+        items = {},
+        open = false,
+        set_visible = function(self, bool)
+            self.items.holder.Visible = bool
+            self.items.holder.Position = dim2(0, self.items.button.AbsolutePosition.X, 0, self.items.button.AbsolutePosition.Y + self.items.button.AbsoluteSize.Y + 10)
+            library:tween(self.items.holder, { Position = self.items.holder.Position + dim2(0, bool and 0 or 20) }, Enum.EasingStyle.Quad, 0.4)
+            library:close_element(bool and self or nil)
+        end,
+        refresh_options = function(self, options)
+            for _, v in ipairs(self.items.list:GetChildren()) do
+                if v:IsA("TextButton") then v:Destroy() end
+            end
+            for _, option in ipairs(options) do
+                local button = library:create("TextButton", {
+                    FontFace = fonts.font,
+                    TextColor3 = rgb(255, 255, 255),
+                    BorderColor3 = rgb(0, 0, 0),
+                    Text = option,
+                    AutoButtonColor = false,
+                    Parent = self.items.list,
+                    Name = "\0",
+                    Size = dim2(1, 0, 0, 30),
+                    BorderSizePixel = 0,
+                    TextSize = 16,
+                    BackgroundColor3 = rgb(25, 25, 29)
+                })
+
+                library:create("UICorner", {
+                    Parent = button,
+                    CornerRadius = dim(0, 7)
+                })
+
+                local delete = library:create("TextButton", {
+                    FontFace = fonts.font,
+                    TextColor3 = rgb(255, 255, 255),
+                    BorderColor3 = rgb(0, 0, 0),
+                    Text = "X",
+                    AutoButtonColor = false,
+                    Parent = button,
+                    Name = "\0",
+                    AnchorPoint = vec2(1, 0.5),
+                    Position = dim2(1, -5, 0.5, 0),
+                    Size = dim2(0, 20, 0, 20),
+                    BorderSizePixel = 0,
+                    TextSize = 14,
+                    BackgroundColor3 = rgb(255, 0, 0)
+                })
+
+                library:create("UICorner", {
+                    Parent = delete,
+                    CornerRadius = dim(0, 5)
+                })
+
+                button.MouseButton1Click:Connect(function()
+                    local path = library.directory .. "/configs/" .. option .. ".cfg"
+                    if isfile(path) then
+                        local success, config_data = pcall(readfile, path)
+                        if success then
+                            local success, err = pcall(function()
+                                library:load_config(config_data)
+                            end)
+                            if not success then
+                                warn("Failed to load config: " .. err)
+                            end
+                        else
+                            warn("Failed to read config file: " .. path)
+                        end
+                    end
+                end)
+
+                delete.MouseButton1Click:Connect(function()
+                    local path = library.directory .. "/configs/" .. option .. ".cfg"
+                    if isfile(path) then
+                        local success, err = pcall(delfile, path)
+                        if success then
+                            library:update_config_list()
+                        else
+                            warn("Failed to delete config: " .. err)
+                        end
+                    end
+                end)
+            end
         end
-    --
--- 
+    }
+
+    local items = cfg.items
+    items.holder = library:create("Frame", {
+        Parent = library.cache,
+        Name = "\0",
+        BorderColor3 = rgb(0, 0, 0),
+        Size = dim2(0, 150, 0, 150),
+        BorderSizePixel = 0,
+        BackgroundColor3 = rgb(25, 25, 29),
+        Visible = false
+    })
+
+    library:create("UICorner", {
+        Parent = items.holder,
+        CornerRadius = dim(0, 7)
+    })
+
+    items.inline = library:create("Frame", {
+        Parent = items.holder,
+        Name = "\0",
+        Position = dim2(0, 1, 0, 1),
+        BorderColor3 = rgb(0, 0, 0),
+        Size = dim2(1, -2, 1, -2),
+        BorderSizePixel = 0,
+        BackgroundColor3 = rgb(22, 22, 24)
+    })
+
+    library:create("UICorner", {
+        Parent = items.inline,
+        CornerRadius = dim(0, 7)
+    })
+
+    items.button = library:create("TextButton", {
+        FontFace = fonts.font,
+        TextColor3 = rgb(255, 255, 255),
+        BorderColor3 = rgb(0, 0, 0),
+        Text = cfg.name,
+        AutoButtonColor = false,
+        Parent = self.items.elements or library.cache,
+        Name = "\0",
+        Size = dim2(1, -2, 0, 30),
+        BorderSizePixel = 0,
+        TextSize = 16,
+        BackgroundColor3 = rgb(25, 25, 29)
+    })
+
+    library:create("UICorner", {
+        Parent = items.button,
+        CornerRadius = dim(0, 7)
+    })
+
+    items.textbox = library:create("TextBox", {
+        FontFace = fonts.font,
+        Text = "",
+        Parent = items.holder,
+        Name = "\0",
+        TextTruncate = Enum.TextTruncate.AtEnd,
+        BorderSizePixel = 0,
+        PlaceholderColor3 = rgb(255, 255, 255),
+        CursorPosition = -1,
+        ClearTextOnFocus = false,
+        TextSize = 14,
+        TextColor3 = rgb(72, 72, 72),
+        BorderColor3 = rgb(0, 0, 0),
+        Position = dim2(0, 5, 0, 5),
+        Size = dim2(1, -10, 0, 20),
+        BackgroundColor3 = rgb(33, 33, 35)
+    })
+
+    library:create("UICorner", {
+        Parent = items.textbox,
+        CornerRadius = dim(0, 3)
+    })
+
+    items.save = library:create("TextButton", {
+        FontFace = fonts.font,
+        TextColor3 = rgb(255, 255, 255),
+        BorderColor3 = rgb(0, 0, 0),
+        Text = "Save",
+        AutoButtonColor = false,
+        Parent = items.holder,
+        Name = "\0",
+        Size = dim2(1, -10, 0, 20),
+        Position = dim2(0, 5, 0, 30),
+        BorderSizePixel = 0,
+        TextSize = 14,
+        BackgroundColor3 = rgb(25, 25, 29)
+    })
+
+    library:create("UICorner", {
+        Parent = items.save,
+        CornerRadius = dim(0, 7)
+    })
+
+    items.list = library:create("Frame", {
+        BorderColor3 = rgb(0, 0, 0),
+        Parent = items.holder,
+        Name = "\0",
+        BackgroundTransparency = 1,
+        Size = dim2(1, -10, 0, 0),
+        Position = dim2(0, 5, 0, 55),
+        BorderSizePixel = 0,
+        AutomaticSize = Enum.AutomaticSize.Y,
+        BackgroundColor3 = rgb(255, 255, 255)
+    })
+
+    library:create("UIListLayout", {
+        Parent = items.list,
+        Padding = dim(0, 5),
+        SortOrder = Enum.SortOrder.LayoutOrder
+    })
+
+    items.button.MouseButton1Click:Connect(function()
+        cfg.open = not cfg.open
+        cfg:set_visible(cfg.open)
+    end)
+
+    items.save.MouseButton1Click:Connect(function()
+        local text = items.textbox.Text
+        if text ~= "" then
+            local path = library.directory .. "/configs/" .. text .. ".cfg"
+            local success, err = pcall(writefile, path, library:get_config())
+            if success then
+                items.textbox.Text = ""
+                library:update_config_list()
+            else
+                warn("Failed to save config: " .. err)
+            end
+        end
+    end)
+
+    items.textbox.Focused:Connect(function()
+        library:tween(items.textbox, { TextColor3 = rgb(245, 245, 245) })
+    end)
+
+    items.textbox.FocusLost:Connect(function()
+        library:tween(items.textbox, { TextColor3 = rgb(72, 72, 72) })
+    end)
+
+    config_holder = cfg
+    library:update_config_list()
+
+    return setmetatable(cfg, library)
+end
 
 return library
