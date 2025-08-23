@@ -3447,11 +3447,34 @@
             local cfg = {
                 items = {};
                 options = properties.options or {"1", "2", "3"};
+                name = properties.name or "Dropdown", -- Add this line
                 flag = properties.flag or library:next_flag();    
                 callback = properties.callback or function() end;
                 data_store = {};        
                 current_element;
             }
+
+            items["name"] = library:create("TextLabel", {
+                FontFace = fonts.font,
+                TextColor3 = rgb(245, 245, 245),
+                BorderColor3 = rgb(0, 0, 0),
+                Text = cfg.name,
+                Parent = items["list"],
+                Name = "\0",
+                Size = dim2(1, 0, 0, 0),
+                BackgroundTransparency = 1,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                BorderSizePixel = 0,
+                AutomaticSize = Enum.AutomaticSize.XY,
+                TextSize = 16,
+                BackgroundColor3 = rgb(255, 255, 255)
+            })
+
+            library:create("UIPadding", {
+                Parent = items["name"],
+                PaddingRight = dim(0, 5),
+                PaddingLeft = dim(0, 5)
+            })
 
             local items = cfg.items; do
                 items[ "list" ] = library:create( "Frame" , {
@@ -3499,6 +3522,8 @@
                         TextSize = 14;
                         BackgroundColor3 = rgb(33, 33, 35)
                     }); cfg.data_store[#cfg.data_store + 1] = button;
+
+
 
                     local name = library:create( "TextLabel" , {
                         FontFace = fonts.font;
