@@ -3446,8 +3446,8 @@
         function library:list(properties) 
             local cfg = {
                 items = {};
-                options = properties.options or {"1", "2", "3"};
                 name = properties.name or "Dropdown", -- Add this line
+                options = properties.options or {"1", "2", "3"};
                 flag = properties.flag or library:next_flag();    
                 callback = properties.callback or function() end;
                 data_store = {};        
@@ -3472,11 +3472,11 @@
                     SortOrder = Enum.SortOrder.LayoutOrder
                 });
                 
-                library:create( "UIPadding" , {
-                    Parent = items[ "list" ];
-                    PaddingRight = dim(0, 4);
+                library:create("UIPadding", {
+                    Parent = items["list"],
+                    PaddingRight = dim(0, 4),
                     PaddingLeft = dim(0, 4)
-                });
+                })
 
 
                 items["name"] = library:create("TextLabel", {
@@ -3493,13 +3493,13 @@
                     AutomaticSize = Enum.AutomaticSize.XY,
                     TextSize = 16,
                     BackgroundColor3 = rgb(255, 255, 255)
-                });
+                })
 
                 library:create("UIPadding", {
                     Parent = items["name"],
                     PaddingRight = dim(0, 5),
                     PaddingLeft = dim(0, 5)
-                });
+                })
             end 
 
             function cfg.refresh_options(options_to_refresh) -- ignore goofy parameter
