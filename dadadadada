@@ -3446,13 +3446,13 @@
         function library:list(properties)
             local cfg = {
                 items = {},
-                    name = properties.name or "Dropdown", -- Ensure name is set
-                    options = properties.options or {"1", "2", "3"},
-                    flag = properties.flag or library:next_flag(),
-                    callback = properties.callback or function() end,
-                    data_store = {},
-                    current_element,
-                }
+                name = properties.name or "Dropdown",
+                options = properties.options or {"1", "2", "3"},
+                flag = properties.flag or library:next_flag(),
+                callback = properties.callback or function() end,
+                data_store = {},
+                current_element,
+            }
 
             local items = cfg.items
             do
@@ -3469,7 +3469,7 @@
 
                 library:create("UIListLayout", {
                     Parent = items["list"],
-                    Padding = dim(0, 10),
+                    Padding = dim(0, 8),
                     SortOrder = Enum.SortOrder.LayoutOrder
                 })
 
@@ -3477,37 +3477,35 @@
                     Parent = items["list"],
                     PaddingRight = dim(0, 4),
                     PaddingLeft = dim(0, 4),
-                    PaddingTop = dim(0, 5),
-                    PaddingBottom = dim(0, 5)
+                    PaddingTop = dim(0, 4),
+                    PaddingBottom = dim(0, 4)
                 })
 
-        -- Create the name label for the dropdown
                 items["name"] = library:create("TextLabel", {
                     FontFace = fonts.font,
                     TextColor3 = rgb(245, 245, 245),
                     BorderColor3 = rgb(0, 0, 0),
-                    Text = cfg.name, -- Use the provided name
+                    Text = cfg.name,
                     Parent = items["list"],
                     Name = "\0",
-                    Size = dim2(1, 0, 0, 0),
                     BackgroundTransparency = 1,
-                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Size = dim2(1, -8, 0, 20),
                     BorderSizePixel = 0,
-                    AutomaticSize = Enum.AutomaticSize.XY,
+                    TextXAlignment = Enum.TextXAlignment.Left,
                     TextSize = 16,
                     BackgroundColor3 = rgb(255, 255, 255),
-                    ZIndex = 2 -- Ensure the label is on top
+                    ZIndex = 10,
+                    AutomaticSize = Enum.AutomaticSize.X
                 })
 
                 library:create("UIPadding", {
                     Parent = items["name"],
-                    PaddingRight = dim(0, 5),
                     PaddingLeft = dim(0, 5),
+                    PaddingRight = dim(0, 5),
                     PaddingTop = dim(0, 2),
                     PaddingBottom = dim(0, 2)
                 })
 
-        -- Ensure the name label is themed if necessary
                 library:apply_theme(items["name"], "accent", "TextColor3")
             end
 
