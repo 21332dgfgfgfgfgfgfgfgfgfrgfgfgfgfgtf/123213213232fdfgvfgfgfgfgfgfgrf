@@ -3446,13 +3446,16 @@
         function library:list(properties)
             local cfg = {
                 items = {},
-                name = properties.name or "Dropdown",
+                name = properties.name or "nigger",
                 options = properties.options or {"1", "2", "3"},
                 flag = properties.flag or library:next_flag(),
                 callback = properties.callback or function() end,
                 data_store = {},
                 current_element,
             }
+
+            -- Debug: Ensure name is set correctly
+            assert(cfg.name, "No name provided for dropdown, using default: " .. tostring(properties.name or "Dropdown"))
 
             local items = cfg.items
             do
@@ -3464,7 +3467,9 @@
                     BorderColor3 = rgb(0, 0, 0),
                     BorderSizePixel = 0,
                     AutomaticSize = Enum.AutomaticSize.Y,
-                    BackgroundColor3 = rgb(255, 255, 255)
+                    BackgroundColor3 = rgb(255, 255, 255),
+                    Visible = true,
+                    ZIndex = 10
                 })
 
                 library:create("UIListLayout", {
@@ -3487,23 +3492,22 @@
                     BorderColor3 = rgb(0, 0, 0),
                     Text = cfg.name,
                     Parent = items["list"],
-                    Name = "\0",
+                    Name = "DropdownName",
                     BackgroundTransparency = 1,
-                    Size = dim2(1, -8, 0, 20),
+                    Size = dim2(1, 0, 0, 20),
                     BorderSizePixel = 0,
                     TextXAlignment = Enum.TextXAlignment.Left,
                     TextSize = 16,
                     BackgroundColor3 = rgb(255, 255, 255),
-                    ZIndex = 10,
-                    AutomaticSize = Enum.AutomaticSize.X
+                    ZIndex = 15,
+                    Visible = true,
+                    ClipsDescendants = false
                 })
 
                 library:create("UIPadding", {
                     Parent = items["name"],
                     PaddingLeft = dim(0, 5),
-                    PaddingRight = dim(0, 5),
-                    PaddingTop = dim(0, 2),
-                    PaddingBottom = dim(0, 2)
+                    PaddingRight = dim(0, 5)
                 })
 
                 library:apply_theme(items["name"], "accent", "TextColor3")
