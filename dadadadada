@@ -1958,7 +1958,7 @@
                         FontFace = fonts.small;
                         TextColor3 = rgb(245, 245, 245);
                         BorderColor3 = rgb(0, 0, 0);
-                        Text = "Dropdown";
+                        Text = "nigger";
                         Parent = items[ "dropdown_object" ];
                         Name = "\0";
                         Size = dim2(1, 0, 0, 0);
@@ -2014,7 +2014,7 @@
                         SortOrder = Enum.SortOrder.LayoutOrder
                     });
 
-                    items[ "dropdown" ] = library:create( "TextButton" , {
+                    items[ "nigger" ] = library:create( "TextButton" , {
                         FontFace = fonts.small;
                         TextColor3 = rgb(0, 0, 0);
                         BorderColor3 = rgb(0, 0, 0);
@@ -2031,7 +2031,7 @@
                     });
 
                     library:create( "UICorner" , {
-                        Parent = items[ "dropdown" ];
+                        Parent = items[ "nigger" ];
                         CornerRadius = dim(0, 4)
                     });
 
@@ -2040,7 +2040,7 @@
                         TextColor3 = rgb(86, 86, 87);
                         BorderColor3 = rgb(0, 0, 0);
                         Text = "awdawdawdawdawdawdawdaw";
-                        Parent = items[ "dropdown" ];
+                        Parent = items[ "nigger" ];
                         Name = "\0";
                         Size = dim2(1, -12, 0, 0);
                         BorderSizePixel = 0;
@@ -2062,7 +2062,7 @@
                     items[ "indicator" ] = library:create( "ImageLabel" , {
                         ImageColor3 = rgb(86, 86, 87);
                         BorderColor3 = rgb(0, 0, 0);
-                        Parent = items[ "dropdown" ];
+                        Parent = items[ "nigger" ];
                         AnchorPoint = vec2(1, 0.5);
                         Image = "rbxassetid://101025591575185";
                         BackgroundTransparency = 1;
@@ -2147,9 +2147,9 @@
 
             function cfg.set_visible(bool)
                 local a = bool and cfg.y_size or 0
-                library:tween(items[ "dropdown_holder" ], {Size = dim_offset(items[ "dropdown" ].AbsoluteSize.X, a)})
+                library:tween(items[ "dropdown_holder" ], {Size = dim_offset(items[ "nigger" ].AbsoluteSize.X, a)})
 
-                items[ "dropdown_holder" ].Position = dim2(0, items[ "dropdown" ].AbsolutePosition.X, 0, items[ "dropdown" ].AbsolutePosition.Y + 80)
+                items[ "dropdown_holder" ].Position = dim2(0, items[ "nigger" ].AbsolutePosition.X, 0, items[ "nigger" ].AbsolutePosition.Y + 80)
                 if not (self.sanity and library.current_open == self) then 
                     library:close_element(cfg)
                 end
@@ -2210,7 +2210,7 @@
                 end
             end
 
-            items[ "dropdown" ].MouseButton1Click:Connect(function()
+            items[ "nigger" ].MouseButton1Click:Connect(function()
                 cfg.open = not cfg.open 
 
                 cfg.set_visible(cfg.open)
@@ -3074,7 +3074,7 @@
                 -- 
 
                 -- Mode Holder
-                    items[ "dropdown" ] = library:create( "Frame" , {
+                    items[ "nigger" ] = library:create( "Frame" , {
                         BorderColor3 = rgb(0, 0, 0);
                         Parent = library.items;
                         Name = "\0";
@@ -3087,7 +3087,7 @@
                     });
 
                     items[ "inline" ] = library:create( "Frame" , {
-                        Parent = items[ "dropdown" ];
+                        Parent = items[ "nigger" ];
                         Size = dim2(1, 0, 1, 0);
                         Name = "\0";
                         ClipsDescendants = true;
@@ -3224,9 +3224,9 @@
 
             function cfg.set_visible(bool)
                 local size = bool and cfg.y_size or 0
-                library:tween(items[ "dropdown" ], {Size = dim_offset(items[ "keybind_holder" ].AbsoluteSize.X, size)})
+                library:tween(items[ "nigger" ], {Size = dim_offset(items[ "keybind_holder" ].AbsoluteSize.X, size)})
 
-                items[ "dropdown" ].Position = dim_offset(items[ "keybind_holder" ].AbsolutePosition.X, items[ "keybind_holder" ].AbsolutePosition.Y + items[ "keybind_holder" ].AbsoluteSize.Y + 60)
+                items[ "nigger" ].Position = dim_offset(items[ "keybind_holder" ].AbsolutePosition.X, items[ "keybind_holder" ].AbsolutePosition.Y + items[ "keybind_holder" ].AbsoluteSize.Y + 60)
             end
 
             items[ "keybind_holder" ].MouseButton1Down:Connect(function()
@@ -3455,7 +3455,6 @@
             }
 
             -- Debug: Ensure name is set correctly
-            assert(cfg.name, "No name provided for dropdown, using default: " .. tostring(properties.name or "Dropdown"))
 
             local items = cfg.items
             do
