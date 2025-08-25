@@ -3443,47 +3443,50 @@
             return setmetatable(cfg, library)
         end 
 
-        function library:list(properties) 
+        function library:list(properties)
             local cfg = {
-                items = {};
-                name = properties.name or "Dropdown", -- Add this line
-                options = properties.options or {"1", "2", "3"};
-                flag = properties.flag or library:next_flag();    
-                callback = properties.callback or function() end;
-                data_store = {};        
-                current_element;
-            }
+                items = {},
+                    name = properties.name or "Dropdown", -- Ensure name is set
+                    options = properties.options or {"1", "2", "3"},
+                    flag = properties.flag or library:next_flag(),
+                    callback = properties.callback or function() end,
+                    data_store = {},
+                    current_element,
+                }
 
-            local items = cfg.items; do
-                items[ "list" ] = library:create( "Frame" , {
-                    Parent = self.items[ "elements" ];
-                    BackgroundTransparency = 1;
-                    Name = "\0";
-                    Size = dim2(1, 0, 0, 0);
-                    BorderColor3 = rgb(0, 0, 0);
-                    BorderSizePixel = 0;
-                    AutomaticSize = Enum.AutomaticSize.XY;
+            local items = cfg.items
+            do
+                items["list"] = library:create("Frame", {
+                    Parent = self.items["elements"],
+                    BackgroundTransparency = 1,
+                    Name = "\0",
+                    Size = dim2(1, 0, 0, 0),
+                    BorderColor3 = rgb(0, 0, 0),
+                    BorderSizePixel = 0,
+                    AutomaticSize = Enum.AutomaticSize.Y,
                     BackgroundColor3 = rgb(255, 255, 255)
-                });
-                
-                library:create( "UIListLayout" , {
-                    Parent = items[ "list" ];
-                    Padding = dim(0, 10);
+                })
+
+                library:create("UIListLayout", {
+                    Parent = items["list"],
+                    Padding = dim(0, 10),
                     SortOrder = Enum.SortOrder.LayoutOrder
-                });
-                
+                })
+
                 library:create("UIPadding", {
                     Parent = items["list"],
                     PaddingRight = dim(0, 4),
-                    PaddingLeft = dim(0, 4)
+                    PaddingLeft = dim(0, 4),
+                    PaddingTop = dim(0, 5),
+                    PaddingBottom = dim(0, 5)
                 })
 
-
+        -- Create the name label for the dropdown
                 items["name"] = library:create("TextLabel", {
                     FontFace = fonts.font,
                     TextColor3 = rgb(245, 245, 245),
                     BorderColor3 = rgb(0, 0, 0),
-                    Text = cfg.name,
+                    Text = cfg.name, -- Use the provided name
                     Parent = items["list"],
                     Name = "\0",
                     Size = dim2(1, 0, 0, 0),
@@ -3492,63 +3495,69 @@
                     BorderSizePixel = 0,
                     AutomaticSize = Enum.AutomaticSize.XY,
                     TextSize = 16,
-                    BackgroundColor3 = rgb(255, 255, 255)
+                    BackgroundColor3 = rgb(255, 255, 255),
+                    ZIndex = 2 -- Ensure the label is on top
                 })
 
                 library:create("UIPadding", {
                     Parent = items["name"],
                     PaddingRight = dim(0, 5),
-                    PaddingLeft = dim(0, 5)
+                    PaddingLeft = dim(0, 5),
+                    PaddingTop = dim(0, 2),
+                    PaddingBottom = dim(0, 2)
                 })
-            end 
 
-            function cfg.refresh_options(options_to_refresh) -- ignore goofy parameter
-                for _,option in cfg.data_store do 
+        -- Ensure the name label is themed if necessary
+                library:apply_theme(items["name"], "accent", "TextColor3")
+            end
+
+            function cfg.refresh_options(options_to_refresh)
+                for _, option in cfg.data_store do
                     option:Destroy()
                 end
+                cfg.data_store = {}
 
-                for _, option_data in options_to_refresh do -- haha u skids no next >_<
-                    local button = library:create( "TextButton" , {
-                        FontFace = fonts.small;
-                        TextColor3 = rgb(0, 0, 0);
-                        BorderColor3 = rgb(0, 0, 0);
-                        Text = "";
-                        AutoButtonColor = false;
-                        AnchorPoint = vec2(1, 0);
-                        Parent = items[ "list" ];
-                        Name = "\0";
-                        Position = dim2(1, 0, 0, 0);
-                        Size = dim2(1, 0, 0, 30);
-                        BorderSizePixel = 0;
-                        TextSize = 14;
+                for _, option_data in options_to_refresh do
+                    local button = library:create("TextButton", {
+                        FontFace = fonts.small,
+                        TextColor3 = rgb(0, 0, 0),
+                        BorderColor3 = rgb(0, 0, 0),
+                        Text = "",
+                        AutoButtonColor = false,
+                        AnchorPoint = vec2(1, 0),
+                        Parent = items["list"],
+                        Name = "\0",
+                        Position = dim2(1, 0, 0, 0),
+                        Size = dim2(1, 0, 0, 30),
+                        BorderSizePixel = 0,
+                        TextSize = 14,
                         BackgroundColor3 = rgb(33, 33, 35)
-                    }); cfg.data_store[#cfg.data_store + 1] = button;
+                    })
+                    cfg.data_store[#cfg.data_store + 1] = button
 
-
-
-                    local name = library:create( "TextLabel" , {
-                        FontFace = fonts.font;
-                        TextColor3 = rgb(72, 72, 73);
-                        BorderColor3 = rgb(0, 0, 0);
-                        Text = option_data;
-                        Parent = button;
-                        Name = "\0";
-                        BackgroundTransparency = 1;
-                        Size = dim2(1, 0, 1, 0);
-                        BorderSizePixel = 0;
-                        AutomaticSize = Enum.AutomaticSize.XY;
-                        TextSize = 14;
+                    local name = library:create("TextLabel", {
+                        FontFace = fonts.font,
+                        TextColor3 = rgb(72, 72, 73),
+                        BorderColor3 = rgb(0, 0, 0),
+                        Text = option_data,
+                        Parent = button,
+                        Name = "\0",
+                        BackgroundTransparency = 1,
+                        Size = dim2(1, 0, 1, 0),
+                        BorderSizePixel = 0,
+                        AutomaticSize = Enum.AutomaticSize.XY,
+                        TextSize = 14,
                         BackgroundColor3 = rgb(255, 255, 255)
-                    });
-                    
-                    library:create( "UICorner" , {
-                        Parent = button;
+                    })
+
+                    library:create("UICorner", {
+                        Parent = button,
                         CornerRadius = dim(0, 3)
-                    });     
+                    })
 
                     button.MouseButton1Click:Connect(function()
-                        local current = cfg.current_element 
-                        if current and current ~= name then 
+                        local current = cfg.current_element
+                        if current and current ~= name then
                             library:tween(current, {TextColor3 = rgb(72, 72, 72)})
                         end
 
@@ -3559,18 +3568,16 @@
                     end)
 
                     name.MouseEnter:Connect(function()
-                        if cfg.current_element == name then 
-                            return 
-                        end 
-
+                        if cfg.current_element == name then
+                            return
+                        end
                         library:tween(name, {TextColor3 = rgb(140, 140, 140)})
                     end)
 
                     name.MouseLeave:Connect(function()
-                        if cfg.current_element == name then 
-                            return 
-                        end 
-
+                        if cfg.current_element == name then
+                            return
+                        end
                         library:tween(name, {TextColor3 = rgb(72, 72, 72)})
                     end)
                 end
@@ -3579,8 +3586,8 @@
             cfg.refresh_options(cfg.options)
 
             return setmetatable(cfg, library)
-        end 
-
+        end
+        
         function library:init_config(window)
         local Main, Configurations = window:tab({name = 'Config', tabs = {'Main', 'Configurations'}})
 
