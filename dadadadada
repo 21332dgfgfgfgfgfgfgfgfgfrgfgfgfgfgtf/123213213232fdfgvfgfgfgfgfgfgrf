@@ -409,13 +409,15 @@
                     continue 
                 end
 
-                -- Only process flags that are explicitly defined and intended to be active
+                -- Only process flags that exist in library.flags and library.config_flags
                 if library.flags[flag_name] ~= nil and library.config_flags[flag_name] ~= nil then 
                     print("Processing flag: " .. flag_name .. ", Value: " .. tostring(v))
-                    if type(v) == "table" and v["active"] ~= nil then
-                        if v["active"] then
+                    local function_set = library.config_flags[flag_name]
+                    
+                    -- Handle table-type flags with 'active' field
+                    if type(v) == "table" and v.active ~= nil then
+                        if v.active then
                             library.flags[flag_name] = v
-                            local function_set = library.config_flags[flag_name]
                             local success_func, err = pcall(function()
                                 function_set(v)
                             end)
@@ -423,33 +425,33 @@
                                 print("Error applying flag " .. flag_name .. ": " .. tostring(err))
                             end
                         end
-                    elseif type(v) == "table" and v["Transparency"] and v["Color"] then
+                    -- Handle Color3-type flags with Transparency and Color
+                    elseif type(v) == "table" and v.Color and v.Transparency ~= nil then
                         library.flags[flag_name] = v
-                        local function_set = library.config_flags[flag_name]
                         local success_func, err = pcall(function()
-                            function_set(Color3.fromHex(v["Color"] or "#FFFFFF"), v["Transparency"] or 0)
+                            function_set(Color3.fromHex(v.Color or "#FFFFFF"), v.Transparency or 0)
                         end)
                         if not success_func then
                             print("Error applying flag " .. flag_name .. ": " .. tostring(err))
                         end
-                    elseif v ~= nil and v ~= false then
+                    -- Handle simple value flags (non-table, non-false values)
+                    elseif type(v) ~= "table" and v ~= nil and v ~= false then
                         library.flags[flag_name] = v
-                        local function_set = library.config_flags[flag_name]
                         local success_func, err = pcall(function()
-                            function_set(v or "")
+                            function_set(v)
                         end)
                         if not success_func then
                             print("Error applying flag " .. flag_name .. ": " .. tostring(err))
                         end
                     end
+                else
+                    print("Skipping flag: " .. flag_name .. " (not found in library.flags or library.config_flags)")
                 end
             end
             
             notifications:create_notification({name = "Configs", info = "Config loaded successfully."})
         end
 
-
-        
         function library:get_config()
                 local config = {}
                 for flag_name, value in pairs(library.flags) do
