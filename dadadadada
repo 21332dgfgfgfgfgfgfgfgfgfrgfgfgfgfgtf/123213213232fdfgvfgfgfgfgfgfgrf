@@ -405,28 +405,39 @@
             return http_service:JSONEncode(Config)
         end
         function library:load_config(config_json) 
-            if not config_json or config_json == "" then return end
+            if not config_json or config_json == "" then 
+                notifications:create_notification({name = "Configs", info = "Error: Empty or invalid config data."})
+                return 
+            end
             local success, config = pcall(http_service.JSONDecode, http_service, config_json)
-            if not success then return end
+            if not success then 
+                notifications:create_notification({name = "Configs", info = "Error: Failed to decode config JSON."})
+                return 
+            end
 
-            for _, v in pairs(config) do 
-                local function_set = library.config_flags[_]
-
-                if _ == "config_name_list" then 
+            for flag_name, v in pairs(config) do 
+                if flag_name == "config_name_list" then 
                     continue 
                 end
 
-                if function_set then 
+                local function_set = library.config_flags[flag_name]
+                flags[flag_name] = v -- Directly update the flag
+
+               if function_set then 
                     if type(v) == "table" and v["Transparency"] and v["Color"] then
                         function_set(Color3.fromHex(v["Color"] or "#FFFFFF"), v["Transparency"] or 0)
-                     elseif type(v) == "table" and v["active"] then 
+                    elseif type(v) == "table" and v["active"] then 
                         function_set(v)
                     else
                         function_set(v or "")
                     end
-                end 
+                elseif config_holder and flag_name == "config_name_list" then
+                    config_holder.current_element.Text = tostring(v) -- Update dropdown visually
+                    config_holder.callback(v) -- Trigger callback to refresh
+                end
             end 
-        end 
+            notifications:create_notification({name = "Configs", info = "Config loaded successfully."})
+        end
 
         function library:round(number, float) 
             local multiplier = 1 / (float or 1)
