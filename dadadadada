@@ -3609,11 +3609,10 @@
         
         function library:init_config(window)
                 window:seperator({name = ""})
-                local main_tab = window:tab({name = "Main", tabs = {"Main"}})
-                local config_tab = window:tab({name = "Configuration", tabs = {"Configuration"}})
+                local config_tab = window:tab({name = "Config", tabs = {"Main", "Configuration"}})
 
-                -- Main Tab
-                local main_column = main_tab:column({})
+                -- Main Sub-Tab
+                local main_column = config_tab:column({tab = "Main"})
                 local main_section = main_column:section({name = "Main", size = 1, default = true, icon = "rbxassetid://139628202576511"})
                 config_holder = main_section:list({
                         options = {"Report", "This", "Error", "To", "Finobe"}, 
@@ -3625,8 +3624,8 @@
                 })
                 library:update_config_list()
 
-                -- Configuration Tab
-                local config_column = config_tab:column({})
+                -- Configuration Sub-Tab
+                local config_column = config_tab:column({tab = "Configuration"})
                 local config_section = config_column:section({name = "Configuration", side = "right", size = 1, default = true, icon = "rbxassetid://129380150574313"})
                 config_section:textbox({name = "Config name:", flag = "config_name_text"})
                 config_section:button({
