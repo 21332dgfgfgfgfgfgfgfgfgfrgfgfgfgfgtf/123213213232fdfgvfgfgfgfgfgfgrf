@@ -429,7 +429,8 @@
                                 continue -- Skip metadata like in Compkiller
                         end
 
-                        if v and v.Flag then
+                        -- Check if v is a table before indexing Flag
+                        if type(v) == "table" and v.Flag then
                                 local function_set = library.config_flags[v.Flag]
                                 if function_set then
                                         local success_func, err = pcall(function()
@@ -445,6 +446,11 @@
                                                 elseif v.Value.Type == "NormalElement" then
                                                         -- Handle normal elements (e.g., toggles, sliders, dropdowns)
                                                         function_set(v.Value.Value)
+                                                else
+                                                        notifications:create_notification({
+                                                                name = "Configs",
+                                                                info = "Unsupported value type for flag: " .. tostring(flag_name)
+                                                        })
                                                 end
                                         end)
 
@@ -455,6 +461,11 @@
                                                 })
                                         end
                                 end
+                        else
+                                notifications:create_notification({
+                                        name = "Configs",
+                                        info = "Invalid config entry for flag: " .. tostring(flag_name) .. " (expected table, got " .. type(v) .. ")"
+                                })
                         end
                 end
 
