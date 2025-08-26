@@ -4,7 +4,7 @@
     -> Made by @finobe 
     -> Kind of got bored idk what to do with life
     -> Idk who or why this got leaked, ui was VERY popular and high in demand with customers
-]]
+]]"
 
 -- Variables 
     local uis = game:GetService("UserInputService") 
@@ -391,6 +391,7 @@
 
         function library:load_config(config_json) 
             if not config_json or config_json == "" then 
+                print("No config_json provided or empty")
                 return 
             end
             
@@ -398,6 +399,7 @@
                 return http_service:JSONDecode(config_json)
             end)
             if not success or type(config) ~= "table" then 
+                print("Failed to decode config_json: " .. tostring(config))
                 return 
             end
 
@@ -409,11 +411,13 @@
                             pcall(library.config_holder.callback, v) -- Safely call callback
                         end
                     end
+                    print("Processed config_name_list: " .. tostring(v))
                     continue 
                 end
 
                 -- Only process flags that are explicitly defined and intended to be active
                 if library.flags[flag_name] ~= nil and library.config_flags[flag_name] ~= nil then 
+                    print("Processing flag: " .. flag_name .. ", Value: " .. tostring(v))
                     if type(v) == "table" and v["active"] ~= nil then
                         if v["active"] then
                             library.flags[flag_name] = v
@@ -422,7 +426,7 @@
                                 function_set(v)
                             end)
                             if not success_func then
-                                -- Log error if needed
+                                print("Error applying flag " .. flag_name .. ": " .. tostring(err))
                             end
                         end
                     elseif type(v) == "table" and v["Transparency"] and v["Color"] then
@@ -432,7 +436,7 @@
                             function_set(Color3.fromHex(v["Color"] or "#FFFFFF"), v["Transparency"] or 0)
                         end)
                         if not success_func then
-                            -- Log error if needed
+                            print("Error applying flag " .. flag_name .. ": " .. tostring(err))
                         end
                     elseif v ~= nil and v ~= false then
                         library.flags[flag_name] = v
@@ -441,7 +445,7 @@
                             function_set(v or "")
                         end)
                         if not success_func then
-                            -- Log error if needed
+                            print("Error applying flag " .. flag_name .. ": " .. tostring(err))
                         end
                     end
                 end
@@ -449,7 +453,6 @@
             
             notifications:create_notification({name = "Configs", info = "Config loaded successfully."})
         end
-
 
 
         
@@ -3661,18 +3664,21 @@
                                                         end
                                                 end
                                         })
-                                        section:button({
-                                                name = "Load",
-                                                callback = function()
+                                                                                config_section:button({
+                                                name = "Load", 
+                                                callback = function() 
                                                         local config_name = flags["config_name_list"]
                                                         if config_name and config_name ~= "" then
                                                                 local file_path = library.directory .. "/configs/" .. config_name .. ".cfg"
+                                                                print("Attempting to load config from: " .. file_path)
                                                                 if isfile(file_path) then
                                                                         local config_json = readfile(file_path)
+                                                                        print("Read config_json: " .. tostring(config_json))
                                                                         library:load_config(config_json)
                                                                         library:update_config_list()
                                                                         notifications:create_notification({name = "Configuration", info = "Loaded config: " .. config_name})
                                                                 else
+                                                                        print("Config file not found: " .. file_path)
                                                                         notifications:create_notification({name = "Configuration", info = "Error: Config file does not exist."})
                                                                 end
                                                         else
