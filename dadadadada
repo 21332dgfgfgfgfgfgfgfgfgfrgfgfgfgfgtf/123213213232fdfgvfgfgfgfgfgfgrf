@@ -3638,9 +3638,9 @@
                                         makefolder(library.directory .. "/configs")
                                         writefile(file_path, config_data)
                                         library:update_config_list()
-                                        notifications:create_notification({name = "Main", info = "Saved config: " .. config_name})
+                                        notifications:create_notification({name = "Configuration", info = "Saved config: " .. config_name})
                                 else
-                                        notifications:create_notification({name = "Main", info = "Error: No config name provided."})
+                                        notifications:create_notification({name = "Configuration", info = "Error: No config name provided."})
                                 end
                         end
                 }) 
@@ -3654,12 +3654,12 @@
                                                 local config_json = readfile(file_path)
                                                 library:load_config(config_json)
                                                 library:update_config_list()
-                                                notifications:create_notification({name = "Main", info = "Loaded config: " .. config_name})
+                                                notifications:create_notification({name = "Configuration", info = "Loaded config: " .. config_name})
                                         else
-                                                notifications:create_notification({name = "Main", info = "Error: Config file does not exist."})
+                                                notifications:create_notification({name = "Configuration", info = "Error: Config file does not exist."})
                                         end
                                 else
-                                        notifications:create_notification({name = "Main", info = "Error: No config selected."})
+                                        notifications:create_notification({name = "Configuration", info = "Error: No config selected."})
                                 end
                         end
                 })
@@ -3672,12 +3672,12 @@
                                         if isfile(file_path) then
                                                 delfile(file_path)
                                                 library:update_config_list()
-                                                notifications:create_notification({name = "Main", info = "Deleted config: " .. config_name})
+                                                notifications:create_notification({name = "Configuration", info = "Deleted config: " .. config_name})
                                         else
-                                                notifications:create_notification({name = "Main", info = "Error: Config file does not exist."})
+                                                notifications:create_notification({name = "Configuration", info = "Error: Config file does not exist."})
                                         end
                                 else
-                                        notifications:create_notification({name = "Main", info = "Error: No config selected."})
+                                        notifications:create_notification({name = "Configuration", info = "Error: No config selected."})
                                 end
                         end
                 })
