@@ -377,10 +377,9 @@
             local config_dir = library.directory .. "/configs"
             if not isfolder(config_dir) then
                 makefolder(config_dir)
-                return
             end
 
-            for idx, file in ipairs(listfiles(config_dir)) do
+            for _, file in ipairs(listfiles(config_dir)) do
                 local name = file:gsub(config_dir .. "\\", ""):gsub(".cfg", ""):gsub(config_dir .. "/", "")
                 if name and name ~= "" then
                     table.insert(list, name)
