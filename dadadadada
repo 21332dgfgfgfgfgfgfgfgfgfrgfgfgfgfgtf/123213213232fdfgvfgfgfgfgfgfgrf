@@ -404,48 +404,64 @@
 
             return http_service:JSONEncode(Config)
         end
-        function library:load_config(config_json) 
-            if not config_json or config_json == "" then 
-                return 
-            end
-            
-            local success, config = pcall(function()
-                return http_service:JSONDecode(config_json)
-            end)
-            if not success or type(config) ~= "table" then 
-                return 
-            end
-
-            for flag_name, v in pairs(config) do 
-                if flag_name == "config_name_list" then 
-                    continue 
+        function library:load_config(config_json)
+                if not config_json or config_json == "" then
+                        return
                 end
 
-                -- Update the flag table
-                library.flags[flag_name] = v
+                local http_service = game:GetService("HttpService")
+                local success, config = pcall(function()
+                        return http_service:JSONDecode(config_json)
+                end)
 
-                local function_set = library.config_flags[flag_name]
-                if function_set then 
-                    local success_func, err = pcall(function()
-                        if type(v) == "table" and v["Transparency"] and v["Color"] then
-                            function_set(Color3.fromHex(v["Color"] or "#FFFFFF"), v["Transparency"] or 0)
-                        elseif type(v) == "table" and v["active"] then 
-                            function_set(v)
-                        else
-                            function_set(v or "")
+                if not success or type(config) ~= "table" then
+                        notifications:create_notification({
+                                name = "Configs",
+                                info = "Failed to decode config JSON."
+                        })
+                        return
+                end
+
+                -- Assuming library.config_flags is a table mapping flag names to their setter functions
+                -- Similar to Compkiller:GetConfig("KV") which maps flags to their functions
+                for flag_name, v in pairs(config) do
+                        if flag_name == "__INFORMATION" then
+                                continue -- Skip metadata like in Compkiller
                         end
-                    end)
-                    if not success_func then
-                    end
-                elseif library.config_holder and flag_name == "config_name_list" and library.config_holder.current_element then
-                    library.config_holder.current_element.Text = tostring(v) -- Sync dropdown text
-                    if library.config_holder.callback then
-                        pcall(library.config_holder.callback, v) -- Safely call callback
-                    end
+
+                        if v and v.Flag then
+                                local function_set = library.config_flags[v.Flag]
+                                if function_set then
+                                        local success_func, err = pcall(function()
+                                                if v.Value.Type == "ColorPicker" then
+                                                        -- Handle ColorPicker type
+                                                        local color = Color3.new(
+                                                                v.Value.Color3.R,
+                                                                v.Value.Color3.G,
+                                                                v.Value.Color3.B
+                                                        )
+                                                        local transparency = v.Value.Transparency or 0
+                                                        function_set(color, transparency)
+                                                elseif v.Value.Type == "NormalElement" then
+                                                        -- Handle normal elements (e.g., toggles, sliders, dropdowns)
+                                                        function_set(v.Value.Value)
+                                                end
+                                        end)
+
+                                        if not success_func then
+                                                notifications:create_notification({
+                                                        name = "Configs",
+                                                        info = "Error applying config for flag: " .. tostring(flag_name) .. " - " .. tostring(err)
+                                                })
+                                        end
+                                end
+                        end
                 end
-            end
-            
-            notifications:create_notification({name = "Configs", info = "Config loaded successfully."})
+
+                notifications:create_notification({
+                        name = "Configs",
+                        info = "Config loaded successfully."
+                })
         end
 
         function library:round(number, float) 
