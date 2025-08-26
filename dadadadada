@@ -392,8 +392,7 @@
             local success, config = pcall(function()
                 return http_service:JSONDecode(config_json)
             end)
-            if not success or type(config) ~= "table" then 
-                print("Failed to decode config_json: " .. tostring(config))
+            if not success or type(config) ~= "table" then )
                 return 
             end
 
@@ -405,7 +404,6 @@
                             pcall(library.config_holder.callback, v) -- Safely call callback
                         end
                     end
-                    print("Processed config_name_list: " .. tostring(v))
                     continue 
                 end
 
@@ -422,7 +420,7 @@
                                 function_set(v)
                             end)
                             if not success_func then
-                                print("Error applying flag " .. flag_name .. ": " .. tostring(err))
+                
                             end
                         end
                     -- Handle Color3-type flags with Transparency and Color
@@ -432,7 +430,6 @@
                             function_set(Color3.fromHex(v.Color or "#FFFFFF"), v.Transparency or 0)
                         end)
                         if not success_func then
-                            print("Error applying flag " .. flag_name .. ": " .. tostring(err))
                         end
                     -- Handle simple value flags (non-table, non-false values)
                     elseif type(v) ~= "table" and v ~= nil and v ~= false then
@@ -445,11 +442,9 @@
                         end
                     end
                 else
-                    print("Skipping flag: " .. flag_name .. " (not found in library.flags or library.config_flags)")
                 end
             end
             
-            notifications:create_notification({name = "Configs", info = "Config loaded successfully."})
         end
 
         function library:get_config()
