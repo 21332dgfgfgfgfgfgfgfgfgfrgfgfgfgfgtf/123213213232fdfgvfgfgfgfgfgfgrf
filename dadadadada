@@ -3581,67 +3581,68 @@
         end
         
         function library:init_config(window) 
-            local Main, Configurations = window:tab({name = 'Config', tabs = {'Main', 'Configurations'}})
+                local Main, Configurations = window:tab({name = 'Config', tabs = {'Main', 'Configurations'}})
             
-        for i, tab in ipairs({Main, Configurations}) do
-            local column = tab:column({})
-            local section
-            if i == 1 then
-                local section = column:section({name = "Configs", size = 1, default = true, icon = "rbxassetid://139628202576511"})
-                config_holder = section:list({options = {"Report", "This", "Error", "To", "Finobe"}, callback = function(option) end, flag = "config_name_list"}); library:update_config_list()
-                
+            for i, tab in ipairs({Main, Configurations}) do
                 local column = tab:column({})
-                local section = column:section({name = "Settings", side = "right", size = 1, default = true, icon = "rbxassetid://129380150574313"})
-                section:textbox({name = "Config name:", flag = "config_name_text"})
-                section:button({name = "Save", callback = function() 
-                    local config_name = flags["config_name_text"] or flags["config_name_list"]
-                    if not config_name then
-                        notifications:create_notification({name = "Configs", info = "Error: No config name provided"})
-                        return
-                    end
-                    local success, err = pcall(function()
-                        writefile(library.directory .. "/configs/" .. config_name .. ".cfg", library:get_config())
-                    end)
-                    if success then
-                        library:update_config_list()
-                        notifications:create_notification({name = "Configs", info = "Saved config to:\n" .. config_name})
-                    else
-                        notifications:create_notification({name = "Configs", info = "Error saving config:\n" .. tostring(err)})
-                    end
-                end}) 
-                section:button({name = "Load", callback = function() 
-                    local config_name = flags["config_name_list"]
-                    if not config_name then
-                        notifications:create_notification({name = "Configs", info = "Error: No config selected"})
-                        return
-                    end
-                    local success, result = pcall(function()
-                        return readfile(library.directory .. "/configs/" .. config_name .. ".cfg")
-                    end)
-                    if success then
-                        library:load_config(result)
-                        library:update_config_list()
-                        notifications:create_notification({name = "Configs", info = "Loaded config:\n" .. config_name})
-                    else
-                        notifications:create_notification({name = "Configs", info = "Error loading config:\n" .. tostring(result)})
-                    end
-                end})
-                section:button({name = "Delete", callback = function() 
-                    local config_name = flags["config_name_list"]
-                    if not config_name then
-                        notifications:create_notification({name = "Configs", info = "Error: No config selected"})
-                        return
-                    end
-                    local success, err = pcall(function()
-                        delfile(library.directory .. "/configs/" .. config_name .. ".cfg")
-                    end)
-                    if success then
-                        library:update_config_list()
-                        notifications:create_notification({name = "Configs", info = "Deleted config:\n" .. config_name})
-                    else
-                        notifications:create_notification({name = "Configs", info = "Error deleting config:\n" .. tostring(err)})
-                    end
-                end})
+                local section
+                if i == 1 then
+                    local section = column:section({name = "Configs", size = 1, default = true, icon = "rbxassetid://139628202576511"})
+                    config_holder = section:list({options = {"Report", "This", "Error", "To", "Finobe"}, callback = function(option) end, flag = "config_name_list"}); library:update_config_list()
+                
+                    local column = tab:column({})
+                    local section = column:section({name = "Settings", side = "right", size = 1, default = true, icon = "rbxassetid://129380150574313"})
+                    section:textbox({name = "Config name:", flag = "config_name_text"})
+                    section:button({name = "Save", callback = function() 
+                        local config_name = flags["config_name_text"] or flags["config_name_list"]
+                        if not config_name then
+                            notifications:create_notification({name = "Configs", info = "Error: No config name provided"})
+                            return
+                       end
+                        local success, err = pcall(function()
+                            writefile(library.directory .. "/configs/" .. config_name .. ".cfg", library:get_config())
+                       end)
+                        if success then
+                            library:update_config_list()
+                            notifications:create_notification({name = "Configs", info = "Saved config to:\n" .. config_name})
+                       else
+                            notifications:create_notification({name = "Configs", info = "Error saving config:\n" .. tostring(err)})
+                        end
+                    end}) 
+                    section:button({name = "Load", callback = function() 
+                        local config_name = flags["config_name_list"]
+                        if not config_name then
+                            notifications:create_notification({name = "Configs", info = "Error: No config selected"})
+                            return
+                        end
+                            local success, result = pcall(function()
+                            return readfile(library.directory .. "/configs/" .. config_name .. ".cfg")
+                        end)
+                        if success then
+                            library:load_config(result)
+                            library:update_config_list()
+                            notifications:create_notification({name = "Configs", info = "Loaded config:\n" .. config_name})
+                       else
+                           notifications:create_notification({name = "Configs", info = "Error loading config:\n" .. tostring(result)})
+                        end
+                    end})
+                    section:button({name = "Delete", callback = function() 
+                        local config_name = flags["config_name_list"]
+                        if not config_name then
+                            notifications:create_notification({name = "Configs", info = "Error: No config selected"})
+                            return
+                        end
+                        local success, err = pcall(function()
+                            delfile(library.directory .. "/configs/" .. config_name .. ".cfg")
+                        end)
+                        if success then
+                            library:update_config_list()
+                            notifications:create_notification({name = "Configs", info = "Deleted config:\n" .. config_name})
+                        else
+                            notifications:create_notification({name = "Configs", info = "Error deleting config:\n" .. tostring(err)})
+                        end
+                    end})
+                end
             end
         end
     --
