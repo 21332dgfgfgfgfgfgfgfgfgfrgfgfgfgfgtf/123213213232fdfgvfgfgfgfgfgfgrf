@@ -388,7 +388,6 @@
 
             config_holder.refresh_options(list)
         end 
-
         function library:load_config(config_json) 
             if not config_json or config_json == "" then 
                 return 
@@ -412,12 +411,11 @@
                     continue 
                 end
 
-                -- Only process flags that are explicitly defined and present in config
-                if library.flags[flag_name] ~= nil and library.config_flags[flag_name] ~= nil and config[flag_name] ~= nil then 
-                    local current_value = library.flags[flag_name]
+                -- Only process flags that are explicitly defined and intended to be active
+                if library.flags[flag_name] ~= nil and library.config_flags[flag_name] ~= nil then 
                     if type(v) == "table" and v["active"] ~= nil then
                         if v["active"] then
-                            library.flags[flag_name] = v -- Update only if explicitly active
+                            library.flags[flag_name] = v
                             local function_set = library.config_flags[flag_name]
                             local success_func, err = pcall(function()
                                 function_set(v)
@@ -435,7 +433,7 @@
                         if not success_func then
                             -- Log error if needed
                         end
-                    elseif v ~= nil then
+                    elseif v ~= nil and v ~= false then
                         library.flags[flag_name] = v
                         local function_set = library.config_flags[flag_name]
                         local success_func, err = pcall(function()
@@ -450,7 +448,7 @@
             
             notifications:create_notification({name = "Configs", info = "Config loaded successfully."})
         end
-
+        
 
         function library:round(number, float) 
             local multiplier = 1 / (float or 1)
