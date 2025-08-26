@@ -385,6 +385,7 @@
 
         function library:load_config(config_json) 
             if not config_json or config_json == "" then 
+                print("No config_json provided or empty")
                 return 
             end
             
@@ -392,6 +393,7 @@
                 return http_service:JSONDecode(config_json)
             end)
             if not success or type(config) ~= "table" then 
+                print("Failed to decode config_json: " .. tostring(config))
                 return 
             end
 
@@ -403,11 +405,13 @@
                             pcall(library.config_holder.callback, v) -- Safely call callback
                         end
                     end
+                    print("Processed config_name_list: " .. tostring(v))
                     continue 
                 end
 
                 -- Only process flags that exist in library.flags and library.config_flags
                 if library.flags[flag_name] ~= nil and library.config_flags[flag_name] ~= nil then 
+                    print("Processing flag: " .. flag_name .. ", Value: " .. tostring(v))
                     local function_set = library.config_flags[flag_name]
                     
                     -- Handle table-type flags with 'active' field
@@ -418,6 +422,7 @@
                                 function_set(v)
                             end)
                             if not success_func then
+                                print("Error applying flag " .. flag_name .. ": " .. tostring(err))
                             end
                         end
                     -- Handle Color3-type flags with Transparency and Color
@@ -427,6 +432,7 @@
                             function_set(Color3.fromHex(v.Color or "#FFFFFF"), v.Transparency or 0)
                         end)
                         if not success_func then
+                            print("Error applying flag " .. flag_name .. ": " .. tostring(err))
                         end
                     -- Handle simple value flags (non-table, non-false values)
                     elseif type(v) ~= "table" and v ~= nil and v ~= false then
@@ -435,9 +441,11 @@
                             function_set(v)
                         end)
                         if not success_func then
+                            print("Error applying flag " .. flag_name .. ": " .. tostring(err))
                         end
                     end
                 else
+                    print("Skipping flag: " .. flag_name .. " (not found in library.flags or library.config_flags)")
                 end
             end
             
@@ -457,6 +465,81 @@
                 return http_service:JSONEncode(config)
         end
 
+        function library:init_config(window)
+                window:seperator({name = ""})
+                local config_tab = window:tab({name = "Config", tabs = {"Main", "Configuration"}})
+
+                -- Main Sub-Tab
+                local main_column = config_tab:column({tab = "Main"})
+                local main_section = main_column:section({name = "Main", size = 1, default = true, icon = "rbxassetid://139628202576511"})
+                config_holder = main_section:list({
+                        options = {"Report", "This", "Error", "To", "Finobe"}, 
+                        callback = function(option) 
+                                flags["config_name_list"] = option
+                                library:update_config_list()
+                        end, 
+                        flag = "config_name_list"
+                })
+                library:update_config_list()
+
+                -- Configuration Sub-Tab
+                local config_column = config_tab:column({tab = "Configuration"})
+                local config_section = config_column:section({name = "Configuration", side = "right", size = 1, default = true, icon = "rbxassetid://129380150574313"})
+                config_section:textbox({name = "Configuration:", flag = "config_name_text"})
+                config_section:button({
+                        name = "Save", 
+                        callback = function() 
+                                local config_name = flags["config_name_text"] or flags["config_name_list"] or "default"
+                                if config_name and config_name ~= "" then
+                                        local file_path = library.directory .. "/configs/" .. config_name .. ".cfg"
+                                        local config_data = library:get_config()
+                                        makefolder(library.directory .. "/configs")
+                                        writefile(file_path, config_data)
+                                        library:update_config_list()
+                                        notifications:create_notification({name = "Configuration", info = "Saved config: " .. config_name})
+                                else
+                                        notifications:create_notification({name = "Configuration", info = "Error: No config name provided."})
+                                end
+                        end
+                }) 
+                config_section:button({
+                        name = "Load", 
+                        callback = function() 
+                                local config_name = flags["config_name_list"]
+                                if config_name and config_name ~= "" then
+                                        local file_path = library.directory .. "/configs/" .. config_name .. ".cfg"
+                                        if isfile(file_path) then
+                                                local config_json = readfile(file_path)
+                                                library:load_config(config_json)
+                                                library:update_config_list()
+                                                notifications:create_notification({name = "Configuration", info = "Loaded config: " .. config_name})
+                                        else
+                                                notifications:create_notification({name = "Configuration", info = "Error: Config file does not exist."})
+                                        end
+                                else
+                                        notifications:create_notification({name = "Configuration", info = "Error: No config selected."})
+                                end
+                        end
+                })
+                config_section:button({
+                        name = "Delete", 
+                        callback = function() 
+                                local config_name = flags["config_name_list"]
+                                if config_name and config_name ~= "" then
+                                        local file_path = library.directory .. "/configs/" .. config_name .. ".cfg"
+                                        if isfile(file_path) then
+                                                delfile(file_path)
+                                                library:update_config_list()
+                                                notifications:create_notification({name = "Configuration", info = "Deleted config: " .. config_name})
+                                        else
+                                                notifications:create_notification({name = "Configuration", info = "Error: Config file does not exist."})
+                                        end
+                                else
+                                        notifications:create_notification({name = "Configuration", info = "Error: No config selected."})
+                                end
+                        end
+                })
+        end
         function library:connection(signal, callback)
             local connection = signal:Connect(callback)
 
@@ -774,7 +857,7 @@
 
             local items = cfg.items; do 
                 items[ "tab_holder" ] = library:create( "Frame" , {
-                    Parent = self.items["main"],
+                    Parent = library.cache
                     Name = "\0";
                     Visible = false;
                     BackgroundTransparency = 1;
@@ -2687,7 +2770,7 @@
                         CornerRadius = dim(0, 3)
                     });
 
-                    items["UICorner"] = library:create("UICorner", {
+                    items["UICorner"] = library:create("UICorenr", { -- Typo: UICorenr
                         Parent = items["colorpicker_holder"],
                         Name = "\0",
                         CornerRadius = dim(0, 4)
