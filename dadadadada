@@ -406,7 +406,6 @@
         end
         function library:load_config(config_json) 
             if not config_json or config_json == "" then 
-                notifications:create_notification({name = "Configs", info = "Error: Empty or invalid config data."})
                 return 
             end
             
@@ -414,7 +413,6 @@
                 return http_service:JSONDecode(config_json)
             end)
             if not success or type(config) ~= "table" then 
-                notifications:create_notification({name = "Configs", info = "Error: Failed to decode config JSON. Check file syntax."})
                 return 
             end
 
@@ -438,7 +436,6 @@
                         end
                     end)
                     if not success_func then
-                        notifications:create_notification({name = "Configs", info = "Error applying flag: " .. tostring(flag_name)})
                     end
                 elseif library.config_holder and flag_name == "config_name_list" and library.config_holder.current_element then
                     library.config_holder.current_element.Text = tostring(v) -- Sync dropdown text
