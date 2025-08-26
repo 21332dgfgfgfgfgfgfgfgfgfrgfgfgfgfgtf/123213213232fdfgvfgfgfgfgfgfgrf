@@ -385,14 +385,13 @@
 
         function library:load_config(config_json) 
             if not config_json or config_json == "" then 
-                print("No config_json provided or empty")
                 return 
             end
             
             local success, config = pcall(function()
                 return http_service:JSONDecode(config_json)
             end)
-            if not success or type(config) ~= "table" then )
+            if not success or type(config) ~= "table" then 
                 return 
             end
 
@@ -409,7 +408,6 @@
 
                 -- Only process flags that exist in library.flags and library.config_flags
                 if library.flags[flag_name] ~= nil and library.config_flags[flag_name] ~= nil then 
-                    print("Processing flag: " .. flag_name .. ", Value: " .. tostring(v))
                     local function_set = library.config_flags[flag_name]
                     
                     -- Handle table-type flags with 'active' field
@@ -420,7 +418,6 @@
                                 function_set(v)
                             end)
                             if not success_func then
-                
                             end
                         end
                     -- Handle Color3-type flags with Transparency and Color
@@ -438,13 +435,13 @@
                             function_set(v)
                         end)
                         if not success_func then
-                            print("Error applying flag " .. flag_name .. ": " .. tostring(err))
                         end
                     end
                 else
                 end
             end
             
+            notifications:create_notification({name = "Configs", info = "Config loaded successfully."})
         end
 
         function library:get_config()
@@ -458,37 +455,6 @@
                 end
                 config["config_name_list"] = flags["config_name_list"]
                 return http_service:JSONEncode(config)
-        end
-        function library:round(number, float) 
-            local multiplier = 1 / (float or 1)
-
-            return floor(number * multiplier + 0.5) / multiplier
-        end 
-
-        function library:apply_theme(instance, theme, property) 
-            insert(themes.utility[theme][property], instance)
-        end
-
-        function library:update_theme(theme, color, alpha)
-            if themes.utility[theme] then
-                for property, objects in pairs(themes.utility[theme]) do
-                    for _, object in ipairs(objects) do
-                        if object[property] == themes.preset[theme] then
-                            object[property] = color
-                            if alpha then
-                                if property == "BackgroundColor3" then
-                                    object.BackgroundTransparency = 1 - alpha
-                                elseif property == "TextColor3" then
-                                    object.TextTransparency = 1 - alpha
-                                elseif property == "ImageColor3" then
-                                    object.ImageTransparency = 1 - alpha
-                                end
-                            end
-                        end
-                    end
-                end
-                themes.preset[theme] = color
-            end
         end
 
         function library:connection(signal, callback)
@@ -3618,13 +3584,13 @@
             return setmetatable(cfg, library)
         end
         
-        function library:init_config(window)
+                function library:init_config(window)
                 window:seperator({name = ""})
-                local config_tab = window:tab({name = "Config", tabs = {"Main"}})
+                local config_tab = window:tab({name = "Config", tabs = {"Main", "Configuration"}})
 
                 -- Main Sub-Tab
                 local main_column = config_tab:column({tab = "Main"})
-                local main_section = main_column:section({name = "configs", size = 1, default = true, icon = "rbxassetid://139628202576511"})
+                local main_section = main_column:section({name = "Main", size = 1, default = true, icon = "rbxassetid://139628202576511"})
                 config_holder = main_section:list({
                         options = {"Report", "This", "Error", "To", "Finobe"}, 
                         callback = function(option) 
@@ -3637,7 +3603,7 @@
 
                 -- Configuration Sub-Tab
                 local config_column = config_tab:column({tab = "Configuration"})
-                local config_section = config_column:section({name = "Configuration"  size = 1, default = true, icon = "rbxassetid://129380150574313"})
+                local config_section = config_column:section({name = "Configuration", side = "right", size = 1, default = true, icon = "rbxassetid://129380150574313"})
                 config_section:textbox({name = "Configuration:", flag = "config_name_text"})
                 config_section:button({
                         name = "Save", 
