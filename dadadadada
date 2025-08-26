@@ -774,7 +774,7 @@
 
             local items = cfg.items; do 
                 items[ "tab_holder" ] = library:create( "Frame" , {
-                    Parent = library.cache;
+                    Parent = self.items["main"],
                     Name = "\0";
                     Visible = false;
                     BackgroundTransparency = 1;
@@ -2687,7 +2687,7 @@
                         CornerRadius = dim(0, 3)
                     });
 
-                    items["UICorner"] = library:create("UICorner", { -- Fixed typo from UICorenr
+                    items["UICorner"] = library:create("UICorner", {
                         Parent = items["colorpicker_holder"],
                         Name = "\0",
                         CornerRadius = dim(0, 4)
