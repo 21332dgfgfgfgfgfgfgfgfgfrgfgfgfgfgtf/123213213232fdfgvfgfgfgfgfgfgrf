@@ -3607,78 +3607,81 @@
             return setmetatable(cfg, library)
         end
         
-        function library:init_config(window) 
-            window:seperator({name = ""})
-            local main = window:tab({name = "Configs", tabs = {"Main"}})
-        
-            local column = main:column({})
-            local section = column:section({name = "Configs", size = 1, default = true, icon = "rbxassetid://139628202576511"})
-            config_holder = section:list({
-                options = {"Report", "This", "Error", "To", "Finobe"}, 
-                callback = function(option) 
-                    flags["config_name_list"] = option
-                    library:update_config_list()
-                end, 
-                flag = "config_name_list"
-            })
-            library:update_config_list()
-        
-            local column = main:column({})
-            local section = column:section({name = "Settings", side = "right", size = 1, default = true, icon = "rbxassetid://129380150574313"})
-            section:textbox({name = "Config name:", flag = "config_name_text"})
-            section:button({
-                name = "Save", 
-                callback = function() 
-                    local config_name = flags["config_name_text"] or flags["config_name_list"] or "default"
-                    if config_name and config_name ~= "" then
-                        local file_path = library.directory .. "/configs/" .. config_name .. ".cfg"
-                        local config_data = library:get_config()
-                        makefolder(library.directory .. "/configs")
-                        writefile(file_path, config_data)
-                        library:update_config_list()
-                        notifications:create_notification({name = "Configs", info = "Saved config: " .. config_name})
-                    else
-                        notifications:create_notification({name = "Configs", info = "Error: No config name provided."})
-                    end
-                end
-            }) 
-            section:button({
-                name = "Load", 
-                callback = function() 
-                    local config_name = flags["config_name_list"]
-                    if config_name and config_name ~= "" then
-                        local file_path = library.directory .. "/configs/" .. config_name .. ".cfg"
-                        if isfile(file_path) then
-                            local config_json = readfile(file_path)
-                            library:load_config(config_json)
-                            library:update_config_list()
-                            notifications:create_notification({name = "Configs", info = "Loaded config: " .. config_name})
-                        else
-                            notifications:create_notification({name = "Configs", info = "Error: Config file does not exist."})
+        function library:init_config(window)
+                window:seperator({name = ""})
+                local main_tab = window:tab({name = "Main", tabs = {"Main"}})
+                local config_tab = window:tab({name = "Configuration", tabs = {"Configuration"}})
+
+                -- Main Tab
+                local main_column = main_tab:column({})
+                local main_section = main_column:section({name = "Main", size = 1, default = true, icon = "rbxassetid://139628202576511"})
+                config_holder = main_section:list({
+                        options = {"Report", "This", "Error", "To", "Finobe"}, 
+                        callback = function(option) 
+                                flags["config_name_list"] = option
+                                library:update_config_list()
+                        end, 
+                        flag = "config_name_list"
+                })
+                library:update_config_list()
+
+                -- Configuration Tab
+                local config_column = config_tab:column({})
+                local config_section = config_column:section({name = "Configuration", side = "right", size = 1, default = true, icon = "rbxassetid://129380150574313"})
+                config_section:textbox({name = "Config name:", flag = "config_name_text"})
+                config_section:button({
+                        name = "Save", 
+                        callback = function() 
+                                local config_name = flags["config_name_text"] or flags["config_name_list"] or "default"
+                                if config_name and config_name ~= "" then
+                                        local file_path = library.directory .. "/configs/" .. config_name .. ".cfg"
+                                        local config_data = library:get_config()
+                                        makefolder(library.directory .. "/configs")
+                                        writefile(file_path, config_data)
+                                        library:update_config_list()
+                                        notifications:create_notification({name = "Main", info = "Saved config: " .. config_name})
+                                else
+                                        notifications:create_notification({name = "Main", info = "Error: No config name provided."})
+                                end
                         end
-                    else
-                        notifications:create_notification({name = "Configs", info = "Error: No config selected."})
-                    end
-                end
-            })
-            section:button({
-                name = "Delete", 
-                callback = function() 
-                    local config_name = flags["config_name_list"]
-                    if config_name and config_name ~= "" then
-                        local file_path = library.directory .. "/configs/" .. config_name .. ".cfg"
-                        if isfile(file_path) then
-                            delfile(file_path)
-                            library:update_config_list()
-                            notifications:create_notification({name = "Configs", info = "Deleted config: " .. config_name})
-                        else
-                            notifications:create_notification({name = "Configs", info = "Error: Config file does not exist."})
+                }) 
+                config_section:button({
+                        name = "Load", 
+                        callback = function() 
+                                local config_name = flags["config_name_list"]
+                                if config_name and config_name ~= "" then
+                                        local file_path = library.directory .. "/configs/" .. config_name .. ".cfg"
+                                        if isfile(file_path) then
+                                                local config_json = readfile(file_path)
+                                                library:load_config(config_json)
+                                                library:update_config_list()
+                                                notifications:create_notification({name = "Main", info = "Loaded config: " .. config_name})
+                                        else
+                                                notifications:create_notification({name = "Main", info = "Error: Config file does not exist."})
+                                        end
+                                else
+                                        notifications:create_notification({name = "Main", info = "Error: No config selected."})
+                                end
                         end
-                    else
-                        notifications:create_notification({name = "Configs", info = "Error: No config selected."})
-                    end
-                end
-            })
+                })
+                config_section:button({
+                        name = "Delete", 
+                        callback = function() 
+                                local config_name = flags["config_name_list"]
+                                if config_name and config_name ~= "" then
+                                        local file_path = library.directory .. "/configs/" .. config_name .. ".cfg"
+                                        if isfile(file_path) then
+                                                delfile(file_path)
+                                                library:update_config_list()
+                                                notifications:create_notification({name = "Main", info = "Deleted config: " .. config_name})
+                                        else
+                                                notifications:create_notification({name = "Main", info = "Error: Config file does not exist."})
+                                        end
+                                else
+                                        notifications:create_notification({name = "Main", info = "Error: No config selected."})
+                                end
+                        end
+                })
         end
 
     -- Notification Library
