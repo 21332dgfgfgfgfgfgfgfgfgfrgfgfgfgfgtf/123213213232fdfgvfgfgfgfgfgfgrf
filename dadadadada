@@ -389,8 +389,7 @@
             config_holder.refresh_options(list)
         end 
 
-        -- Define library:load_config at the start
-function library:load_config(config_json) 
+        function library:load_config(config_json) 
             if not config_json or config_json == "" then 
                 return 
             end
@@ -413,21 +412,38 @@ function library:load_config(config_json)
                     continue 
                 end
 
-                -- Only process flags that are explicitly defined and enabled
-                if library.flags[flag_name] ~= nil and library.config_flags[flag_name] ~= nil then 
-                    library.flags[flag_name] = v -- Update the flag table
-                    local function_set = library.config_flags[flag_name]
-                    local success_func, err = pcall(function()
-                        if type(v) == "table" and v["Transparency"] and v["Color"] then
-                            function_set(Color3.fromHex(v["Color"] or "#FFFFFF"), v["Transparency"] or 0)
-                        elseif type(v) == "table" and v["active"] then 
-                            function_set(v)
-                        else
-                            function_set(v or "")
+                -- Only process flags that are explicitly defined and present in config
+                if library.flags[flag_name] ~= nil and library.config_flags[flag_name] ~= nil and config[flag_name] ~= nil then 
+                    local current_value = library.flags[flag_name]
+                    if type(v) == "table" and v["active"] ~= nil then
+                        if v["active"] then
+                            library.flags[flag_name] = v -- Update only if explicitly active
+                            local function_set = library.config_flags[flag_name]
+                            local success_func, err = pcall(function()
+                                function_set(v)
+                            end)
+                            if not success_func then
+                                -- Log error if needed
+                            end
                         end
-                    end)
-                    if not success_func then
-                        -- Log error if needed
+                    elseif type(v) == "table" and v["Transparency"] and v["Color"] then
+                        library.flags[flag_name] = v
+                        local function_set = library.config_flags[flag_name]
+                        local success_func, err = pcall(function()
+                            function_set(Color3.fromHex(v["Color"] or "#FFFFFF"), v["Transparency"] or 0)
+                        end)
+                        if not success_func then
+                            -- Log error if needed
+                        end
+                    elseif v ~= nil then
+                        library.flags[flag_name] = v
+                        local function_set = library.config_flags[flag_name]
+                        local success_func, err = pcall(function()
+                            function_set(v or "")
+                        end)
+                        if not success_func then
+                            -- Log error if needed
+                        end
                     end
                 end
             end
