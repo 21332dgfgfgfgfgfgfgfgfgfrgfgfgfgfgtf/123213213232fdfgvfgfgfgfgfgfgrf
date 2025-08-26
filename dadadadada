@@ -375,9 +375,17 @@
 
             local list = {}
 
-            for idx, file in listfiles(library.directory .. "/configs") do
-                local name = file:gsub(library.directory .. "/configs\\", ""):gsub(".cfg", ""):gsub(library.directory .. "\\configs\\", "")
-                list[#list + 1] = name
+            local config_dir = library.directory .. "/configs"
+            if not isfolder(config_dir) then
+                makefolder(config_dir)
+                return
+            end
+
+            for idx, file in ipairs(listfiles(config_dir)) do
+                local name = file:gsub(config_dir .. "\\", ""):gsub(".cfg", ""):gsub(config_dir .. "/", "")
+                if name and name ~= "" then
+                    table.insert(list, name)
+                end
             end
 
             config_holder.refresh_options(list)
@@ -400,9 +408,11 @@
         end
 
         function library:load_config(config_json) 
-            local config = http_service:JSONDecode(config_json)
+            if not config_json or config_json == "" then return end
+            local success, config = pcall(http_service.JSONDecode, http_service, config_json)
+            if not success then return end
 
-            for _, v in config do 
+            for _, v in pairs(config) do 
                 local function_set = library.config_flags[_]
 
                 if _ == "config_name_list" then 
@@ -411,7 +421,7 @@
 
                 if function_set then 
                     if type(v) == "table" and v["Transparency"] and v["Color"] then
-                        function_set(hex(v["Color"]), v["Transparency"])
+                        function_set(Color3.fromHex(v["Color"]), v["Transparency"])
                     elseif type(v) == "table" and v["active"] then 
                         function_set(v)
                     else
