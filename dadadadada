@@ -1,6 +1,6 @@
 --[[
 
-    Milenium Library
+    Pivot Library
     -> Made by @finobe 
     -> Kind of got bored idk what to do with life
     -> Idk who or why this got leaked, ui was VERY popular and high in demand with customers
@@ -68,7 +68,7 @@
 
 -- Library init
     getgenv().library = {
-        directory = "milenium",
+        directory = "Pivot",
         folders = {
             "/fonts",
             "/configs",
@@ -507,7 +507,7 @@
             local cfg = { 
                 suffix = properties.suffix or properties.Suffix or "tech";
                 name = properties.name or properties.Name or "nebula";
-                game_name = properties.gameInfo or properties.game_info or properties.GameInfo or "Milenium for Counter-Strike: Global Offensive";
+                game_name = properties.gameInfo or properties.game_info or properties.GameInfo or "Pivot for Counter-Strike: Global Offensive";
                 size = properties.size or properties.Size or dim2(0, 700, 0, 565);
                 selected_tab;
                 items = {};
