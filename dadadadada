@@ -3584,7 +3584,7 @@
             return setmetatable(cfg, library)
         end
         
-                function library:init_config(window)
+        function library:init_config(window)
                 window:seperator({name = ""})
                 local config_tab = window:tab({name = "Config", tabs = {"Main", "Configuration"}})
 
@@ -3603,7 +3603,7 @@
 
                 -- Configuration Sub-Tab
                 local config_column = config_tab:column({tab = "Configuration"})
-                local config_section = config_column:section({name = "Configuration", side = "right", size = 1, default = true, icon = "rbxassetid://129380150574313"})
+                local config_section = config_column:section({name = "Configuration"  size = 1, default = true, icon = "rbxassetid://129380150574313"})
                 config_section:textbox({name = "Configuration:", flag = "config_name_text"})
                 config_section:button({
                         name = "Save", 
