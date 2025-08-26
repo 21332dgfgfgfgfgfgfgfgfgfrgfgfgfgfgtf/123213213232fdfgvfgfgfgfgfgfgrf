@@ -389,21 +389,6 @@
             config_holder.refresh_options(list)
         end 
 
-        function library:get_config()
-            local Config = {}
-
-            for _, v in next, flags do
-                if type(v) == "table" and v.key then
-                    Config[_] = {active = v.active, mode = v.mode, key = tostring(v.key)}
-                elseif type(v) == "table" and v["Transparency"] and v["Color"] then
-                    Config[_] = {Transparency = v["Transparency"], Color = v["Color"]:ToHex()}
-                else
-                    Config[_] = v
-                end
-            end 
-
-            return http_service:JSONEncode(Config)
-        end
         function library:load_config(config_json) 
             if not config_json or config_json == "" then 
                 return 
@@ -464,8 +449,22 @@
             
             notifications:create_notification({name = "Configs", info = "Config loaded successfully."})
         end
-        
 
+
+
+        
+        function library:get_config()
+                local config = {}
+                for flag_name, value in pairs(library.flags) do
+                        if type(value) == "table" and value.active ~= nil then
+                                config[flag_name] = {active = value.active}
+                        elseif value ~= nil and value ~= false then
+                                 config[flag_name] = value
+                        end
+                end
+                config["config_name_list"] = flags["config_name_list"]
+                return http_service:JSONEncode(config)
+        end
         function library:round(number, float) 
             local multiplier = 1 / (float or 1)
 
