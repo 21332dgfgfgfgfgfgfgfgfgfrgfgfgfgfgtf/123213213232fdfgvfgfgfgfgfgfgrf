@@ -411,8 +411,14 @@
             end
             local success, config = pcall(http_service.JSONDecode, http_service, config_json)
             if not success then 
-                notifications:create_notification({name = "Configs", info = "Error: Failed to decode config JSON."})
+                notifications:create_notification({name = "Configs", info = "Error: Failed to decode config JSON. Check file syntax."})
                 return 
+            end
+
+            -- Ensure config is a table
+            if type(config) ~= "table" then
+                notifications:create_notification({name = "Configs", info = "Error: Config data is not a valid table."})
+                return
             end
 
             for flag_name, v in pairs(config) do 
@@ -420,10 +426,10 @@
                     continue 
                 end
 
-                local function_set = library.config_flags[flag_name]
-                flags[flag_name] = v -- Directly update the flag
+                library.flags[flag_name] = v -- Always update the flag table
 
-               if function_set then 
+                local function_set = library.config_flags[flag_name]
+                if function_set then 
                     if type(v) == "table" and v["Transparency"] and v["Color"] then
                         function_set(Color3.fromHex(v["Color"] or "#FFFFFF"), v["Transparency"] or 0)
                     elseif type(v) == "table" and v["active"] then 
@@ -431,9 +437,11 @@
                     else
                         function_set(v or "")
                     end
-                elseif config_holder and flag_name == "config_name_list" then
-                    config_holder.current_element.Text = tostring(v) -- Update dropdown visually
-                    config_holder.callback(v) -- Trigger callback to refresh
+                elseif library.config_holder and flag_name == "config_name_list" and library.config_holder.current_element then
+                    library.config_holder.current_element.Text = tostring(v) -- Update dropdown text
+                    if library.config_holder.callback then
+                        library.config_holder.callback(v) -- Trigger callback to refresh
+                    end
                 end
             end 
             notifications:create_notification({name = "Configs", info = "Config loaded successfully."})
