@@ -374,7 +374,6 @@
             end
 
             local list = {}
-
             local config_dir = library.directory .. "/configs"
             if not isfolder(config_dir) then
                 makefolder(config_dir)
@@ -421,11 +420,11 @@
 
                 if function_set then 
                     if type(v) == "table" and v["Transparency"] and v["Color"] then
-                        function_set(Color3.fromHex(v["Color"]), v["Transparency"])
+                        function_set(Color3.fromHex(v["Color"] or "#FFFFFF"), v["Transparency"] or 0)
                     elseif type(v) == "table" and v["active"] then 
                         function_set(v)
                     else
-                        function_set(v)
+                        function_set(v or "")
                     end
                 end 
             end 
