@@ -389,22 +389,51 @@
             config_holder.refresh_options(list)
         end 
 
-        function library:get_config()
-            local Config = {}
+        -- Define library:load_config at the start
+function library:load_config(config_json) 
+            if not config_json or config_json == "" then 
+                return 
+            end
+            
+            local success, config = pcall(function()
+                return http_service:JSONDecode(config_json)
+            end)
+            if not success or type(config) ~= "table" then 
+                return 
+            end
 
-            for _, v in next, flags do
-                if type(v) == "table" and v.key then
-                    Config[_] = {active = v.active, mode = v.mode, key = tostring(v.key)}
-                elseif type(v) == "table" and v["Transparency"] and v["Color"] then
-                    Config[_] = {Transparency = v["Transparency"], Color = v["Color"]:ToHex()}
-                else
-                    Config[_] = v
+            for flag_name, v in pairs(config) do 
+                if flag_name == "config_name_list" then 
+                    if library.config_holder and library.config_holder.current_element then
+                        library.config_holder.current_element.Text = tostring(v) -- Sync dropdown text
+                        if library.config_holder.callback then
+                            pcall(library.config_holder.callback, v) -- Safely call callback
+                        end
+                    end
+                    continue 
                 end
-            end 
 
-            return http_service:JSONEncode(Config)
+                -- Only process flags that are explicitly defined and enabled
+                if library.flags[flag_name] ~= nil and library.config_flags[flag_name] ~= nil then 
+                    library.flags[flag_name] = v -- Update the flag table
+                    local function_set = library.config_flags[flag_name]
+                    local success_func, err = pcall(function()
+                        if type(v) == "table" and v["Transparency"] and v["Color"] then
+                            function_set(Color3.fromHex(v["Color"] or "#FFFFFF"), v["Transparency"] or 0)
+                        elseif type(v) == "table" and v["active"] then 
+                            function_set(v)
+                        else
+                            function_set(v or "")
+                        end
+                    end)
+                    if not success_func then
+                        -- Log error if needed
+                    end
+                end
+            end
+            
+            notifications:create_notification({name = "Configs", info = "Config loaded successfully."})
         end
-        
 
 
         function library:round(number, float) 
