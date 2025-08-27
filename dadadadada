@@ -3628,7 +3628,7 @@
         
                 -- Main Sub-Tab (Left Column)
                 local main_column = config_tab:column({tab = "Main", side = "left"})
-                local main_section = main_column:section({name = "Main", size = 1, default = true, icon = "rbxassetid://139628202576511"})
+                local main_section = main_column:section({name = "Configs", size = 1, default = true, icon = "rbxassetid://139628202576511"})
                 config_holder = main_section:list({
                         options = {"Report", "This", "Error", "To", "Finobe"}, 
                         callback = function(option) 
