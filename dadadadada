@@ -3624,8 +3624,8 @@
 
         function library:init_config(window)
                 window:seperator({name = ""})
-                local config_tab = window:tab({name = "Config", tabs = {"Main", "Configuration"}})
-
+                local config_tab = window:tab({name = "Config", tabs = {"Main"}})
+        
                 -- Main Sub-Tab
                 local main_column = config_tab:column({tab = "Main"})
                 local main_section = main_column:section({name = "Main", size = 1, default = true, icon = "rbxassetid://139628202576511"})
@@ -3637,13 +3637,8 @@
                         end, 
                         flag = "config_name_list"
                 })
-                library:update_config_list()
-
-                -- Configuration Sub-Tab
-                local config_column = config_tab:column({tab = "Configuration"})
-                local config_section = config_column:section({name = "Configuration", size = 1, default = true, icon = "rbxassetid://129380150574313"})
-                config_section:textbox({name = "Configuration:", flag = "config_name_text"})
-                config_section:button({
+                main_section:textbox({name = "Configuration:", flag = "config_name_text"})
+                main_section:button({
                         name = "Save", 
                         callback = function() 
                                 local config_name = flags["config_name_text"] or flags["config_name_list"] or "default"
@@ -3659,7 +3654,7 @@
                                 end
                         end
                 }) 
-                config_section:button({
+                main_section:button({
                         name = "Load", 
                         callback = function() 
                                 local config_name = flags["config_name_list"]
@@ -3678,7 +3673,7 @@
                                 end
                         end
                 })
-                config_section:button({
+                main_section:button({
                         name = "Delete", 
                         callback = function() 
                                 local config_name = flags["config_name_list"]
@@ -3696,6 +3691,7 @@
                                 end
                         end
                 })
+                library:update_config_list()
         end
     -- Notification Library
         function notifications:refresh_notifs() 
