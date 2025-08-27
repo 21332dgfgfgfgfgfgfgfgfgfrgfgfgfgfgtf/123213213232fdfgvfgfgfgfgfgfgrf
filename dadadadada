@@ -1,7 +1,7 @@
 --[[
 
     Pivot Library
-    -> Made by @finobe 
+    -> Made by @qk8m 
     -> Kind of got bored idk what to do with life
     -> Idk who or why this got leaked, ui was VERY popular and high in demand with customers
 ]]
@@ -3624,10 +3624,10 @@
 
         function library:init_config(window)
                 window:seperator({name = ""})
-                local config_tab = window:tab({name = "Config", tabs = {"Main"}})
+                local config_tab = window:tab({name = "Config", tabs = {"Main", "Configuration"}})
         
                 -- Main Sub-Tab
-                local main_column = config_tab:column({tab = "Main"})
+                local main_column = config_tab:column({tab = "Main", side = "left"})
                 local main_section = main_column:section({name = "Main", size = 1, default = true, icon = "rbxassetid://139628202576511"})
                 config_holder = main_section:list({
                         options = {"Report", "This", "Error", "To", "Finobe"}, 
@@ -3637,9 +3637,13 @@
                         end, 
                         flag = "config_name_list"
                 })
-                local main_section = main_column:section({name = "Configuration", side = "right", size = 1, default = true, icon = "rbxassetid://139628202576511"})
-                main_section:textbox({name = "Configuration:", flag = "config_name_text"})
-                main_section:button({
+                library:update_config_list()
+        
+                -- Configuration Sub-Tab
+                local config_column = config_tab:column({tab = "Configuration", side = "right"})
+                local config_section = config_column:section({name = "Configuration", size = 1, default = true, icon = "rbxassetid://129380150574313"})
+                config_section:textbox({name = "Configuration:", flag = "config_name_text"})
+                config_section:button({
                         name = "Save", 
                         callback = function() 
                                 local config_name = flags["config_name_text"] or flags["config_name_list"] or "default"
@@ -3655,7 +3659,7 @@
                                 end
                         end
                 }) 
-                main_section:button({
+                config_section:button({
                         name = "Load", 
                         callback = function() 
                                 local config_name = flags["config_name_list"]
@@ -3674,7 +3678,7 @@
                                 end
                         end
                 })
-                main_section:button({
+                config_section:button({
                         name = "Delete", 
                         callback = function() 
                                 local config_name = flags["config_name_list"]
@@ -3692,7 +3696,6 @@
                                 end
                         end
                 })
-                library:update_config_list()
         end
     -- Notification Library
         function notifications:refresh_notifs() 
