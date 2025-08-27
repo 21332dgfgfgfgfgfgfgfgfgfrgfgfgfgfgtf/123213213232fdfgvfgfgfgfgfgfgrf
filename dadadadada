@@ -3637,6 +3637,7 @@
                         end, 
                         flag = "config_name_list"
                 })
+                local main_section = main_column:section({name = "Configuration", side = "right", size = 1, default = true, icon = "rbxassetid://139628202576511"})
                 main_section:textbox({name = "Configuration:", flag = "config_name_text"})
                 main_section:button({
                         name = "Save", 
