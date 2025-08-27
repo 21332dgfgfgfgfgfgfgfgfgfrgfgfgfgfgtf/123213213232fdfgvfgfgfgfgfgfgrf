@@ -3624,7 +3624,7 @@
 
         function library:init_config(window)
                 window:seperator({name = ""})
-                local config_tab = window:tab({name = "Config", tabs = {"Main", "Configuration"})
+                local config_tab = window:tab({name = "Config", tabs = {"Main", "Configuration"}})
 
                 -- Main Sub-Tab
                 local main_column = config_tab:column({tab = "Main"})
