@@ -789,16 +789,13 @@
             return setmetatable(cfg, library)
         end 
 
-        function library:tab(properties)
+                function library:tab(properties)
             local cfg = {
                 name = properties.name or properties.Name or "visuals"; 
                 icon = properties.icon or properties.Icon or "http://www.roblox.com/asset/?id=6034767608";
-
-                -- multi 
                 tabs = properties.tabs or properties.Tabs or {"Main", "Misc.", "Settings"};
                 pages = {}; -- data store for multi sections
                 current_multi; 
-
                 items = {};
             } 
 
@@ -836,7 +833,7 @@
                         BorderColor3 = rgb(0, 0, 0);
                         Parent = items[ "button" ];
                         AnchorPoint = vec2(0, 0.5);
-                        Image = "http://www.roblox.com/asset/?id=6034767608";
+                        Image = cfg.icon;
                         BackgroundTransparency = 1;
                         Position = dim2(0, 10, 0.5, 0);
                         Name = "\0";
@@ -1018,12 +1015,8 @@
                         data.page = multi_items[ "tab" ]
                         data.parent = setmetatable(data, library):sub_tab({}).items[ "tab_parent" ]
 
-                        -- Old column code
-                        -- data.left = multi_items[ "left" ]
-                        -- data.right = multi_items[ "right" ]
-
-						function data.open_page()
-							local page = cfg.current_multi; 
+                        function data.open_page()
+                            local page = cfg.current_multi; 
 
                             if page and page.text ~= data.text then 
                                 self.items[ "global_fade" ].BackgroundTransparency = 0
@@ -1053,13 +1046,13 @@
                             cfg.current_multi = data
 
                             library:close_element()
-						end
+                        end
 
-						multi_items[ "button" ].MouseButton1Down:Connect(function()
-							data.open_page() 
-						end)
+                        multi_items[ "button" ].MouseButton1Down:Connect(function()
+                            data.open_page() 
+                        end)
 
-						cfg.pages[#cfg.pages + 1] = setmetatable(data, library)
+                        cfg.pages[#cfg.pages + 1] = setmetatable(data, library)
                     end 
 
                     cfg.pages[1].open_page()
@@ -1117,7 +1110,7 @@
             end
 
             return unpack(cfg.pages)
-        end
+        end 
 
         function library:seperator(properties)
             local cfg = {items = {}, name = properties.Name or properties.name or "General"}
