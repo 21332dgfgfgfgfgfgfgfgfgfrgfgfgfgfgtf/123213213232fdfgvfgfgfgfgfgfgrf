@@ -23,6 +23,8 @@
     local MarketplaceService = game:GetService("MarketplaceService")
     local gameInfo = MarketplaceService:GetProductInfo(game.PlaceId)
     local gameName = gameInfo.Name
+    local gameId = game.PlaceId
+
 
     local vec2 = Vector2.new
     local vec3 = Vector3.new
@@ -752,7 +754,7 @@
                     Name = "\0";
                     TextColor3 = themes.preset.accent;
                     BorderColor3 = rgb(0, 0, 0);
-                    Text = '<font color="rgb(92, 144, 144)">' .. gameName .. '</font>' .. cfg.suffix;
+                    Text = '<font color="rgb(72, 72, 73)">Game: ' .. gameName .. ' (ID: ' .. gameId .. ')</font>' .. cfg.suffix;
                     Size = dim2(1, 0, 0, 0);
                     Position = dim2(0.5, -50, 0.5, -7); 
                     AnchorPoint = vec2(0.5, 0.5);  -- Set AnchorPoint to center
