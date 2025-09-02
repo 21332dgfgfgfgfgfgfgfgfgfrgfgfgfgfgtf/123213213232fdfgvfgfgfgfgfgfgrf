@@ -754,25 +754,19 @@
                     Name = "\0";
                     TextColor3 = themes.preset.accent;
                     BorderColor3 = rgb(0, 0, 0);
-                    Text = string.format('<font color="rgb(92, 144, 144)">%s</font>%s/getpivot%s<font color="rgb(92, 144, 144)">Game: %s (ID: %s)</font>%s', 
-                        players.LocalPlayer.Name, 
-                        string.rep(" ", 30), -- Increased spaces for left separation
-                        string.rep(" ", 30), -- Increased spaces for right separation
-                        gameName, 
-                        gameId, 
-                        cfg.suffix);
+                    Text = string.format('<font color="rgb(92, 144, 144)">%s</font>                                             /getpivot                                             <font color="rgb(92, 144, 144)">Game: %s (ID: %s)</font>%s', players.LocalPlayer.Name, gameName, gameId, cfg.suffix);
                     Size = dim2(1, 0, 0, 0);
-                    Position = dim2(0, 10, 0.5, -7); -- Adjusted to fit within info frame
-                    AnchorPoint = vec2(0, 0.5); -- Anchor to left-center
+                    Position = dim2(0.5, -50, 0.5, -7); 
+                    AnchorPoint = vec2(0.5, 0.5);  -- Set AnchorPoint to center
                     BorderSizePixel = 0;
                     BackgroundTransparency = 1;
-                    TextXAlignment = Enum.TextXAlignment.Left; -- Left-aligned for manual spacing
+                    TextXAlignment = Enum.TextXAlignment.Center;  -- Center alignment
                     AutomaticSize = Enum.AutomaticSize.XY;
                     FontFace = fonts.font;
                     TextSize = 14;
                     BackgroundColor3 = rgb(255, 255, 255)
-                }); library:apply_theme(items[ "other_info" ], "accent",       
-            end 
+                }); library:apply_theme(items[ "other_info" ], "accent", "TextColor3");        
+            end
 
             do -- Other
                 library:draggify(items[ "main" ])
