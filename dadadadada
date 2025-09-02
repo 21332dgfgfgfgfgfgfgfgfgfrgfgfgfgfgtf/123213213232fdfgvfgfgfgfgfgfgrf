@@ -749,7 +749,7 @@
                     Name = "\0";
                     TextColor3 = themes.preset.accent;
                     BorderColor3 = rgb(0, 0, 0);
-                    Text = '<font color=\"rgb(72, 72, 73)\">" .. cfg.name .. "</font>" .. cfg.suffix'; 
+                    Text = "<font color=\"rgb(72, 72, 73)\">" .. cfg.name .. "</font>" .. cfg.suffix; 
                     Size = dim2(1, 0, 0, 0);
                     Position = dim2(0.5, -50, 0.5, -7); 
                     AnchorPoint = vec2(0.5, 0.5);  -- Set AnchorPoint to center
