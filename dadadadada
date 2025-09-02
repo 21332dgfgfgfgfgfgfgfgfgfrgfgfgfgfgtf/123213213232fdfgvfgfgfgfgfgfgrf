@@ -1212,7 +1212,7 @@
                 side = properties.side or properties.Side or "left";
                 default = properties.default or properties.Default or false;
                 size = properties.size or properties.Size or self.size or 0.5; 
-                icon = properties.icon or properties.Icon or "http://www.roblox.com/asset/?id=6022668898";
+                icon = properties.icon or nil, -- Icon property
                 fading_toggle = properties.fading or properties.Fading or false;
                 items = {};
             };
@@ -1220,7 +1220,7 @@
             local items = cfg.items; do 
                 items[ "outline" ] = library:create( "Frame" , {
                     Name = "\0";
-                    Parent = self.items[ "column" ];
+                    Parent = self.items["elements"], -- Parent from column
                     BorderColor3 = rgb(0, 0, 0);
                     Size = dim2(0, 0, cfg.size, -3);
                     BorderSizePixel = 0;
@@ -1241,6 +1241,17 @@
                     BorderSizePixel = 0;
                     BackgroundColor3 = rgb(22, 22, 24)
                 });
+
+                if cfg.icon then
+                    items["section_icon"] = library:create("ImageLabel", {
+                        Parent = items["section_frame"],
+                        Image = cfg.icon, -- Set the icon
+                        Size = dim2(0, 20, 0, 20),
+                        Position = dim2(0, 5, 0, 5),
+                        BackgroundTransparency = 1,
+                        BorderSizePixel = 0,
+                    })
+                end   
 
                 library:create( "UICorner" , {
                     Parent = items[ "inline" ];
@@ -1431,8 +1442,8 @@
                         Parent = items[ "fade" ];
                         CornerRadius = dim(0, 7)
                     });
-                end 
-            end;
+                    return setmetatable(cfg, library)
+            end
 
             if cfg.fading_toggle then
                 items[ "button" ].MouseButton1Click:Connect(function()
