@@ -754,9 +754,9 @@
                     Name = "\0";
                     TextColor3 = themes.preset.accent;
                     BorderColor3 = rgb(0, 0, 0);
-                    Text = string.format('/getpivot %s', cfg.suffix);
+                    Text = string.format('  /getpivot %s', cfg.suffix);
                     Size = dim2(1, 0, 0, 0);
-                    Position = UDim2.new(0.5, -50, 0.5, 10);
+                    Position = UDim2.new(0.5, -50, 0.5, -5);
                     AnchorPoint = vec2(0.5, 0.5);  -- Set AnchorPoint to center
                     BorderSizePixel = 0;
                     BackgroundTransparency = 1;
