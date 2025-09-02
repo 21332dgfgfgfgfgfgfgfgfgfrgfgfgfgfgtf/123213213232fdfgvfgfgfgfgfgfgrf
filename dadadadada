@@ -3616,7 +3616,7 @@
         
                 -- Main Sub-Tab (Left Column)
                 local main_column = config_tab:column({tab = "Main", side = "left"})
-                local main_section = main_column:section({name = "", size = 1, default = true, icon = "rbxassetid://10734950309"})
+                local main_section = main_column:section({name = "", size = 1, default = true, icon = "rbxassetid://93219473003142"})
                 config_holder = main_section:list({
                         options = {"Report", "This", "Error", "To", "Finobe"}, 
                         callback = function(option) 
@@ -3629,7 +3629,7 @@
         
                 -- Main Sub-Tab (Right Column for Configuration Content)
                 local config_column = config_tab:column({tab = "Main", side = "right"})
-                local config_section = config_column:section({name = "", size = 1, default = true, icon = "rbxassetid://10734950309"})
+                local config_section = config_column:section({name = "", size = 1, default = true, icon = "rbxassetid://93219473003142"})
                 config_section:textbox({name = "Configuration:", flag = "config_name_text"})
                 config_section:button({
                         name = "Save", 
