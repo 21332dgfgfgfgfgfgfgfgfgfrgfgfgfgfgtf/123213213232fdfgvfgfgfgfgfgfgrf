@@ -611,7 +611,7 @@
                     Parent = items[ "side_frame" ];
                     Name = "\0";
                     BackgroundTransparency = 1;
-                    Position = dim2(0, 0, 0, 60);
+                    Position = dim2(0, 0, 0, 10); -- Changed from 60 to 10 to reduce the gap
                     BorderColor3 = rgb(0, 0, 0);
                     Size = dim2(1, 0, 1, -60);
                     BorderSizePixel = 0;
@@ -633,21 +633,6 @@
                 });
 
                 local accent = themes.preset.accent
-                items[ "title" ] = library:create( "TextLabel" , {
-                    FontFace = fonts.font;
-                    BorderColor3 = rgb(0, 0, 0);
-                    Text = name;
-                    Parent = items[ "side_frame" ];
-                    Name = "\0";
-                    Text = string.format('%s<font color = "rgb(255, 255, 255)">%s</font>', cfg.name, cfg.suffix);
-                    BackgroundTransparency = 1;
-                    Size = dim2(1, 0, 0, 70);
-                    TextColor3 = themes.preset.accent;
-                    BorderSizePixel = 0;
-                    RichText = true;
-                    TextSize = 30;
-                    BackgroundColor3 = rgb(255, 255, 255)
-                }); library:apply_theme(items[ "title" ], "accent", "TextColor3");
 
                 items[ "multi_holder" ] = library:create( "Frame" , {
                     Parent = items[ "main" ];
