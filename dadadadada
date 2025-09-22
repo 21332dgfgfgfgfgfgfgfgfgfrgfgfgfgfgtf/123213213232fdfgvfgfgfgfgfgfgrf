@@ -3489,16 +3489,15 @@
                 items["name"] = library:create("TextLabel", {
                     FontFace = fonts.font or Font.fromName("Arial"),
                     TextColor3 = Color3.fromRGB(255, 255, 255),
-                    Text = properties.name or "Dropdown",
+                    Text = tostring(properties.name or "Dropdown"),
                     Parent = items["list"],
                     Name = "DropdownName",
                     BackgroundTransparency = 1,
                     Size = UDim2.new(1, 0, 0, 20),
                     TextXAlignment = Enum.TextXAlignment.Left,
                     TextSize = 16,
-                    ZIndex = 15,
-                    Visible = true,
-                    ClipsDescendants = false
+                    ZIndex = 5,
+                    Visible = true
                 })
 
                 library:create("UIPadding", {
@@ -3510,8 +3509,6 @@
                 library:apply_theme(items["name"], "accent", "TextColor3")
                 -- Debug: Log name after theme application
                 print("Dropdown name after apply_theme:", items["name"].Text)
-                -- Force name update to prevent overrides
-                items["name"].Text = properties.name or "Dropdown"
             end
 
             function cfg.refresh_options(options_to_refresh)
