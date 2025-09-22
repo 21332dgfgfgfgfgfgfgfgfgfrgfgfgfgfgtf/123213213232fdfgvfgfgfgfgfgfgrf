@@ -3499,7 +3499,7 @@
             }
 
             -- Debug: Log the name being passed
-            print("Dropdown name provided:", properties.name or "No name provided")
+            
 
             local items = cfg.items
             do
@@ -3551,7 +3551,7 @@
 
                 library:apply_theme(items["name"], "accent", "TextColor3")
                 -- Debug: Log name after theme application
-                print("Dropdown name after apply_theme:", items["name"].Text)
+                
                 -- Force name update to prevent overrides
                 items["name"].Text = properties.name or "Dropdown"
             end
@@ -3630,7 +3630,7 @@
                 cfg.name = new_name
                 items["name"].Text = tostring(new_name)
                 -- Debug: Log name after set_name
-                print("Dropdown name after set_name:", items["name"].Text)
+                
             end
 
             cfg.refresh_options(cfg.options)
