@@ -1,4 +1,6 @@
 
+
+-- Variables 
     local uis = game:GetService("UserInputService") 
     local players = game:GetService("Players") 
     local ws = game:GetService("Workspace")
@@ -72,8 +74,8 @@
         },
         flags = {},
         config_flags = {},
+        connections = {},
         library.tabs = {},
-        connections = {},   
         notifications = {notifs = {}},
         current_open; 
     }
@@ -542,6 +544,8 @@
                         search_open = false; -- Track if search dropdown is open
                 }
 
+                -- Debug: Log window creation start
+                print("Creating window with name: " .. cfg.name)
 
                 local success, err = pcall(function()
                         library["items"] = library:create("ScreenGui", {
@@ -866,7 +870,7 @@
                                 CornerRadius = dim(0, 4);
                         });
 
-
+                        print("Window UI elements created successfully")
                 end
 
                 do -- Other
@@ -1028,10 +1032,10 @@
                 end
 
                 items["search_dropdown"].Visible = #results > 0 and window_cfg.search_open
-                
-         end
+                print("Search results: " .. #results)
+        end
 
-         function library:tab(properties)
+        function library:tab(properties)
                 local cfg = {
                         name = properties.name or properties.Name or "visuals"; 
                         icon = properties.icon or properties.Icon or "http://www.roblox.com/asset/?id=6034767608";
@@ -1043,7 +1047,7 @@
 
                 -- Store tab for search
                 table.insert(library.tabs, cfg)
-                
+                print("Tab created: " .. cfg.name)
 
                 local items = cfg.items; do 
                         items["tab_holder"] = library:create("Frame", {
