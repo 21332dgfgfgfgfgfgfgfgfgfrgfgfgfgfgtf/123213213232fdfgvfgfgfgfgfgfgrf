@@ -83,8 +83,6 @@
         connections = {},   
         notifications = {notifs = {}},
         current_open; 
-        library.tabs = {} -- Store all tabs for search functionality
-        library.sections = {} -- Store all sections for search functionality
     }
 
     local themes = {
