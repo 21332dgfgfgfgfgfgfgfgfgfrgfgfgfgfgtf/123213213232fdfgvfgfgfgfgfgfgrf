@@ -538,548 +538,810 @@
 
     -- Library element functions
         function library:window(properties)
-            local cfg = { 
-                suffix = properties.suffix or properties.Suffix or "tech";
-                name = properties.name or properties.Name or "nebula";
-                game_name = properties.gameInfo or properties.game_info or properties.GameInfo or "Pivot for Counter-Strike: Global Offensive";
-                size = properties.size or properties.Size or dim2(0, 700, 0, 565);
-                selected_tab;
-                items = {};
-
-                tween;
-            }
-
-            library[ "items" ] = library:create( "ScreenGui" , {
-                Parent = coregui;
-                Name = "\0";
-                Enabled = true;
-                ZIndexBehavior = Enum.ZIndexBehavior.Global;
-                IgnoreGuiInset = true;
-            });
-
-            library[ "other" ] = library:create( "ScreenGui" , {
-                Parent = coregui;
-                Name = "\0";
-                Enabled = false;
-                ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
-                IgnoreGuiInset = true;
-            }); 
-
-            local items = cfg.items; do
-                items[ "main" ] = library:create( "Frame" , {
-                    Parent = library[ "items" ];
-                    Size = cfg.size;
-                    Name = "\0";
-                    Position = dim2(0.5, -cfg.size.X.Offset / 2, 0.5, -cfg.size.Y.Offset / 2);
-                    BorderColor3 = rgb(0, 0, 0);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(14, 14, 16)
-                }); items[ "main" ].Position = dim2(0, items[ "main" ].AbsolutePosition.X, 0, items[ "main" ].AbsolutePosition.Y)
-
-                library:create( "UICorner" , {
-                    Parent = items[ "main" ];
-                    CornerRadius = dim(0, 10)
-                });
-
-                library:create( "UIStroke" , {
-                    Color = rgb(23, 23, 29);
-                    Parent = items[ "main" ];
-                    ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                });
-
-                items[ "side_frame" ] = library:create( "Frame" , {
-                    Parent = items[ "main" ];
-                    BackgroundTransparency = 1;
-                    Name = "\0";
-                    BorderColor3 = rgb(0, 0, 0);
-                    Size = dim2(0, 196, 1, -25);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(14, 14, 16)
-                });
-
-                library:create( "Frame" , {
-                    AnchorPoint = vec2(1, 0);
-                    Parent = items[ "side_frame" ];
-                    Position = dim2(1, 0, 0, 0);
-                    BorderColor3 = rgb(0, 0, 0);
-                    Size = dim2(0, 1, 1, 0);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(21, 21, 23)
-                });
-
-                items[ "button_holder" ] = library:create( "Frame" , {
-                    Parent = items[ "side_frame" ];
-                    Name = "\0";
-                    BackgroundTransparency = 1;
-                    Position = dim2(0, 0, 0, 10); -- Changed from 60 to 10 to reduce the gap
-                    BorderColor3 = rgb(0, 0, 0);
-                    Size = dim2(1, 0, 1, -60);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(255, 255, 255)
-                }); cfg.button_holder = items[ "button_holder" ];
-
-                library:create( "UIListLayout" , {
-                    Parent = items[ "button_holder" ];
-                    Padding = dim(0, 5);
-                    SortOrder = Enum.SortOrder.LayoutOrder
-                });
-
-                library:create( "UIPadding" , {
-                    PaddingTop = dim(0, 16);
-                    PaddingBottom = dim(0, 36);
-                    Parent = items[ "button_holder" ];
-                    PaddingRight = dim(0, 11);
-                    PaddingLeft = dim(0, 10)
-                });
-
-                local accent = themes.preset.accent
-
-                items[ "multi_holder" ] = library:create( "Frame" , {
-                    Parent = items[ "main" ];
-                    Name = "\0";
-                    BackgroundTransparency = 1;
-                    Position = dim2(0, 196, 0, 0);
-                    BorderColor3 = rgb(0, 0, 0);
-                    Size = dim2(1, -196, 0, 56);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(255, 255, 255)
-                }); cfg.multi_holder = items[ "multi_holder" ];
-
-                library:create( "Frame" , {
-                    AnchorPoint = vec2(0, 1);
-                    Parent = items[ "multi_holder" ];
-                    Position = dim2(0, 0, 1, 0);
-                    BorderColor3 = rgb(0, 0, 0);
-                    Size = dim2(1, 0, 0, 1);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(21, 21, 23)
-                });
-
-                items[ "shadow" ] = library:create( "ImageLabel" , {
-                    ImageColor3 = rgb(0, 0, 0);
-                    ScaleType = Enum.ScaleType.Slice;
-                    Parent = items[ "main" ];
-                    BorderColor3 = rgb(0, 0, 0);
-                    Name = "\0";
-                    BackgroundColor3 = rgb(255, 255, 255);
-                    Size = dim2(1, 75, 1, 75);
-                    AnchorPoint = vec2(0.5, 0.5);
-                    Image = "rbxassetid://112971167999062";
-                    BackgroundTransparency = 1;
-                    Position = dim2(0.5, 0, 0.5, 0);
-                    SliceScale = 0.75;
-                    ZIndex = -100;
-                    BorderSizePixel = 0;
-                    SliceCenter = rect(vec2(112, 112), vec2(147, 147))
-                });
-
-                items[ "global_fade" ] = library:create( "Frame" , {
-                    Parent = items[ "main" ];
-                    Name = "\0";
-                    BackgroundTransparency = 1;
-                    Position = dim2(0, 196, 0, 56);
-                    BorderColor3 = rgb(0, 0, 0);
-                    Size = dim2(1, -196, 1, -81);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(14, 14, 16);
-                    ZIndex = 2;
-                });                
-
-                library:create( "UICorner" , {
-                    Parent = items[ "shadow" ];
-                    CornerRadius = dim(0, 5)
-                });
-
-                items[ "info" ] = library:create( "Frame" , {
-                    AnchorPoint = vec2(0, 1);
-                    Parent = items[ "main" ];
-                    Name = "\0";
-                    Position = dim2(0, 0, 1, 0);
-                    BorderColor3 = rgb(0, 0, 0);
-                    Size = dim2(1, 0, 0, 25);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(23, 23, 25)
-                });
-
-                library:create( "UICorner" , {
-                    Parent = items[ "info" ];
-                    CornerRadius = dim(0, 10)
-                });
-
-                items[ "grey_fill" ] = library:create( "Frame" , {
-                    Name = "\0";
-                    Parent = items[ "info" ];
-                    BorderColor3 = rgb(0, 0, 0);
-                    Size = dim2(1, 0, 0, 6);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(23, 23, 25)
-                });
-
-                items[ "game" ] = library:create( "TextLabel" , {
-                    FontFace = fonts.font;
-                    Parent = items[ "info" ];
-                    TextColor3 = rgb(72, 72, 73);
-                    BorderColor3 = rgb(0, 0, 0);
-                    Text = cfg.game_name;
-                    Name = "\0";
-                    Size = dim2(1, 0, 0, 0);
-                    AnchorPoint = vec2(0, 0.5);
-                    Position = dim2(0, 10, 0.5, -1);
-                    BackgroundTransparency = 1;
-                    TextXAlignment = Enum.TextXAlignment.Left;
-                    BorderSizePixel = 0;
-                    AutomaticSize = Enum.AutomaticSize.XY;
-                    TextSize = 14;
-                    BackgroundColor3 = rgb(255, 255, 255)
-                }); 
-
-                items[ "other_info" ] = library:create( "TextLabel" , {
-                    Parent = items[ "info" ];
-                    RichText = true;
-                    Name = "\0";
-                    TextColor3 = themes.preset.accent;
-                    BorderColor3 = rgb(0, 0, 0);
-                    Text = '';
-                    Size = dim2(1, 0, 0, 0);
-                    Position = UDim2.new(0.5, -50, 0.5, -5);
-                    AnchorPoint = vec2(0.5, 0.5);  -- Set AnchorPoint to center
-                    BorderSizePixel = 0;
-                    BackgroundTransparency = 1;
-                    TextXAlignment = Enum.TextXAlignment.Right;
-                    AutomaticSize = Enum.AutomaticSize.XY;
-                    FontFace = fonts.font;
-                    TextSize = 14;
-                    BackgroundColor3 = rgb(255, 255, 255)
-                }); library:apply_theme(items[ "other_info" ], "accent", "TextColor3");        
-            end
-
-            do -- Other
-                library:draggify(items[ "main" ])
-                library:resizify(items[ "main" ])
-            end 
-
-            function cfg.toggle_menu(bool) 
-                -- WIP 
-                -- if cfg.tween then 
-                --     cfg.tween:Cancel()
-                -- end 
-
-                -- items[ "main" ].Size = dim2(items[ "main" ].Size.Scale.X, items[ "main" ].Size.Offset.X - 20, items[ "main" ].Size.Scale.Y, items[ "main" ].Size.Offset.Y - 20)
-                -- library:tween(items[ "tab_holder" ], {Size = dim2(1, -196, 1, -81)}, Enum.EasingStyle.Quad, 0.4)
-                -- cfg.tween = 
-
-                library[ "items" ].Enabled = bool
-            end 
-
-            return setmetatable(cfg, library)
-        end 
-
-        function library:tab(properties)
-            local cfg = {
-                name = properties.name or properties.Name or "visuals"; 
-                icon = properties.icon or properties.Icon or "http://www.roblox.com/asset/?id=6034767608";
-                tabs = properties.tabs or properties.Tabs or {"Main", "Misc.", "Settings"};
-                pages = {}; -- data store for multi sections
-                current_multi; 
-                items = {};
-            } 
-
-            local items = cfg.items; do 
-                items[ "tab_holder" ] = library:create( "Frame" , {
-                    Parent = library.cache;
-                    Name = "\0";
-                    Visible = false;
-                    BackgroundTransparency = 1;
-                    Position = dim2(0, 196, 0, 56);
-                    BorderColor3 = rgb(0, 0, 0);
-                    Size = dim2(1, -216, 1, -101);
-                    BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(255, 255, 255)
-                });
-
-                -- Tab buttons 
-                    items[ "button" ] = library:create( "TextButton" , {
-                        FontFace = fonts.font;
-                        TextColor3 = rgb(255, 255, 255);
-                        BorderColor3 = rgb(0, 0, 0);
-                        Text = "";
-                        Parent = self.items[ "button_holder" ];
-                        AutoButtonColor = false;
-                        BackgroundTransparency = 1;
-                        Name = "\0";
-                        Size = dim2(1, 0, 0, 35);
-                        BorderSizePixel = 0;
-                        TextSize = 16;
-                        BackgroundColor3 = rgb(29, 29, 29)
-                    });
-
-                    items[ "icon" ] = library:create( "ImageLabel" , {
-                        ImageColor3 = rgb(72, 72, 73);
-                        BorderColor3 = rgb(0, 0, 0);
-                        Parent = items[ "button" ];
-                        AnchorPoint = vec2(0, 0.5);
-                        Image = cfg.icon;
-                        BackgroundTransparency = 1;
-                        Position = dim2(0, 10, 0.5, 0);
-                        Name = "\0";
-                        Size = dim2(0, 22, 0, 22);
-                        BorderSizePixel = 0;
-                        BackgroundColor3 = rgb(255, 255, 255)
-                    }); library:apply_theme(items[ "icon" ], "accent", "ImageColor3");
-
-                    items[ "name" ] = library:create( "TextLabel" , {
-                        FontFace = fonts.font;
-                        TextColor3 = rgb(72, 72, 73);
-                        BorderColor3 = rgb(0, 0, 0);
-                        Text = cfg.name;
-                        Parent = items[ "button" ];
-                        Name = "\0";
-                        Size = dim2(0, 0, 1, 0);
-                        Position = dim2(0, 40, 0, 0);
-                        BackgroundTransparency = 1;
-                        TextXAlignment = Enum.TextXAlignment.Left;
-                        BorderSizePixel = 0;
-                        AutomaticSize = Enum.AutomaticSize.X;
-                        TextSize = 16;
-                        BackgroundColor3 = rgb(255, 255, 255)
-                    });
-
-                    library:create( "UIPadding" , {
-                        Parent = items[ "name" ];
-                        PaddingRight = dim(0, 5);
-                        PaddingLeft = dim(0, 5)
-                    });
-
-                    library:create( "UICorner" , {
-                        Parent = items[ "button" ];
-                        CornerRadius = dim(0, 7)
-                    });
-
-                    library:create( "UIStroke" , {
-                        Color = rgb(23, 23, 29);
-                        Parent = items[ "button" ];
-                        Enabled = false;
-                        ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-                    });
-                -- 
-
-                -- Multi Sections
-                    items[ "multi_section_button_holder" ] = library:create( "Frame" , {
-                        Parent = library.cache;
-                        BackgroundTransparency = 1;
-                        Name = "\0";
-                        Visible = false;
-                        BorderColor3 = rgb(0, 0, 0);
-                        Size = dim2(1, 0, 1, 0);
-                        BorderSizePixel = 0;
-                        BackgroundColor3 = rgb(255, 255, 255)
-                    });
-
-                    library:create( "UIListLayout" , {
-                        Parent = items[ "multi_section_button_holder" ];
-                        Padding = dim(0, 7);
-                        SortOrder = Enum.SortOrder.LayoutOrder;
-                        FillDirection = Enum.FillDirection.Horizontal
-                    });
-
-                    library:create( "UIPadding" , {
-                        PaddingTop = dim(0, 8);
-                        PaddingBottom = dim(0, 7);
-                        Parent = items[ "multi_section_button_holder" ];
-                        PaddingRight = dim(0, 7);
-                        PaddingLeft = dim(0, 7)
-                    });                        
-
-                    for _, section in cfg.tabs do
-                        local data = {items = {}} 
-
-                        local multi_items = data.items; do 
-                            -- Button
-                                multi_items[ "button" ] = library:create( "TextButton" , {
-                                    FontFace = fonts.font;
-                                    TextColor3 = rgb(255, 255, 255);
-                                    BorderColor3 = rgb(0, 0, 0);
-                                    AutoButtonColor = false;
-                                    Text = "";
-                                    Parent = items[ "multi_section_button_holder" ];
-                                    Name = "\0";
-                                    Size = dim2(0, 0, 0, 39);
-                                    BackgroundTransparency = 1;
-                                    ClipsDescendants = true;
-                                    BorderSizePixel = 0;
-                                    AutomaticSize = Enum.AutomaticSize.X;
-                                    TextSize = 16;
-                                    BackgroundColor3 = rgb(25, 25, 29)
-                                });
-
-                                multi_items[ "name" ] = library:create( "TextLabel" , {
-                                    FontFace = fonts.font;
-                                    TextColor3 = rgb(62, 62, 63);
-                                    BorderColor3 = rgb(0, 0, 0);
-                                    Text = section;
-                                    Parent = multi_items[ "button" ];
-                                    Name = "\0";
-                                    Size = dim2(0, 0, 1, 0);
-                                    BackgroundTransparency = 1;
-                                    TextXAlignment = Enum.TextXAlignment.Left;
-                                    BorderSizePixel = 0;
-                                    AutomaticSize = Enum.AutomaticSize.XY;
-                                    TextSize = 16;
-                                    BackgroundColor3 = rgb(255, 255, 255)
-                                });
-
-                                library:create( "UIPadding" , {
-                                    Parent = multi_items[ "name" ];
-                                    PaddingRight = dim(0, 5);
-                                    PaddingLeft = dim(0, 5)
-                                });
-
-                                library:create( "UIPadding" , {
-                                    Parent = multi_items[ "button" ];
-                                    PaddingRight = dim(0, 10);
-                                    PaddingLeft = dim(0, 10)
-                                });
-
-                                library:create( "UICorner" , {
-                                    Parent = multi_items[ "button" ];
-                                    CornerRadius = dim(0, 7)
-                                }); 
-                            --
-
-                            -- Tab 
-                                multi_items[ "tab" ] = library:create( "Frame" , {
-                                    Parent = library.cache;
-                                    BackgroundTransparency = 1;
-                                    Name = "\0";
-                                    BorderColor3 = rgb(0, 0, 0);
-                                    Size = dim2(1, -20, 1, -20);
-                                    BorderSizePixel = 0;
-                                    Visible = false;
-                                    BackgroundColor3 = rgb(255, 255, 255)
-                                });
-
-                                library:create( "UIListLayout" , {
-                                    FillDirection = Enum.FillDirection.Vertical;
-                                    HorizontalFlex = Enum.UIFlexAlignment.Fill;
-                                    Parent = multi_items[ "tab" ];
-                                    Padding = dim(0, 7);
-                                    SortOrder = Enum.SortOrder.LayoutOrder;
-                                    VerticalFlex = Enum.UIFlexAlignment.Fill
-                                });
-
-                                library:create( "UIPadding" , {
-                                    PaddingTop = dim(0, 7);
-                                    PaddingBottom = dim(0, 7);
-                                    Parent = multi_items[ "tab" ];
-                                    PaddingRight = dim(0, 7);
-                                    PaddingLeft = dim(0, 7)
-                                });
-                            --
-                        end
-
-                        data.text = multi_items[ "name" ]
-                        data.accent = multi_items[ "accent" ]
-                        data.button = multi_items[ "button" ]
-                        data.page = multi_items[ "tab" ]
-                        data.parent = setmetatable(data, library):sub_tab({}).items[ "tab_parent" ]
-
-                        function data.open_page()
-                            local page = cfg.current_multi; 
-
-                            if page and page.text ~= data.text then 
-                                self.items[ "global_fade" ].BackgroundTransparency = 0
-                                library:tween(self.items[ "global_fade" ], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4)
-
-                                local old_size = page.page.Size
-                                page.page.Size = dim2(1, -20, 1, -20)
-                            end
-
-                            if page then
-                                library:tween(page.text, {TextColor3 = rgb(62, 62, 63)})
-                                -- library:tween(page.accent, {BackgroundTransparency = 1})
-                                library:tween(page.button, {BackgroundTransparency = 1})
-
-                                page.page.Visible = false
-                                page.page.Parent = library[ "cache" ] 
-                            end 
-
-                            library:tween(data.text, {TextColor3 = rgb(255, 255, 255)})
-                            -- library:tween(data.accent, {BackgroundTransparency = 0})
-                            library:tween(data.button, {BackgroundTransparency = 0})
-                            library:tween(data.page, {Size = dim2(1, 0, 1, 0)}, Enum.EasingStyle.Quad, 0.4)
-
-                            data.page.Visible = true
-                            data.page.Parent = items["tab_holder"]
-
-                            cfg.current_multi = data
-
-                            library:close_element()
-                        end
-
-                        multi_items[ "button" ].MouseButton1Down:Connect(function()
-                            data.open_page() 
-                        end)
-
-                        cfg.pages[#cfg.pages + 1] = setmetatable(data, library)
-                    end 
-
-                    cfg.pages[1].open_page()
-                --
-            end 
-
-            function cfg.open_tab() 
-                local selected_tab = self.selected_tab
-
-                if selected_tab then 
-                    if selected_tab[ 4 ] ~= items[ "tab_holder" ] then 
-                        self.items[ "global_fade" ].BackgroundTransparency = 0
-
-                        library:tween(self.items[ "global_fade" ], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4)
-                        selected_tab[ 4 ].Size = dim2(1, -216, 1, -101)
-                    end
-
-                    library:tween(selected_tab[ 1 ], {BackgroundTransparency = 1})
-                    library:tween(selected_tab[ 2 ], {ImageColor3 = rgb(72, 72, 73)})
-                    library:tween(selected_tab[ 3 ], {TextColor3 = rgb(72, 72, 73)})
-
-                    selected_tab[ 4 ].Visible = false
-                    selected_tab[ 4 ].Parent = library[ "cache" ]
-                    selected_tab[ 5 ].Visible = false
-                    selected_tab[ 5 ].Parent = library[ "cache" ]
-                end
-
-                library:tween(items[ "button" ], {BackgroundTransparency = 0})
-                library:tween(items[ "icon" ], {ImageColor3 = themes.preset.accent})
-                library:tween(items[ "name" ], {TextColor3 = rgb(255, 255, 255)})
-                library:tween(items[ "tab_holder" ], {Size = dim2(1, -196, 1, -81)}, Enum.EasingStyle.Quad, 0.4)
-
-                items[ "tab_holder" ].Visible = true 
-                items[ "tab_holder" ].Parent = self.items[ "main" ]
-                items[ "multi_section_button_holder" ].Visible = true 
-                items[ "multi_section_button_holder" ].Parent = self.items[ "multi_holder" ]
-
-                self.selected_tab = {
-                    items[ "button" ];
-                    items[ "icon" ];
-                    items[ "name" ];
-                    items[ "tab_holder" ];
-                    items[ "multi_section_button_holder" ];
+                local cfg = { 
+                        suffix = properties.suffix or properties.Suffix or "tech";
+                        name = properties.name or properties.Name or "nebula";
+                        game_name = properties.gameInfo or properties.game_info or properties.GameInfo or "Pivot for Counter-Strike: Global Offensive";
+                        size = properties.size or properties.Size or dim2(0, 700, 0, 565);
+                        selected_tab;
+                        items = {};
+                        tween;
+                        search_open = false; -- Track if search dropdown is open
                 }
 
-                library:close_element()
-            end
+                -- Debug: Log window creation start
+                print("Creating window with name: " .. cfg.name)
 
-            items[ "button" ].MouseButton1Down:Connect(function()
-                cfg.open_tab()
-            end)
+                local success, err = pcall(function()
+                        library["items"] = library:create("ScreenGui", {
+                                Parent = coregui;
+                                Name = "\0";
+                                Enabled = true;
+                                ZIndexBehavior = Enum.ZIndexBehavior.Global;
+                                IgnoreGuiInset = true;
+                        });
+                end)
+                if not success then
+                        warn("Failed to create ScreenGui: " .. tostring(err))
+                end
 
-            if not self.selected_tab then 
-                cfg.open_tab(true) 
-            end
+                success, err = pcall(function()
+                        library["other"] = library:create("ScreenGui", {
+                                Parent = coregui;
+                                Name = "\0";
+                                Enabled = false;
+                                ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
+                                IgnoreGuiInset = true;
+                        });
+                end)
+                if not success then
+                        warn("Failed to create other ScreenGui: " .. tostring(err))
+                end
 
-            return unpack(cfg.pages)
-        end 
+                local items = cfg.items; do
+                        success, err = pcall(function()
+                                items["main"] = library:create("Frame", {
+                                        Parent = library["items"];
+                                        Size = cfg.size;
+                                        Name = "\0";
+                                        Position = dim2(0.5, -cfg.size.X.Offset / 2, 0.5, -cfg.size.Y.Offset / 2);
+                                        BorderColor3 = rgb(0, 0, 0);
+                                        BorderSizePixel = 0;
+                                        BackgroundColor3 = rgb(14, 14, 16)
+                                }); items["main"].Position = dim2(0, items["main"].AbsolutePosition.X, 0, items["main"].AbsolutePosition.Y)
+                        end)
+                        if not success then
+                                warn("Failed to create main Frame: " .. tostring(err))
+                        end
 
+                        library:create("UICorner", {
+                                Parent = items["main"];
+                                CornerRadius = dim(0, 10)
+                        });
+
+                        library:create("UIStroke", {
+                                Color = rgb(23, 23, 29);
+                                Parent = items["main"];
+                                ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                        });
+
+                        items["side_frame"] = library:create("Frame", {
+                                Parent = items["main"];
+                                BackgroundTransparency = 1;
+                                Name = "\0";
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(0, 196, 1, -25);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(14, 14, 16)
+                        });
+
+                        library:create("Frame", {
+                                AnchorPoint = vec2(1, 0);
+                                Parent = items["side_frame"];
+                                Position = dim2(1, 0, 0, 0);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(0, 1, 1, 0);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(21, 21, 23)
+                        });
+
+                        items["button_holder"] = library:create("Frame", {
+                                Parent = items["side_frame"];
+                                Name = "\0";
+                                BackgroundTransparency = 1;
+                                Position = dim2(0, 0, 0, 10);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(1, 0, 1, -60);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        }); cfg.button_holder = items["button_holder"];
+
+                        library:create("UIListLayout", {
+                                Parent = items["button_holder"];
+                                Padding = dim(0, 5);
+                                SortOrder = Enum.SortOrder.LayoutOrder
+                        });
+
+                        library:create("UIPadding", {
+                                PaddingTop = dim(0, 16);
+                                PaddingBottom = dim(0, 36);
+                                Parent = items["button_holder"];
+                                PaddingRight = dim(0, 11);
+                                PaddingLeft = dim(0, 10)
+                        });
+
+                        local accent = themes.preset.accent
+
+                        items["multi_holder"] = library:create("Frame", {
+                                Parent = items["main"];
+                                Name = "\0";
+                                BackgroundTransparency = 1;
+                                Position = dim2(0, 196, 0, 0);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(1, -196, 0, 56);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        }); cfg.multi_holder = items["multi_holder"];
+
+                        library:create("Frame", {
+                                AnchorPoint = vec2(0, 1);
+                                Parent = items["multi_holder"];
+                                Position = dim2(0, 0, 1, 0);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(1, 0, 0, 1);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(21, 21, 23)
+                        });
+
+                        items["shadow"] = library:create("ImageLabel", {
+                                ImageColor3 = rgb(0, 0, 0);
+                                ScaleType = Enum.ScaleType.Slice;
+                                Parent = items["main"];
+                                BorderColor3 = rgb(0, 0, 0);
+                                Name = "\0";
+                                BackgroundColor3 = rgb(255, 255, 255);
+                                Size = dim2(1, 75, 1, 75);
+                                AnchorPoint = vec2(0.5, 0.5);
+                                Image = "rbxassetid://112971167999062";
+                                BackgroundTransparency = 1;
+                                Position = dim2(0.5, 0, 0.5, 0);
+                                SliceScale = 0.75;
+                                ZIndex = -100;
+                                BorderSizePixel = 0;
+                                SliceCenter = rect(vec2(112, 112), vec2(147, 147))
+                        });
+
+                        items["global_fade"] = library:create("Frame", {
+                                Parent = items["main"];
+                                Name = "\0";
+                                BackgroundTransparency = 1;
+                                Position = dim2(0, 196, 0, 56);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(1, -196, 1, -81);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(14, 14, 16);
+                                ZIndex = 2;
+                        });                
+
+                        library:create("UICorner", {
+                                Parent = items["shadow"];
+                                CornerRadius = dim(0, 5)
+                        });
+
+                        items["info"] = library:create("Frame", {
+                                AnchorPoint = vec2(0, 1);
+                                Parent = items["main"];
+                                Name = "\0";
+                                Position = dim2(0, 0, 1, 0);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(1, 0, 0, 25);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(23, 23, 25)
+                        });
+
+                        library:create("UICorner", {
+                                Parent = items["info"];
+                                CornerRadius = dim(0, 10)
+                        });
+
+                        items["grey_fill"] = library:create("Frame", {
+                                Name = "\0";
+                                Parent = items["info"];
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(1, 0, 0, 6);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(23, 23, 25)
+                        });
+
+                        items["game"] = library:create("TextLabel", {
+                                FontFace = fonts.font;
+                                Parent = items["info"];
+                                TextColor3 = rgb(72, 72, 73);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Text = cfg.game_name;
+                                Name = "\0";
+                                Size = dim2(1, 0, 0, 0);
+                                AnchorPoint = vec2(0, 0.5);
+                                Position = dim2(0, 10, 0.5, -1);
+                                BackgroundTransparency = 1;
+                                TextXAlignment = Enum.TextXAlignment.Left;
+                                BorderSizePixel = 0;
+                                AutomaticSize = Enum.AutomaticSize.XY;
+                                TextSize = 14;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        }); 
+
+                        items["other_info"] = library:create("TextLabel", {
+                                Parent = items["info"];
+                                RichText = true;
+                                Name = "\0";
+                                TextColor3 = themes.preset.accent;
+                                BorderColor3 = rgb(0, 0, 0);
+                                Text = '';
+                                Size = dim2(1, 0, 0, 0);
+                                Position = UDim2.new(0.5, -50, 0.5, -5);
+                                AnchorPoint = vec2(0.5, 0.5);
+                                BorderSizePixel = 0;
+                                BackgroundTransparency = 1;
+                                TextXAlignment = Enum.TextXAlignment.Right;
+                                AutomaticSize = Enum.AutomaticSize.XY;
+                                FontFace = fonts.font;
+                                TextSize = 14;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        }); library:apply_theme(items["other_info"], "accent", "TextColor3");
+
+                        -- Search Textbox (Minimal)
+                        success, err = pcall(function()
+                                items["search_holder"] = library:create("Frame", {
+                                        Parent = items["main"];
+                                        Name = "\0";
+                                        BackgroundTransparency = 1;
+                                        Position = dim2(1, -150, 0, 10);
+                                        Size = dim2(0, 140, 0, 30);
+                                        BorderColor3 = rgb(0, 0, 0);
+                                        BorderSizePixel = 0;
+                                });
+                        end)
+                        if not success then
+                                warn("Failed to create search_holder: " .. tostring(err))
+                        end
+
+                        success, err = pcall(function()
+                                items["search_input"] = library:create("TextBox", {
+                                        FontFace = fonts.font;
+                                        Text = "";
+                                        PlaceholderText = "Search...";
+                                        PlaceholderColor3 = rgb(72, 72, 73);
+                                        Parent = items["search_holder"];
+                                        Name = "\0";
+                                        TextTruncate = Enum.TextTruncate.AtEnd;
+                                        BorderSizePixel = 0;
+                                        CursorPosition = -1;
+                                        ClearTextOnFocus = false;
+                                        TextSize = 14;
+                                        TextColor3 = rgb(245, 245, 245);
+                                        BackgroundColor3 = rgb(33, 33, 35);
+                                        Size = dim2(1, 0, 1, 0);
+                                        Position = dim2(0, 0, 0, 0);
+                                });
+                        end)
+                        if not success then
+                                warn("Failed to create search_input: " .. tostring(err))
+                        end
+
+                        library:create("UICorner", {
+                                Parent = items["search_input"];
+                                CornerRadius = dim(0, 4)
+                        });
+
+                        library:create("UIPadding", {
+                                Parent = items["search_input"];
+                                PaddingLeft = dim(0, 5);
+                                PaddingRight = dim(0, 5);
+                        });
+
+                        success, err = pcall(function()
+                                items["search_dropdown"] = library:create("Frame", {
+                                        Parent = library["items"];
+                                        Name = "\0";
+                                        BackgroundTransparency = 1;
+                                        Position = dim2(0, 0, 0, 0);
+                                        Size = dim2(0, 140, 0, 0);
+                                        BorderColor3 = rgb(0, 0, 0);
+                                        BorderSizePixel = 0;
+                                        AutomaticSize = Enum.AutomaticSize.Y;
+                                        ClipsDescendants = true;
+                                });
+                        end)
+                        if not success then
+                                warn("Failed to create search_dropdown: " .. tostring(err))
+                        end
+
+                        library:create("UIListLayout", {
+                                Parent = items["search_dropdown"];
+                                Padding = dim(0, 5);
+                                SortOrder = Enum.SortOrder.LayoutOrder;
+                        });
+
+                        library:create("UIPadding", {
+                                Parent = items["search_dropdown"];
+                                PaddingTop = dim(0, 5);
+                                PaddingBottom = dim(0, 5);
+                                PaddingLeft = dim(0, 5);
+                                PaddingRight = dim(0, 5);
+                        });
+
+                        library:create("UICorner", {
+                                Parent = items["search_dropdown"];
+                                CornerRadius = dim(0, 4);
+                        });
+
+                        success, err = pcall(function()
+                                items["search_inline"] = library:create("Frame", {
+                                        Parent = items["search_dropdown"];
+                                        Name = "\0";
+                                        Size = dim2(1, -2, 1, -2);
+                                        BorderColor3 = rgb(0, 0, 0);
+                                        BorderSizePixel = 0;
+                                        BackgroundColor3 = rgb(22, 22, 24);
+                                });
+                        end)
+                        if not success then
+                                warn("Failed to create search_inline: " .. tostring(err))
+                        end
+
+                        library:create("UICorner", {
+                                Parent = items["search_inline"];
+                                CornerRadius = dim(0, 4);
+                        });
+
+                        print("Window UI elements created successfully")
+                end
+
+                do -- Other
+                        success, err = pcall(function()
+                                library:draggify(items["main"])
+                        end)
+                        if not success then
+                                warn("Draggify failed: " .. tostring(err))
+                        end
+
+                        success, err = pcall(function()
+                                library:resizify(items["main"])
+                        end)
+                        if not success then
+                                warn("Resizify failed: " .. tostring(err))
+                        end
+
+                        -- Search functionality
+                        success, err = pcall(function()
+                                items["search_input"].FocusLost:Connect(function()
+                                        cfg.search_open = false
+                                        items["search_dropdown"].Visible = false
+                                        print("Search dropdown closed")
+                                end);
+                        end)
+                        if not success then
+                                warn("Failed to connect FocusLost: " .. tostring(err))
+                        end
+
+                        success, err = pcall(function()
+                                items["search_input"].Focused:Connect(function()
+                                        cfg.search_open = true
+                                        items["search_dropdown"].Visible = true
+                                        items["search_dropdown"].Position = dim_offset(items["search_holder"].AbsolutePosition.X, items["search_holder"].AbsolutePosition.Y + items["search_holder"].AbsoluteSize.Y + 5)
+                                        library:search(items["search_input"].Text, cfg)
+                                        print("Search dropdown opened")
+                                end);
+                        end)
+                        if not success then
+                                warn("Failed to connect Focused: " .. tostring(err))
+                        end
+
+                        success, err = pcall(function()
+                                items["search_input"].Changed:Connect(function(property)
+                                        if property == "Text" then
+                                                library:search(items["search_input"].Text, cfg)
+                                                print("Search query updated: " .. items["search_input"].Text)
+                                        end
+                                end);
+                        end)
+                        if not success then
+                                warn("Failed to connect Changed: " .. tostring(err))
+                        end
+                end 
+
+                function cfg.toggle_menu(bool) 
+                        library["items"].Enabled = bool
+                        print("Menu toggled: " .. tostring(bool))
+                end 
+
+                print("Window creation completed")
+                return setmetatable(cfg, library)
+        end
+
+        function library:search(query, window_cfg)
+                local items = window_cfg.items
+                local results = {}
+
+                print("Searching for: " .. tostring(query))
+
+                -- Clear previous search results
+                local success, err = pcall(function()
+                        for _, child in ipairs(items["search_dropdown"]:GetChildren()) do
+                                if child:IsA("TextButton") then
+                                        child:Destroy()
+                                end
+                        end
+                end)
+                if not success then
+                        warn("Failed to clear search dropdown: " .. tostring(err))
+                end
+
+                -- Search through tabs
+                query = query:lower()
+                for _, tab in ipairs(library.tabs) do
+                        if tab.name:lower():find(query) then
+                                table.insert(results, {type = "tab", name = tab.name, tab = tab})
+                        end
+                end
+
+                -- Display results in dropdown
+                for _, result in ipairs(results) do
+                        local button
+                        success, err = pcall(function()
+                                button = library:create("TextButton", {
+                                        FontFace = fonts.font,
+                                        TextColor3 = rgb(245, 245, 245),
+                                        Text = result.name,
+                                        Parent = items["search_dropdown"],
+                                        Name = "\0",
+                                        Size = dim2(1, 0, 0, 30),
+                                        BackgroundColor3 = rgb(33, 33, 35),
+                                        BorderSizePixel = 0,
+                                        TextSize = 14,
+                                        AutoButtonColor = false,
+                                });
+                        end)
+                        if not success then
+                                warn("Failed to create search result button: " .. tostring(err))
+                        end
+
+                        library:create("UICorner", {
+                                Parent = button,
+                                CornerRadius = dim(0, 4)
+                        });
+
+                        library:create("UIPadding", {
+                                Parent = button,
+                                PaddingLeft = dim(0, 5),
+                                PaddingRight = dim(0, 5),
+                        });
+
+                        success, err = pcall(function()
+                                button.MouseButton1Click:Connect(function()
+                                        local success2, err2 = pcall(function()
+                                                result.tab:open_tab()
+                                        end)
+                                        if not success2 then
+                                                warn("Failed to open tab: " .. tostring(err2))
+                                        else
+                                                print("Navigated to tab: " .. result.name)
+                                        end
+                                        items["search_input"].Text = ""
+                                        items["search_dropdown"].Visible = false
+                                        window_cfg.search_open = false
+                                end);
+                        end)
+                        if not success then
+                                warn("Failed to connect MouseButton1Click: " .. tostring(err))
+                        end
+
+                        success, err = pcall(function()
+                                button.MouseEnter:Connect(function()
+                                        library:tween(button, {BackgroundColor3 = rgb(44, 44, 46)})
+                                end);
+                        end)
+                        if not success then
+                                warn("Failed to connect MouseEnter: " .. tostring(err))
+                        end
+
+                        success, err = pcall(function()
+                                button.MouseLeave:Connect(function()
+                                        library:tween(button, {BackgroundColor3 = rgb(33, 33, 35)})
+                                end);
+                        end)
+                        if not success then
+                                warn("Failed to connect MouseLeave: " .. tostring(err))
+                        end
+                end
+
+                items["search_dropdown"].Visible = #results > 0 and window_cfg.search_open
+                print("Search results: " .. #results)
+        end
+
+        function library:tab(properties)
+                local cfg = {
+                        name = properties.name or properties.Name or "visuals"; 
+                        icon = properties.icon or properties.Icon or "http://www.roblox.com/asset/?id=6034767608";
+                        tabs = properties.tabs or properties.Tabs or {"Main", "Misc.", "Settings"};
+                        pages = {};
+                        current_multi; 
+                        items = {};
+                } 
+
+                -- Store tab for search
+                table.insert(library.tabs, cfg)
+                print("Tab created: " .. cfg.name)
+
+                local items = cfg.items; do 
+                        items["tab_holder"] = library:create("Frame", {
+                                Parent = library.cache;
+                                Name = "\0";
+                                Visible = false;
+                                BackgroundTransparency = 1;
+                                Position = dim2(0, 196, 0, 56);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(1, -216, 1, -101);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        });
+
+                        -- Tab buttons 
+                        items["button"] = library:create("TextButton", {
+                                FontFace = fonts.font;
+                                TextColor3 = rgb(255, 255, 255);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Text = "";
+                                Parent = self.items["button_holder"];
+                                AutoButtonColor = false;
+                                BackgroundTransparency = 1;
+                                Name = "\0";
+                                Size = dim2(1, 0, 0, 35);
+                                BorderSizePixel = 0;
+                                TextSize = 16;
+                                BackgroundColor3 = rgb(29, 29, 29)
+                        });
+
+                        items["icon"] = library:create("ImageLabel", {
+                                ImageColor3 = rgb(72, 72, 73);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Parent = items["button"];
+                                AnchorPoint = vec2(0, 0.5);
+                                Image = cfg.icon;
+                                BackgroundTransparency = 1;
+                                Position = dim2(0, 10, 0.5, 0);
+                                Name = "\0";
+                                Size = dim2(0, 22, 0, 22);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        }); library:apply_theme(items["icon"], "accent", "ImageColor3");
+
+                        items["name"] = library:create("TextLabel", {
+                                FontFace = fonts.font;
+                                TextColor3 = rgb(72, 72, 73);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Text = cfg.name;
+                                Parent = items["button"];
+                                Name = "\0";
+                                Size = dim2(0, 0, 1, 0);
+                                Position = dim2(0, 40, 0, 0);
+                                BackgroundTransparency = 1;
+                                TextXAlignment = Enum.TextXAlignment.Left;
+                                BorderSizePixel = 0;
+                                AutomaticSize = Enum.AutomaticSize.X;
+                                TextSize = 16;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        });
+
+                        library:create("UIPadding", {
+                                Parent = items["name"];
+                                PaddingRight = dim(0, 5);
+                                PaddingLeft = dim(0, 5)
+                        });
+
+                        library:create("UICorner", {
+                                Parent = items["button"];
+                                CornerRadius = dim(0, 7)
+                        });
+
+                        library:create("UIStroke", {
+                                Color = rgb(23, 23, 29);
+                                Parent = items["button"];
+                                Enabled = false;
+                                ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                        });
+
+                        -- Multi Sections
+                        items["multi_section_button_holder"] = library:create("Frame", {
+                                Parent = library.cache;
+                                BackgroundTransparency = 1;
+                                Name = "\0";
+                                Visible = false;
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(1, 0, 1, 0);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        });
+
+                        library:create("UIListLayout", {
+                                Parent = items["multi_section_button_holder"];
+                                Padding = dim(0, 7);
+                                SortOrder = Enum.SortOrder.LayoutOrder;
+                                FillDirection = Enum.FillDirection.Horizontal
+                        });
+
+                        library:create("UIPadding", {
+                                PaddingTop = dim(0, 8);
+                                PaddingBottom = dim(0, 7);
+                                Parent = items["multi_section_button_holder"];
+                                PaddingRight = dim(0, 7);
+                                PaddingLeft = dim(0, 7)
+                        });                        
+
+                        for _, section in cfg.tabs do
+                                local data = {items = {}, name = section, parent_tab = nil} 
+
+                                local multi_items = data.items; do 
+                                        -- Button
+                                        multi_items["button"] = library:create("TextButton", {
+                                                FontFace = fonts.font;
+                                                TextColor3 = rgb(255, 255, 255);
+                                                BorderColor3 = rgb(0, 0, 0);
+                                                AutoButtonColor = false;
+                                                Text = "";
+                                                Parent = items["multi_section_button_holder"];
+                                                Name = "\0";
+                                                Size = dim2(0, 0, 0, 39);
+                                                BackgroundTransparency = 1;
+                                                ClipsDescendants = true;
+                                                BorderSizePixel = 0;
+                                                AutomaticSize = Enum.AutomaticSize.X;
+                                                TextSize = 16;
+                                                BackgroundColor3 = rgb(25, 25, 29)
+                                        });
+
+                                        multi_items["name"] = library:create("TextLabel", {
+                                                FontFace = fonts.font;
+                                                TextColor3 = rgb(62, 62, 63);
+                                                BorderColor3 = rgb(0, 0, 0);
+                                                Text = section;
+                                                Parent = multi_items["button"];
+                                                Name = "\0";
+                                                Size = dim2(0, 0, 1, 0);
+                                                BackgroundTransparency = 1;
+                                                TextXAlignment = Enum.TextXAlignment.Left;
+                                                BorderSizePixel = 0;
+                                                AutomaticSize = Enum.AutomaticSize.XY;
+                                                TextSize = 16;
+                                                BackgroundColor3 = rgb(255, 255, 255)
+                                        });
+
+                                        library:create("UIPadding", {
+                                                Parent = multi_items["name"];
+                                                PaddingRight = dim(0, 5);
+                                                PaddingLeft = dim(0, 5)
+                                        });
+
+                                        library:create("UIPadding", {
+                                                Parent = multi_items["button"];
+                                                PaddingRight = dim(0, 10);
+                                                PaddingLeft = dim(0, 10)
+                                        });
+
+                                        library:create("UICorner", {
+                                                Parent = multi_items["button"];
+                                                CornerRadius = dim(0, 7)
+                                        }); 
+
+                                        -- Tab 
+                                        multi_items["tab"] = library:create("Frame", {
+                                                Parent = library.cache;
+                                                BackgroundTransparency = 1;
+                                                Name = "\0";
+                                                BorderColor3 = rgb(0, 0, 0);
+                                                Size = dim2(1, -20, 1, -20);
+                                                BorderSizePixel = 0;
+                                                Visible = false;
+                                                BackgroundColor3 = rgb(255, 255, 255)
+                                        });
+
+                                        library:create("UIListLayout", {
+                                                FillDirection = Enum.FillDirection.Vertical;
+                                                HorizontalFlex = Enum.UIFlexAlignment.Fill;
+                                                Parent = multi_items["tab"];
+                                                Padding = dim(0, 7);
+                                                SortOrder = Enum.SortOrder.LayoutOrder;
+                                                VerticalFlex = Enum.UIFlexAlignment.Fill
+                                        });
+
+                                        library:create("UIPadding", {
+                                                PaddingTop = dim(0, 7);
+                                                PaddingBottom = dim(0, 7);
+                                                Parent = multi_items["tab"];
+                                                PaddingRight = dim(0, 7);
+                                                PaddingLeft = dim(0, 7)
+                                        });
+                                end
+
+                                data.text = multi_items["name"]
+                                data.accent = multi_items["accent"]
+                                data.button = multi_items["button"]
+                                data.page = multi_items["tab"]
+                                data.parent = setmetatable(data, library):sub_tab({}).items["tab_parent"]
+                                data.parent_tab = cfg
+
+                                function data.open_page()
+                                        local page = cfg.current_multi; 
+
+                                        if page and page.text ~= data.text then 
+                                                self.items["global_fade"].BackgroundTransparency = 0
+                                                library:tween(self.items["global_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4)
+
+                                                local old_size = page.page.Size
+                                                page.page.Size = dim2(1, -20, 1, -20)
+                                        end
+
+                                        if page then
+                                                library:tween(page.text, {TextColor3 = rgb(62, 62, 63)})
+                                                library:tween(page.button, {BackgroundTransparency = 1})
+                                                page.page.Visible = false
+                                                page.page.Parent = library["cache"] 
+                                        end 
+
+                                        library:tween(data.text, {TextColor3 = rgb(255, 255, 255)})
+                                        library:tween(data.button, {BackgroundTransparency = 0})
+                                        library:tween(data.page, {Size = dim2(1, 0, 1, 0)}, Enum.EasingStyle.Quad, 0.4)
+
+                                        data.page.Visible = true
+                                        data.page.Parent = items["tab_holder"]
+
+                                        cfg.current_multi = data
+
+                                        library:close_element()
+                                end
+
+                                multi_items["button"].MouseButton1Down:Connect(function()
+                                        data.open_page() 
+                                end)
+
+                                cfg.pages[#cfg.pages + 1] = setmetatable(data, library)
+                        end 
+
+                        cfg.pages[1].open_page()
+                end 
+
+                function cfg.open_tab() 
+                        local selected_tab = self.selected_tab
+
+                        if selected_tab then 
+                                if selected_tab[4] ~= items["tab_holder"] then 
+                                        self.items["global_fade"].BackgroundTransparency = 0
+                                        library:tween(self.items["global_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4)
+                                        selected_tab[4].Size = dim2(1, -216, 1, -101)
+                                end
+
+                                library:tween(selected_tab[1], {BackgroundTransparency = 1})
+                                library:tween(selected_tab[2], {ImageColor3 = rgb(72, 72, 73)})
+                                library:tween(selected_tab[3], {TextColor3 = rgb(72, 72, 73)})
+
+                                selected_tab[4].Visible = false
+                                selected_tab[4].Parent = library["cache"]
+                                selected_tab[5].Visible = false
+                                selected_tab[5].Parent = library["cache"]
+                        end
+
+                        library:tween(items["button"], {BackgroundTransparency = 0})
+                        library:tween(items["icon"], {ImageColor3 = themes.preset.accent})
+                        library:tween(items["name"], {TextColor3 = rgb(255, 255, 255)})
+                        library:tween(items["tab_holder"], {Size = dim2(1, -196, 1, -81)}, Enum.EasingStyle.Quad, 0.4)
+
+                        items["tab_holder"].Visible = true 
+                        items["tab_holder"].Parent = self.items["main"]
+                        items["multi_section_button_holder"].Visible = true 
+                        items["multi_section_button_holder"].Parent = self.items["multi_holder"]
+
+                        self.selected_tab = {
+                                items["button"];
+                                items["icon"];
+                                items["name"];
+                                items["tab_holder"];
+                                items["multi_section_button_holder"];
+                        }
+
+                        library:close_element()
+                end
+
+                items["button"].MouseButton1Down:Connect(function()
+                        cfg.open_tab()
+                end)
+
+                if not self.selected_tab then 
+                        cfg.open_tab(true) 
+                end
+
+                return unpack(cfg.pages)
+        end
         function library:seperator(properties)
             local cfg = {items = {}, name = properties.Name or properties.name or "General"}
 
@@ -1172,7 +1434,7 @@
             end 
         --
 
-                function library:section(properties)
+        function library:section(properties)
                 local cfg = {
                         name = properties.name or properties.Name or "section"; 
                         side = properties.side or properties.Side or "left";
@@ -1184,22 +1446,22 @@
                 };
 
                 local items = cfg.items; do 
-                        items[ "outline" ] = library:create( "Frame" , {
+                        items["outline"] = library:create("Frame", {
                                 Name = "\0";
-                                Parent = self.items[ "column" ];
+                                Parent = self.items["column"];
                                 BorderColor3 = rgb(0, 0, 0);
                                 Size = dim2(0, 0, cfg.size, -3);
                                 BorderSizePixel = 0;
                                 BackgroundColor3 = rgb(25, 25, 29)
                         });
 
-                        library:create( "UICorner" , {
-                                Parent = items[ "outline" ];
+                        library:create("UICorner", {
+                                Parent = items["outline"];
                                 CornerRadius = dim(0, 7)
                         });
 
-                        items[ "inline" ] = library:create( "Frame" , {
-                                Parent = items[ "outline" ];
+                        items["inline"] = library:create("Frame", {
+                                Parent = items["outline"];
                                 Name = "\0";
                                 Position = dim2(0, 1, 0, 1);
                                 BorderColor3 = rgb(0, 0, 0);
@@ -1208,17 +1470,17 @@
                                 BackgroundColor3 = rgb(22, 22, 24)
                         });
 
-                        library:create( "UICorner" , {
-                                Parent = items[ "inline" ];
+                        library:create("UICorner", {
+                                Parent = items["inline"];
                                 CornerRadius = dim(0, 7)
                         });
 
-                        items[ "scrolling" ] = library:create( "ScrollingFrame" , {
+                        items["scrolling"] = library:create("ScrollingFrame", {
                                 ScrollBarImageColor3 = rgb(44, 44, 46);
                                 Active = true;
                                 AutomaticCanvasSize = Enum.AutomaticSize.Y;
                                 ScrollBarThickness = 2;
-                                Parent = items[ "inline" ];
+                                Parent = items["inline"];
                                 Name = "\0";
                                 Size = dim2(1, 0, 1, -40);
                                 BackgroundTransparency = 1;
@@ -1229,9 +1491,9 @@
                                 CanvasSize = dim2(0, 0, 0, 0)
                         });
 
-                        items[ "elements" ] = library:create( "Frame" , {
+                        items["elements"] = library:create("Frame", {
                                 BorderColor3 = rgb(0, 0, 0);
-                                Parent = items[ "scrolling" ];
+                                Parent = items["scrolling"];
                                 Name = "\0";
                                 BackgroundTransparency = 1;
                                 Position = dim2(0, 10, 0, 10);
@@ -1241,24 +1503,24 @@
                                 BackgroundColor3 = rgb(255, 255, 255)
                         });
 
-                        library:create( "UIListLayout" , {
-                                Parent = items[ "elements" ];
+                        library:create("UIListLayout", {
+                                Parent = items["elements"];
                                 Padding = dim(0, 10);
                                 SortOrder = Enum.SortOrder.LayoutOrder
                         });
 
-                        library:create( "UIPadding" , {
+                        library:create("UIPadding", {
                                 PaddingBottom = dim(0, 15);
-                                Parent = items[ "elements" ]
+                                Parent = items["elements"]
                         });
 
-                        items[ "button" ] = library:create( "TextButton" , {
+                        items["button"] = library:create("TextButton", {
                                 FontFace = fonts.font;
                                 TextColor3 = rgb(255, 255, 255);
                                 BorderColor3 = rgb(0, 0, 0);
                                 Text = "";
                                 AutoButtonColor = false;
-                                Parent = items[ "outline" ];
+                                Parent = items["outline"];
                                 Name = "\0";
                                 Position = dim2(0, 1, 0, 1);
                                 Size = dim2(1, -2, 0, 35);
@@ -1267,22 +1529,22 @@
                                 BackgroundColor3 = rgb(19, 19, 21)
                         });
 
-                        library:create( "UIStroke" , {
+                        library:create("UIStroke", {
                                 Color = rgb(23, 23, 29);
-                                Parent = items[ "button" ];
+                                Parent = items["button"];
                                 Enabled = false;
                                 ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                         });
 
-                        library:create( "UICorner" , {
-                                Parent = items[ "button" ];
+                        library:create("UICorner", {
+                                Parent = items["button"];
                                 CornerRadius = dim(0, 7)
                         });
 
-                        items[ "Icon" ] = library:create( "ImageLabel" , {
+                        items["Icon"] = library:create("ImageLabel", {
                                 ImageColor3 = themes.preset.accent;
                                 BorderColor3 = rgb(0, 0, 0);
-                                Parent = items[ "button" ];
+                                Parent = items["button"];
                                 AnchorPoint = vec2(0.5, 0.5);
                                 Image = cfg.icon;
                                 BackgroundTransparency = 1;
@@ -1291,14 +1553,14 @@
                                 Size = dim2(0, 22, 0, 22);
                                 BorderSizePixel = 0;
                                 BackgroundColor3 = rgb(255, 255, 255)
-                        }); library:apply_theme(items[ "Icon" ], "accent", "ImageColor3");
+                        }); library:apply_theme(items["Icon"], "accent", "ImageColor3");
 
-                        items[ "section_title" ] = library:create( "TextLabel" , {
+                        items["section_title"] = library:create("TextLabel", {
                                 FontFace = fonts.font;
                                 TextColor3 = rgb(255, 255, 255);
                                 BorderColor3 = rgb(0, 0, 0);
                                 Text = cfg.name;
-                                Parent = items[ "button" ];
+                                Parent = items["button"];
                                 Name = "\0";
                                 Size = dim2(0, 0, 1, 0);
                                 Position = dim2(0, 0, 0, -1);
@@ -1310,9 +1572,9 @@
                                 BackgroundColor3 = rgb(255, 255, 255)
                         });
 
-                        library:create( "Frame" , {
+                        library:create("Frame", {
                                 AnchorPoint = vec2(0, 1);
-                                Parent = items[ "button" ];
+                                Parent = items["button"];
                                 Position = dim2(0, 0, 1, 0);
                                 BorderColor3 = rgb(0, 0, 0);
                                 Size = dim2(1, 0, 0, 1);
@@ -1321,29 +1583,29 @@
                         });
 
                         if cfg.fading_toggle then 
-                                items[ "toggle" ] = library:create( "TextButton" , {
+                                items["toggle"] = library:create("TextButton", {
                                         FontFace = fonts.small;
                                         TextColor3 = rgb(0, 0, 0);
                                         BorderColor3 = rgb(0, 0, 0);
                                         AutoButtonColor = false;
                                         Text = "";
                                         AnchorPoint = vec2(1, 0.5);
-                                        Parent = items[ "button" ];
+                                        Parent = items["button"];
                                         Name = "\0";
                                         Position = dim2(1, -9, 0.5, 0);
                                         Size = dim2(0, 36, 0, 18);
                                         BorderSizePixel = 0;
                                         TextSize = 14;
                                         BackgroundColor3 = rgb(58, 58, 62)
-                                });  library:apply_theme(items[ "toggle" ], "accent", "BackgroundColor3");
+                                }); library:apply_theme(items["toggle"], "accent", "BackgroundColor3");
 
-                                library:create( "UICorner" , {
-                                        Parent = items[ "toggle" ];
+                                library:create("UICorner", {
+                                        Parent = items["toggle"];
                                         CornerRadius = dim(0, 999)
                                 });
 
-                                items[ "toggle_outline" ] = library:create( "Frame" , {
-                                        Parent = items[ "toggle" ];
+                                items["toggle_outline"] = library:create("Frame", {
+                                        Parent = items["toggle"];
                                         Size = dim2(1, -2, 1, -2);
                                         Name = "\0";
                                         BorderMode = Enum.BorderMode.Inset;
@@ -1351,20 +1613,20 @@
                                         Position = dim2(0, 1, 0, 1);
                                         BorderSizePixel = 0;
                                         BackgroundColor3 = rgb(50, 50, 50)
-                                });  library:apply_theme(items[ "toggle_outline" ], "accent", "BackgroundColor3");
+                                }); library:apply_theme(items["toggle_outline"], "accent", "BackgroundColor3");
 
-                                library:create( "UICorner" , {
-                                        Parent = items[ "toggle_outline" ];
+                                library:create("UICorner", {
+                                        Parent = items["toggle_outline"];
                                         CornerRadius = dim(0, 999)
                                 });
 
-                                library:create( "UIGradient" , {
+                                library:create("UIGradient", {
                                         Color = rgbseq{rgbkey(0, rgb(211, 211, 211)), rgbkey(1, rgb(211, 211, 211))};
-                                        Parent = items[ "toggle_outline" ]
+                                        Parent = items["toggle_outline"]
                                 });
 
-                                items[ "toggle_circle" ] = library:create( "Frame" , {
-                                        Parent = items[ "toggle_outline" ];
+                                items["toggle_circle"] = library:create("Frame", {
+                                        Parent = items["toggle_outline"];
                                         Name = "\0";
                                         Position = dim2(0, 2, 0, 2);
                                         BorderColor3 = rgb(0, 0, 0);
@@ -1373,36 +1635,18 @@
                                         BackgroundColor3 = rgb(86, 86, 88)
                                 });
 
-                                items[ "fade" ] = library:create( "Frame" , {
-                                        Parent = items[ "outline" ];
+                                items["fade"] = library:create("Frame", {
+                                        Parent = items["outline"];
                                         Name = "\0";
                                         BackgroundTransparency = cfg.default and 1 or 0.8;
                                         Size = dim2(1, 0, 1, -35);
                                         Position = dim2(0, 0, 0, 35);
                                         BorderColor3 = rgb(0, 0, 0);
                                         BorderSizePixel = 0;
-                                        BackgroundColor3 = rgb(22, 22, 24);
-                                        ZIndex = 2
+                                        BackgroundColor3 = rgb(14, 14, 16)
                                 });
-
-                                library:create( "UICorner" , {
-                                        Parent = items[ "fade" ];
-                                        CornerRadius = dim(0, 7)
-                                });
-
-                                items[ "button" ].MouseButton1Click:Connect(function()
-                                        cfg.default = not cfg.default 
-                                        cfg.toggle_section(cfg.default) 
-                                end)
-
-                                function cfg.toggle_section(bool)
-                                        library:tween(items[ "toggle" ], {BackgroundColor3 = bool and themes.preset.accent or rgb(58, 58, 62)}, Enum.EasingStyle.Quad)
-                                        library:tween(items[ "toggle_outline" ], {BackgroundColor3 = bool and themes.preset.accent or rgb(50, 50, 50)}, Enum.EasingStyle.Quad)
-                                        library:tween(items[ "toggle_circle" ], {BackgroundColor3 = bool and rgb(255, 255, 255) or rgb(86, 86, 88), Position = bool and dim2(1, -14, 0, 2) or dim2(0, 2, 0, 2)}, Enum.EasingStyle.Quad)
-                                        library:tween(items[ "fade" ], {BackgroundTransparency = bool and 1 or 0.8}, Enum.EasingStyle.Quad)
-                                end 
                         end
-                end
+                end;
 
                 return setmetatable(cfg, library)
         end
