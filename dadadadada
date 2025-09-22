@@ -1109,7 +1109,7 @@
             end;    
 
             return setmetatable(cfg, library)
-        end
+        end 
 
         -- Miscellaneous 
             function library:column(properties) 
