@@ -550,6 +550,7 @@
                         search_open = false; -- Track if search dropdown is open
                 }
 
+                -- Debug: Log window creation start
                 print("Creating window with name: " .. cfg.name)
 
                 local success, err = pcall(function()
@@ -770,18 +771,23 @@
                                 BackgroundColor3 = rgb(255, 255, 255)
                         }); library:apply_theme(items["other_info"], "accent", "TextColor3");
 
-                        -- Search Textbox at Bottom Left
+                        -- Search Textbox (Minimal)
                         success, err = pcall(function()
                                 items["search_holder"] = library:create("Frame", {
                                         Parent = items["main"];
                                         Name = "\0";
                                         BackgroundTransparency = 1;
-                                        Position = dim2(0, 10, 1, -40);
+                                        Position = dim2(1, -150, 0, 10);
                                         Size = dim2(0, 140, 0, 30);
                                         BorderColor3 = rgb(0, 0, 0);
                                         BorderSizePixel = 0;
                                 });
+                        end)
+                        if not success then
+                                warn("Failed to create search_holder: " .. tostring(err))
+                        end
 
+                        success, err = pcall(function()
                                 items["search_input"] = library:create("TextBox", {
                                         FontFace = fonts.font;
                                         Text = "";
@@ -799,18 +805,23 @@
                                         Size = dim2(1, 0, 1, 0);
                                         Position = dim2(0, 0, 0, 0);
                                 });
+                        end)
+                        if not success then
+                                warn("Failed to create search_input: " .. tostring(err))
+                        end
 
-                                library:create("UICorner", {
-                                        Parent = items["search_input"];
-                                        CornerRadius = dim(0, 4)
-                                });
+                        library:create("UICorner", {
+                                Parent = items["search_input"];
+                                CornerRadius = dim(0, 4)
+                        });
 
-                                library:create("UIPadding", {
-                                        Parent = items["search_input"];
-                                        PaddingLeft = dim(0, 5);
-                                        PaddingRight = dim(0, 5);
-                                });
+                        library:create("UIPadding", {
+                                Parent = items["search_input"];
+                                PaddingLeft = dim(0, 5);
+                                PaddingRight = dim(0, 5);
+                        });
 
+                        success, err = pcall(function()
                                 items["search_dropdown"] = library:create("Frame", {
                                         Parent = library["items"];
                                         Name = "\0";
@@ -821,28 +832,32 @@
                                         BorderSizePixel = 0;
                                         AutomaticSize = Enum.AutomaticSize.Y;
                                         ClipsDescendants = true;
-                                        Visible = false;
                                 });
+                        end)
+                        if not success then
+                                warn("Failed to create search_dropdown: " .. tostring(err))
+                        end
 
-                                library:create("UIListLayout", {
-                                        Parent = items["search_dropdown"];
-                                        Padding = dim(0, 5);
-                                        SortOrder = Enum.SortOrder.LayoutOrder;
-                                });
+                        library:create("UIListLayout", {
+                                Parent = items["search_dropdown"];
+                                Padding = dim(0, 5);
+                                SortOrder = Enum.SortOrder.LayoutOrder;
+                        });
 
-                                library:create("UIPadding", {
-                                        Parent = items["search_dropdown"];
-                                        PaddingTop = dim(0, 5);
-                                        PaddingBottom = dim(0, 5);
-                                        PaddingLeft = dim(0, 5);
-                                        PaddingRight = dim(0, 5);
-                                });
+                        library:create("UIPadding", {
+                                Parent = items["search_dropdown"];
+                                PaddingTop = dim(0, 5);
+                                PaddingBottom = dim(0, 5);
+                                PaddingLeft = dim(0, 5);
+                                PaddingRight = dim(0, 5);
+                        });
 
-                                library:create("UICorner", {
-                                        Parent = items["search_dropdown"];
-                                        CornerRadius = dim(0, 4);
-                                });
+                        library:create("UICorner", {
+                                Parent = items["search_dropdown"];
+                                CornerRadius = dim(0, 4);
+                        });
 
+                        success, err = pcall(function()
                                 items["search_inline"] = library:create("Frame", {
                                         Parent = items["search_dropdown"];
                                         Name = "\0";
@@ -851,15 +866,15 @@
                                         BorderSizePixel = 0;
                                         BackgroundColor3 = rgb(22, 22, 24);
                                 });
-
-                                library:create("UICorner", {
-                                        Parent = items["search_inline"];
-                                        CornerRadius = dim(0, 4);
-                                });
                         end)
                         if not success then
-                                warn("Failed to create search UI: " .. tostring(err))
+                                warn("Failed to create search_inline: " .. tostring(err))
                         end
+
+                        library:create("UICorner", {
+                                Parent = items["search_inline"];
+                                CornerRadius = dim(0, 4);
+                        });
 
                         print("Window UI elements created successfully")
                 end
@@ -879,33 +894,41 @@
                                 warn("Resizify failed: " .. tostring(err))
                         end
 
-                        -- Search functionality (only on focus)
+                        -- Search functionality
                         success, err = pcall(function()
-                                if items["search_input"] then
-                                        items["search_input"].FocusLost:Connect(function()
-                                                cfg.search_open = false
-                                                items["search_dropdown"].Visible = false
-                                                print("Search dropdown closed")
-                                        end);
-
-                                        items["search_input"].Focused:Connect(function()
-                                                cfg.search_open = true
-                                                items["search_dropdown"].Visible = true
-                                                items["search_dropdown"].Position = dim_offset(items["search_holder"].AbsolutePosition.X, items["search_holder"].AbsolutePosition.Y - items["search_dropdown"].AbsoluteSize.Y - 5)
-                                                library:search(items["search_input"].Text, cfg)
-                                                print("Search dropdown opened")
-                                        end);
-
-                                        items["search_input"].Changed:Connect(function(property)
-                                                if property == "Text" and cfg.search_open then
-                                                        library:search(items["search_input"].Text, cfg)
-                                                        print("Search query updated: " .. items["search_input"].Text)
-                                                end
-                                        end);
-                                end
+                                items["search_input"].FocusLost:Connect(function()
+                                        cfg.search_open = false
+                                        items["search_dropdown"].Visible = false
+                                        print("Search dropdown closed")
+                                end);
                         end)
                         if not success then
-                                warn("Failed to connect search events: " .. tostring(err))
+                                warn("Failed to connect FocusLost: " .. tostring(err))
+                        end
+
+                        success, err = pcall(function()
+                                items["search_input"].Focused:Connect(function()
+                                        cfg.search_open = true
+                                        items["search_dropdown"].Visible = true
+                                        items["search_dropdown"].Position = dim_offset(items["search_holder"].AbsolutePosition.X, items["search_holder"].AbsolutePosition.Y + items["search_holder"].AbsoluteSize.Y + 5)
+                                        library:search(items["search_input"].Text, cfg)
+                                        print("Search dropdown opened")
+                                end);
+                        end)
+                        if not success then
+                                warn("Failed to connect Focused: " .. tostring(err))
+                        end
+
+                        success, err = pcall(function()
+                                items["search_input"].Changed:Connect(function(property)
+                                        if property == "Text" then
+                                                library:search(items["search_input"].Text, cfg)
+                                                print("Search query updated: " .. items["search_input"].Text)
+                                        end
+                                end);
+                        end)
+                        if not success then
+                                warn("Failed to connect Changed: " .. tostring(err))
                         end
                 end 
 
@@ -924,6 +947,7 @@
 
                 print("Searching for: " .. tostring(query))
 
+                -- Clear previous search results
                 local success, err = pcall(function()
                         for _, child in ipairs(items["search_dropdown"]:GetChildren()) do
                                 if child:IsA("TextButton") then
@@ -935,6 +959,7 @@
                         warn("Failed to clear search dropdown: " .. tostring(err))
                 end
 
+                -- Search through tabs
                 query = query:lower()
                 for _, tab in ipairs(library.tabs) do
                         if tab.name:lower():find(query) then
@@ -942,6 +967,7 @@
                         end
                 end
 
+                -- Display results in dropdown
                 for _, result in ipairs(results) do
                         local button
                         success, err = pcall(function()
@@ -953,7 +979,7 @@
                                         Name = "\0",
                                         Size = dim2(1, 0, 0, 30),
                                         BackgroundColor3 = rgb(33, 33, 35),
-                                        BorderSizePixel = 0;
+                                        BorderSizePixel = 0,
                                         TextSize = 14,
                                         AutoButtonColor = false,
                                 });
@@ -1013,7 +1039,7 @@
 
                 items["search_dropdown"].Visible = #results > 0 and window_cfg.search_open
                 print("Search results: " .. #results)
-        end
+         end
 
          function library:tab(properties)
                 local cfg = {
@@ -1025,87 +1051,69 @@
                         items = {};
                 } 
 
+                -- Store tab for search
                 table.insert(library.tabs, cfg)
                 print("Tab created: " .. cfg.name)
 
                 local items = cfg.items; do 
-                        success, err = pcall(function()
-                                items["tab_holder"] = library:create("Frame", {
-                                        Parent = self.items["main"];
-                                        Name = "\0";
-                                        Visible = false;
-                                        BackgroundTransparency = 1;
-                                        Position = dim2(0, 196, 0, 56);
-                                        BorderColor3 = rgb(0, 0, 0);
-                                        Size = dim2(1, -216, 1, -101);
-                                        BorderSizePixel = 0;
-                                        BackgroundColor3 = rgb(255, 255, 255)
-                                });
-                        end)
-                        if not success then
-                                warn("Failed to create tab_holder: " .. tostring(err))
-                        end
+                        items["tab_holder"] = library:create("Frame", {
+                                Parent = library.cache;
+                                Name = "\0";
+                                Visible = false;
+                                BackgroundTransparency = 1;
+                                Position = dim2(0, 196, 0, 56);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(1, -216, 1, -101);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        });
 
-                        success, err = pcall(function()
-                                items["button"] = library:create("TextButton", {
-                                        FontFace = fonts.font;
-                                        TextColor3 = rgb(255, 255, 255);
-                                        BorderColor3 = rgb(0, 0, 0);
-                                        Text = "";
-                                        Parent = self.items["button_holder"];
-                                        AutoButtonColor = false;
-                                        BackgroundTransparency = 1;
-                                        Name = "\0";
-                                        Size = dim2(1, 0, 0, 35);
-                                        BorderSizePixel = 0;
-                                        TextSize = 16;
-                                        BackgroundColor3 = rgb(29, 29, 29)
-                                });
-                        end)
-                        if not success then
-                                warn("Failed to create tab button: " .. tostring(err))
-                        end
+                        -- Tab buttons 
+                        items["button"] = library:create("TextButton", {
+                                FontFace = fonts.font;
+                                TextColor3 = rgb(255, 255, 255);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Text = "";
+                                Parent = self.items["button_holder"];
+                                AutoButtonColor = false;
+                                BackgroundTransparency = 1;
+                                Name = "\0";
+                                Size = dim2(1, 0, 0, 35);
+                                BorderSizePixel = 0;
+                                TextSize = 16;
+                                BackgroundColor3 = rgb(29, 29, 29)
+                        });
 
-                        success, err = pcall(function()
-                                items["icon"] = library:create("ImageLabel", {
-                                        ImageColor3 = rgb(72, 72, 73);
-                                        BorderColor3 = rgb(0, 0, 0);
-                                        Parent = items["button"];
-                                        AnchorPoint = vec2(0, 0.5);
-                                        Image = cfg.icon;
-                                        BackgroundTransparency = 1;
-                                        Position = dim2(0, 10, 0.5, 0);
-                                        Name = "\0";
-                                        Size = dim2(0, 22, 0, 22);
-                                        BorderSizePixel = 0;
-                                        BackgroundColor3 = rgb(255, 255, 255)
-                                }); library:apply_theme(items["icon"], "accent", "ImageColor3");
-                        end)
-                        if not success then
-                                warn("Failed to create tab icon: " .. tostring(err))
-                        end
+                        items["icon"] = library:create("ImageLabel", {
+                                ImageColor3 = rgb(72, 72, 73);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Parent = items["button"];
+                                AnchorPoint = vec2(0, 0.5);
+                                Image = cfg.icon;
+                                BackgroundTransparency = 1;
+                                Position = dim2(0, 10, 0.5, 0);
+                                Name = "\0";
+                                Size = dim2(0, 22, 0, 22);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        }); library:apply_theme(items["icon"], "accent", "ImageColor3");
 
-                        success, err = pcall(function()
-                                items["name"] = library:create("TextLabel", {
-                                        FontFace = fonts.font;
-                                        TextColor3 = rgb(72, 72, 73);
-                                        BorderColor3 = rgb(0, 0, 0);
-                                        Text = cfg.name;
-                                        Parent = items["button"];
-                                        Name = "\0";
-                                        Size = dim2(0, 0, 1, 0);
-                                        Position = dim2(0, 40, 0, 0);
-                                        BackgroundTransparency = 1;
-                                        TextXAlignment = Enum.TextXAlignment.Left;
-                                        BorderSizePixel = 0;
-                                        AutomaticSize = Enum.AutomaticSize.X;
-                                        TextSize = 16;
-                                        BackgroundColor3 = rgb(255, 255, 255)
-                                });
-                        end)
-                        if not success then
-                                warn("Failed to create tab name: " .. tostring(err))
-                        end
+                        items["name"] = library:create("TextLabel", {
+                                FontFace = fonts.font;
+                                TextColor3 = rgb(72, 72, 73);
+                                BorderColor3 = rgb(0, 0, 0);
+                                Text = cfg.name;
+                                Parent = items["button"];
+                                Name = "\0";
+                                Size = dim2(0, 0, 1, 0);
+                                Position = dim2(0, 40, 0, 0);
+                                BackgroundTransparency = 1;
+                                TextXAlignment = Enum.TextXAlignment.Left;
+                                BorderSizePixel = 0;
+                                AutomaticSize = Enum.AutomaticSize.X;
+                                TextSize = 16;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        });
 
                         library:create("UIPadding", {
                                 Parent = items["name"];
@@ -1125,21 +1133,17 @@
                                 ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                         });
 
-                        success, err = pcall(function()
-                                items["multi_section_button_holder"] = library:create("Frame", {
-                                        Parent = self.items["multi_holder"];
-                                        BackgroundTransparency = 1;
-                                        Name = "\0";
-                                        Visible = false;
-                                        BorderColor3 = rgb(0, 0, 0);
-                                        Size = dim2(1, 0, 1, 0);
-                                        BorderSizePixel = 0;
-                                        BackgroundColor3 = rgb(255, 255, 255)
-                                });
-                        end)
-                        if not success then
-                                warn("Failed to create multi_section_button_holder: " .. tostring(err))
-                        end
+                        -- Multi Sections
+                        items["multi_section_button_holder"] = library:create("Frame", {
+                                Parent = library.cache;
+                                BackgroundTransparency = 1;
+                                Name = "\0";
+                                Visible = false;
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(1, 0, 1, 0);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        });
 
                         library:create("UIListLayout", {
                                 Parent = items["multi_section_button_holder"];
@@ -1157,52 +1161,42 @@
                         });                        
 
                         for _, section in cfg.tabs do
-                                print("Creating sub-tab: " .. section)
                                 local data = {items = {}, name = section, parent_tab = nil} 
 
                                 local multi_items = data.items; do 
-                                        success, err = pcall(function()
-                                                multi_items["button"] = library:create("TextButton", {
-                                                        FontFace = fonts.font;
-                                                        TextColor3 = rgb(255, 255, 255);
-                                                        BorderColor3 = rgb(0, 0, 0);
-                                                        AutoButtonColor = false;
-                                                        Text = "";
-                                                        Parent = items["multi_section_button_holder"];
-                                                        Name = "\0";
-                                                        Size = dim2(0, 0, 0, 39);
-                                                        BackgroundTransparency = 1;
-                                                        ClipsDescendants = true;
-                                                        BorderSizePixel = 0;
-                                                        AutomaticSize = Enum.AutomaticSize.X;
-                                                        TextSize = 16;
-                                                        BackgroundColor3 = rgb(25, 25, 29)
-                                                });
-                                        end)
-                                        if not success then
-                                                warn("Failed to create sub-tab button: " .. tostring(err))
-                                        end
+                                        -- Button
+                                        multi_items["button"] = library:create("TextButton", {
+                                                FontFace = fonts.font;
+                                                TextColor3 = rgb(255, 255, 255);
+                                                BorderColor3 = rgb(0, 0, 0);
+                                                AutoButtonColor = false;
+                                                Text = "";
+                                                Parent = items["multi_section_button_holder"];
+                                                Name = "\0";
+                                                Size = dim2(0, 0, 0, 39);
+                                                BackgroundTransparency = 1;
+                                                ClipsDescendants = true;
+                                                BorderSizePixel = 0;
+                                                AutomaticSize = Enum.AutomaticSize.X;
+                                                TextSize = 16;
+                                                BackgroundColor3 = rgb(25, 25, 29)
+                                        });
 
-                                        success, err = pcall(function()
-                                                multi_items["name"] = library:create("TextLabel", {
-                                                        FontFace = fonts.font;
-                                                        TextColor3 = rgb(62, 62, 63);
-                                                        BorderColor3 = rgb(0, 0, 0);
-                                                        Text = section;
-                                                        Parent = multi_items["button"];
-                                                        Name = "\0";
-                                                        Size = dim2(0, 0, 1, 0);
-                                                        BackgroundTransparency = 1;
-                                                        TextXAlignment = Enum.TextXAlignment.Left;
-                                                        BorderSizePixel = 0;
-                                                        AutomaticSize = Enum.AutomaticSize.XY;
-                                                        TextSize = 16;
-                                                        BackgroundColor3 = rgb(255, 255, 255)
-                                                });
-                                        end)
-                                        if not success then
-                                                warn("Failed to create sub-tab name: " .. tostring(err))
-                                        end
+                                        multi_items["name"] = library:create("TextLabel", {
+                                                FontFace = fonts.font;
+                                                TextColor3 = rgb(62, 62, 63);
+                                                BorderColor3 = rgb(0, 0, 0);
+                                                Text = section;
+                                                Parent = multi_items["button"];
+                                                Name = "\0";
+                                                Size = dim2(0, 0, 1, 0);
+                                                BackgroundTransparency = 1;
+                                                TextXAlignment = Enum.TextXAlignment.Left;
+                                                BorderSizePixel = 0;
+                                                AutomaticSize = Enum.AutomaticSize.XY;
+                                                TextSize = 16;
+                                                BackgroundColor3 = rgb(255, 255, 255)
+                                        });
 
                                         library:create("UIPadding", {
                                                 Parent = multi_items["name"];
@@ -1221,21 +1215,17 @@
                                                 CornerRadius = dim(0, 7)
                                         }); 
 
-                                        success, err = pcall(function()
-                                                multi_items["tab"] = library:create("Frame", {
-                                                        Parent = items["tab_holder"];
-                                                        BackgroundTransparency = 1;
-                                                        Name = "\0";
-                                                        BorderColor3 = rgb(0, 0, 0);
-                                                        Size = dim2(1, -20, 1, -20);
-                                                        BorderSizePixel = 0;
-                                                        Visible = false;
-                                                        BackgroundColor3 = rgb(255, 255, 255)
-                                                });
-                                        end)
-                                        if not success then
-                                                warn("Failed to create sub-tab frame: " .. tostring(err))
-                                        end
+                                        -- Tab 
+                                        multi_items["tab"] = library:create("Frame", {
+                                                Parent = library.cache;
+                                                BackgroundTransparency = 1;
+                                                Name = "\0";
+                                                BorderColor3 = rgb(0, 0, 0);
+                                                Size = dim2(1, -20, 1, -20);
+                                                BorderSizePixel = 0;
+                                                Visible = false;
+                                                BackgroundColor3 = rgb(255, 255, 255)
+                                        });
 
                                         library:create("UIListLayout", {
                                                 FillDirection = Enum.FillDirection.Vertical;
@@ -1256,159 +1246,99 @@
                                 end
 
                                 data.text = multi_items["name"]
+                                data.accent = multi_items["accent"]
                                 data.button = multi_items["button"]
                                 data.page = multi_items["tab"]
+                                data.parent = setmetatable(data, library):sub_tab({}).items["tab_parent"]
                                 data.parent_tab = cfg
 
                                 function data.open_page()
                                         local page = cfg.current_multi; 
 
-                                        print("Opening sub-tab: " .. data.name)
-
                                         if page and page.text ~= data.text then 
-                                                success, err = pcall(function()
-                                                        self.items["global_fade"].BackgroundTransparency = 0
-                                                        library:tween(self.items["global_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4)
-                                                        local old_size = page.page.Size
-                                                        page.page.Size = dim2(1, -20, 1, -20)
-                                                end)
-                                                if not success then
-                                                        warn("Failed to tween global_fade: " .. tostring(err))
-                                                end
+                                                self.items["global_fade"].BackgroundTransparency = 0
+                                                library:tween(self.items["global_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4)
+
+                                                local old_size = page.page.Size
+                                                page.page.Size = dim2(1, -20, 1, -20)
                                         end
 
                                         if page then
-                                                success, err = pcall(function()
-                                                        library:tween(page.text, {TextColor3 = rgb(62, 62, 63)})
-                                                        library:tween(page.button, {BackgroundTransparency = 1})
-                                                        page.page.Visible = false
-                                                        page.page.Parent = items["tab_holder"] 
-                                                end)
-                                                if not success then
-                                                        warn("Failed to hide previous page: " .. tostring(err))
-                                                end
+                                                library:tween(page.text, {TextColor3 = rgb(62, 62, 63)})
+                                                library:tween(page.button, {BackgroundTransparency = 1})
+                                                page.page.Visible = false
+                                                page.page.Parent = library["cache"] 
                                         end 
 
-                                        success, err = pcall(function()
-                                                library:tween(data.text, {TextColor3 = rgb(255, 255, 255)})
-                                                library:tween(data.button, {BackgroundTransparency = 0})
-                                                library:tween(data.page, {Size = dim2(1, 0, 1, 0)}, Enum.EasingStyle.Quad, 0.4)
-                                        end)
-                                        if not success then
-                                                warn("Failed to show new page: " .. tostring(err))
-                                        end
+                                        library:tween(data.text, {TextColor3 = rgb(255, 255, 255)})
+                                        library:tween(data.button, {BackgroundTransparency = 0})
+                                        library:tween(data.page, {Size = dim2(1, 0, 1, 0)}, Enum.EasingStyle.Quad, 0.4)
 
                                         data.page.Visible = true
                                         data.page.Parent = items["tab_holder"]
 
                                         cfg.current_multi = data
 
-                                        success, err = pcall(function()
-                                                library:close_element()
-                                        end)
-                                        if not success then
-                                                warn("Failed to close element: " .. tostring(err))
-                                        end
-
-                                        print("Sub-tab opened: " .. data.name)
+                                        library:close_element()
                                 end
 
-                                success, err = pcall(function()
-                                        multi_items["button"].MouseButton1Down:Connect(function()
-                                                data.open_page() 
-                                        end)
+                                multi_items["button"].MouseButton1Down:Connect(function()
+                                        data.open_page() 
                                 end)
-                                if not success then
-                                        warn("Failed to connect sub-tab button: " .. tostring(err))
-                                end
 
                                 cfg.pages[#cfg.pages + 1] = setmetatable(data, library)
                         end 
 
-                        success, err = pcall(function()
-                                cfg.pages[1].open_page()
-                        end)
-                        if not success then
-                                warn("Failed to open first sub-tab: " .. tostring(err))
-                        end
+                        cfg.pages[1].open_page()
                 end 
 
                 function cfg.open_tab() 
                         local selected_tab = self.selected_tab
 
-                        print("Opening tab: " .. cfg.name)
-
                         if selected_tab then 
-                                success, err = pcall(function()
-                                        if selected_tab[4] ~= items["tab_holder"] then 
-                                                self.items["global_fade"].BackgroundTransparency = 0
-                                                library:tween(self.items["global_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4)
-                                                selected_tab[4].Size = dim2(1, -216, 1, -101)
-                                        end
-
-                                        library:tween(selected_tab[1], {BackgroundTransparency = 1})
-                                        library:tween(selected_tab[2], {ImageColor3 = rgb(72, 72, 73)})
-                                        library:tween(selected_tab[3], {TextColor3 = rgb(72, 72, 73)})
-
-                                        selected_tab[4].Visible = false
-                                        selected_tab[4].Parent = self.items["main"]
-                                        selected_tab[5].Visible = false
-                                        selected_tab[5].Parent = self.items["multi_holder"]
-                                end)
-                                if not success then
-                                        warn("Failed to hide previous tab: " .. tostring(err))
+                                if selected_tab[4] ~= items["tab_holder"] then 
+                                        self.items["global_fade"].BackgroundTransparency = 0
+                                        library:tween(self.items["global_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4)
+                                        selected_tab[4].Size = dim2(1, -216, 1, -101)
                                 end
+
+                                library:tween(selected_tab[1], {BackgroundTransparency = 1})
+                                library:tween(selected_tab[2], {ImageColor3 = rgb(72, 72, 73)})
+                                library:tween(selected_tab[3], {TextColor3 = rgb(72, 72, 73)})
+
+                                selected_tab[4].Visible = false
+                                selected_tab[4].Parent = library["cache"]
+                                selected_tab[5].Visible = false
+                                selected_tab[5].Parent = library["cache"]
                         end
 
-                        success, err = pcall(function()
-                                library:tween(items["button"], {BackgroundTransparency = 0})
-                                library:tween(items["icon"], {ImageColor3 = themes.preset.accent})
-                                library:tween(items["name"], {TextColor3 = rgb(255, 255, 255)})
-                                library:tween(items["tab_holder"], {Size = dim2(1, -196, 1, -81)}, Enum.EasingStyle.Quad, 0.4)
+                        library:tween(items["button"], {BackgroundTransparency = 0})
+                        library:tween(items["icon"], {ImageColor3 = themes.preset.accent})
+                        library:tween(items["name"], {TextColor3 = rgb(255, 255, 255)})
+                        library:tween(items["tab_holder"], {Size = dim2(1, -196, 1, -81)}, Enum.EasingStyle.Quad, 0.4)
 
-                                items["tab_holder"].Visible = true 
-                                items["tab_holder"].Parent = self.items["main"]
-                                items["multi_section_button_holder"].Visible = true 
-                                items["multi_section_button_holder"].Parent = self.items["multi_holder"]
+                        items["tab_holder"].Visible = true 
+                        items["tab_holder"].Parent = self.items["main"]
+                        items["multi_section_button_holder"].Visible = true 
+                        items["multi_section_button_holder"].Parent = self.items["multi_holder"]
 
-                                self.selected_tab = {
-                                        items["button"];
-                                        items["icon"];
-                                        items["name"];
-                                        items["tab_holder"];
-                                        items["multi_section_button_holder"];
-                                }
-                        end)
-                        if not success then
-                                warn("Failed to show new tab: " .. tostring(err))
-                        end
+                        self.selected_tab = {
+                                items["button"];
+                                items["icon"];
+                                items["name"];
+                                items["tab_holder"];
+                                items["multi_section_button_holder"];
+                        }
 
-                        success, err = pcall(function()
-                                library:close_element()
-                        end)
-                        if not success then
-                                warn("Failed to close element for tab: " .. tostring(err))
-                        end
-
-                        print("Tab opened: " .. cfg.name)
+                        library:close_element()
                 end
 
-                success, err = pcall(function()
-                        items["button"].MouseButton1Down:Connect(function()
-                                cfg.open_tab()
-                        end)
+                items["button"].MouseButton1Down:Connect(function()
+                        cfg.open_tab()
                 end)
-                if not success then
-                        warn("Failed to connect tab button: " .. tostring(err))
-                end
 
-                success, err = pcall(function()
-                        if not self.selected_tab then 
-                                cfg.open_tab() 
-                        end
-                end)
-                if not success then
-                        warn("Failed to open first tab: " .. tostring(err))
+                if not self.selected_tab then 
+                        cfg.open_tab(true) 
                 end
 
                 return unpack(cfg.pages)
@@ -1518,19 +1448,14 @@
                 };
 
                 local items = cfg.items; do 
-                        success, err = pcall(function()
-                                items["outline"] = library:create("Frame", {
-                                        Name = "\0";
-                                        Parent = self.items["column"];
-                                        BorderColor3 = rgb(0, 0, 0);
-                                        Size = dim2(0, 0, cfg.size, -3);
-                                        BorderSizePixel = 0;
-                                        BackgroundColor3 = rgb(25, 25, 29)
-                                });
-                        end)
-                        if not success then
-                                warn("Failed to create section outline: " .. tostring(err))
-                        end
+                        items["outline"] = library:create("Frame", {
+                                Name = "\0";
+                                Parent = self.items["column"];
+                                BorderColor3 = rgb(0, 0, 0);
+                                Size = dim2(0, 0, cfg.size, -3);
+                                BorderSizePixel = 0;
+                                BackgroundColor3 = rgb(25, 25, 29)
+                        });
 
                         library:create("UICorner", {
                                 Parent = items["outline"];
@@ -1725,7 +1650,6 @@
                         end
                 end;
 
-                print("Section created: " .. cfg.name)
                 return setmetatable(cfg, library)
         end
     
