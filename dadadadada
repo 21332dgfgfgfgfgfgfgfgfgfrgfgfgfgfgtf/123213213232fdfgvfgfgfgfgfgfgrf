@@ -2355,15 +2355,16 @@
                 return setmetatable(cfg, library)
         end
 
-                function library:colorpicker(options)
+        function library:colorpicker(options)
                 local cfg = {
                         name = options.name or "ColorPicker",
+                        color = options.color or rgb(255, 255, 255),
                         flag = options.flag or library:next_flag(),
                         callback = options.callback or function() end,
-                        color = options.color or rgb(255, 255, 255),
-                        alpha = options.alpha or 0,
+                        alpha = options.alpha or 1,
                         open = false,
                         items = {},
+                        sanity = true
                 }
 
                 local h, s, v = cfg.color:ToHSV()
@@ -2377,36 +2378,39 @@
 
                 local items = cfg.items
                 do
-                        items["colorpicker"] = library:create("Frame", {
+                        items["colorpicker"] = library:create("TextButton", {
+                                FontFace = fonts.font,
+                                TextColor3 = rgb(0, 0, 0),
+                                BorderColor3 = rgb(0, 0, 0),
+                                Text = "",
+                                AutoButtonColor = false,
                                 Parent = self.items["elements"],
                                 Name = "\0",
-                                Size = dim2(1, 0, 0, 30),
+                                Position = dim2(1, -4, 0, 0),
+                                Size = dim2(0, 40, 0, 30),
                                 BorderSizePixel = 0,
-                                BackgroundColor3 = rgb(25, 25, 29),
-                                ZIndex = 10
+                                TextSize = 14,
+                                BackgroundColor3 = cfg.color
                         })
 
                         library:create("UICorner", {
                                 Parent = items["colorpicker"],
-                                CornerRadius = dim(0, 3)
+                                CornerRadius = dim(0, 4)
                         })
 
-                        library:create("UIStroke", {
-                                Color = rgb(23, 23, 29),
-                                Parent = items["colorpicker"],
-                                ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-                                ZIndex = 10
-                        })
-
-                        items["colorpicker_click"] = library:create("TextButton", {
+                        items["colorpicker_inline"] = library:create("Frame", {
                                 Parent = items["colorpicker"],
                                 Name = "\0",
-                                Size = dim2(1, 0, 1, 0),
-                                BackgroundTransparency = 1,
+                                Position = dim2(0, 1, 0, 1),
+                                BorderColor3 = rgb(0, 0, 0),
+                                Size = dim2(1, -2, 1, -2),
                                 BorderSizePixel = 0,
-                                Text = "",
-                                AutoButtonColor = false,
-                                ZIndex = 11
+                                BackgroundColor3 = cfg.color
+                        })
+
+                        library:create("UICorner", {
+                                Parent = items["colorpicker_inline"],
+                                CornerRadius = dim(0, 4)
                         })
 
                         items["name"] = library:create("TextLabel", {
@@ -2416,14 +2420,13 @@
                                 Text = cfg.name,
                                 Parent = items["colorpicker"],
                                 Name = "\0",
+                                Size = dim2(0, 0, 0, 0),
                                 BackgroundTransparency = 1,
-                                Size = dim2(1, -50, 1, 0),
+                                TextXAlignment = Enum.TextXAlignment.Left,
                                 BorderSizePixel = 0,
                                 AutomaticSize = Enum.AutomaticSize.XY,
                                 TextSize = 16,
-                                BackgroundColor3 = rgb(255, 255, 255),
-                                ZIndex = 11,
-                                Position = dim2(0, 5, 0, 0)
+                                BackgroundColor3 = rgb(255, 255, 255)
                         })
 
                         library:create("UIPadding", {
@@ -2432,60 +2435,37 @@
                                 PaddingLeft = dim(0, 5)
                         })
 
-                        items["colorpicker_inline"] = library:create("Frame", {
-                                Parent = items["colorpicker"],
-                                Name = "\0",
-                                Position = dim2(1, -40, 0, 2),
-                                BorderColor3 = rgb(0, 0, 0),
-                                Size = dim2(0, 36, 0, 26),
-                                BorderSizePixel = 0,
-                                BackgroundColor3 = cfg.color,
-                                ZIndex = 11
-                        })
-
-                        library:create("UICorner", {
-                                Parent = items["colorpicker_inline"],
-                                CornerRadius = dim(0, 3)
-                        })
-
-                        library:create("UIStroke", {
-                                Color = rgb(23, 23, 29),
-                                Parent = items["colorpicker_inline"],
-                                ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-                                ZIndex = 11
-                        })
-
                         items["colorpicker_fade"] = library:create("Frame", {
                                 Parent = library["items"],
                                 Name = "\0",
-                                Size = dim2(1, 0, 1, 0),
                                 BackgroundTransparency = 1,
+                                Position = dim2(0, 0, 0, 0),
                                 BorderColor3 = rgb(0, 0, 0),
+                                Size = dim2(1, 0, 1, 0),
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = rgb(0, 0, 0),
-                                ZIndex = 9
+                                ZIndex = 5
                         })
 
                         items["colorpicker_holder"] = library:create("Frame", {
                                 Parent = library["other"],
                                 Name = "\0",
-                                Size = dim2(0, 196, 0, 196),
+                                Position = dim2(0, items["colorpicker"].AbsolutePosition.X, 0, items["colorpicker"].AbsolutePosition.Y + items["colorpicker"].AbsoluteSize.Y + 5),
                                 BorderColor3 = rgb(0, 0, 0),
+                                Size = dim2(0, 210, 0, 174),
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = rgb(25, 25, 29),
-                                ZIndex = 10,
-                                ClipsDescendants = true
+                                ZIndex = 6
                         })
 
                         items["colorpicker_components"] = library:create("Frame", {
                                 Parent = items["colorpicker_holder"],
                                 Name = "\0",
-                                Position = dim2(0, 1, 0, 1),
+                                Position = dim2(0, 10, 0, 10),
                                 BorderColor3 = rgb(0, 0, 0),
-                                Size = dim2(1, -2, 1, -2),
+                                Size = dim2(1, -20, 1, -20),
                                 BorderSizePixel = 0,
-                                BackgroundColor3 = rgb(22, 22, 24),
-                                ZIndex = 10
+                                BackgroundColor3 = rgb(255, 255, 255)
                         })
 
                         library:create("UICorner", {
@@ -2496,12 +2476,10 @@
                         items["saturation_holder"] = library:create("Frame", {
                                 Parent = items["colorpicker_components"],
                                 Name = "\0",
-                                Position = dim2(0, 10, 0, 10),
                                 BorderColor3 = rgb(0, 0, 0),
-                                Size = dim2(1, -20, 1, -80),
+                                Size = dim2(1, -20, 1, -74),
                                 BorderSizePixel = 0,
-                                BackgroundColor3 = hsv(h, 1, 1),
-                                ZIndex = 10
+                                BackgroundColor3 = hsv(h, 1, 1)
                         })
 
                         items["sat"] = library:create("TextButton", {
@@ -2511,7 +2489,7 @@
                                 Text = "",
                                 AutoButtonColor = false,
                                 BorderColor3 = rgb(0, 0, 0),
-                                ZIndex = 12,
+                                ZIndex = 2,
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = rgb(255, 255, 255)
                         })
@@ -2559,9 +2537,9 @@
                                 AnchorPoint = vec2(0, 1),
                                 Parent = items["saturation_holder"],
                                 Name = "\0",
-                                Position = dim2(0, 0, 1, 0),
+                                Position = dim2(0, s * (210 - 20 - 8), 1, 1 - v * (174 - 74 - 8)),
                                 Size = dim2(0, 8, 0, 8),
-                                ZIndex = 15,
+                                ZIndex = 5,
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = hsv(h, s, v)
                         })
@@ -2586,20 +2564,11 @@
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = rgb(255, 255, 255),
                                 AutoButtonColor = false,
-                                Text = "",
-                                ZIndex = 10
+                                Text = ""
                         })
 
                         library:create("UIGradient", {
-                                Color = rgbseq{
-                                        rgbkey(0, rgb(255, 0, 0)),
-                                        rgbkey(0.17, rgb(255, 255, 0)),
-                                        rgbkey(0.33, rgb(0, 255, 0)),
-                                        rgbkey(0.5, rgb(0, 255, 255)),
-                                        rgbkey(0.67, rgb(0, 0, 255)),
-                                        rgbkey(0.83, rgb(255, 0, 255)),
-                                        rgbkey(1, rgb(255, 0, 0))
-                                },
+                                Color = rgbseq{rgbkey(0, rgb(255, 0, 0)), rgbkey(0.17, rgb(255, 255, 0)), rgbkey(0.33, rgb(0, 255, 0)), rgbkey(0.5, rgb(0, 255, 255)), rgbkey(0.67, rgb(0, 0, 255)), rgbkey(0.83, rgb(255, 0, 255)), rgbkey(1, rgb(255, 0, 0))},
                                 Parent = items["hue_gradient"]
                         })
 
@@ -2615,9 +2584,9 @@
                                 AnchorPoint = vec2(0, 0.5),
                                 Parent = items["hue_gradient"],
                                 Name = "\0",
-                                Position = dim2(0, 0, 0.5, 0),
+                                Position = dim2(0, h * (210 - 20 - 8), 0.5, 0),
                                 Size = dim2(0, 8, 0, 8),
-                                ZIndex = 15,
+                                ZIndex = 5,
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = hsv(h, 1, 1)
                         })
@@ -2642,8 +2611,7 @@
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = rgb(25, 25, 29),
                                 AutoButtonColor = false,
-                                Text = "",
-                                ZIndex = 10
+                                Text = ""
                         })
 
                         library:create("UICorner", {
@@ -2658,9 +2626,9 @@
                                 AnchorPoint = vec2(0, 0.5),
                                 Parent = items["alpha_gradient"],
                                 Name = "\0",
-                                Position = dim2(1, 0, 0.5, 0),
+                                Position = dim2(0, (1 - a) * (210 - 20 - 8), 0.5, 0),
                                 Size = dim2(0, 8, 0, 8),
-                                ZIndex = 15,
+                                ZIndex = 5,
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = hsv(h, 1, 1 - a)
                         })
@@ -2691,8 +2659,7 @@
                                 Size = dim2(1, 0, 1, 0),
                                 TileSize = dim2(0, 6, 0, 6),
                                 BorderSizePixel = 0,
-                                BackgroundColor3 = rgb(0, 0, 0),
-                                ZIndex = 10
+                                BackgroundColor3 = rgb(0, 0, 0)
                         })
 
                         library:create("UIGradient", {
@@ -2706,10 +2673,16 @@
                                 CornerRadius = dim(0, 6)
                         })
 
+                        library:create("UIGradient", {
+                                Rotation = 90,
+                                Parent = items["colorpicker_components"],
+                                Color = rgbseq{rgbkey(0, rgb(255, 255, 255)), rgbkey(1, rgb(66, 66, 66))}
+                        })
+
                         items["input"] = library:create("TextBox", {
                                 FontFace = fonts.font,
                                 AnchorPoint = vec2(1, 1),
-                                Text = "",
+                                Text = string.format("%s, %s, %s, %s", library:round(cfg.color.R * 255), library:round(cfg.color.G * 255), library:round(cfg.color.B * 255), library:round(1 - a, 0.01)),
                                 Parent = items["colorpicker_components"],
                                 Name = "\0",
                                 TextTruncate = Enum.TextTruncate.AtEnd,
@@ -2722,8 +2695,7 @@
                                 TextColor3 = rgb(72, 72, 72),
                                 BorderColor3 = rgb(0, 0, 0),
                                 Position = dim2(1, -8, 1, -11),
-                                Size = dim2(1, -16, 0, 18),
-                                ZIndex = 10
+                                Size = dim2(1, -16, 0, 18)
                         })
 
                         library:create("UICorner", {
@@ -2738,39 +2710,46 @@
                 end
 
                 function cfg.set_visible(bool)
+                        items["colorpicker_holder"].Visible = bool
                         items["colorpicker_fade"].BackgroundTransparency = bool and 0 or 1
                         items["colorpicker_holder"].Parent = bool and library["items"] or library["other"]
-                        local basePos = items["colorpicker"].AbsolutePosition
-                        local baseSize = items["colorpicker"].AbsoluteSize
-                        items["colorpicker_holder"].Position = dim_offset(basePos.X, basePos.Y + baseSize.Y + 10)
+
+                        local targetPos = dim_offset(
+                                items["colorpicker"].AbsolutePosition.X,
+                                items["colorpicker"].AbsolutePosition.Y + items["colorpicker"].AbsoluteSize.Y + 5
+                        )
+
+                        items["colorpicker_holder"].Position = bool and targetPos + dim_offset(0, 20) or targetPos
 
                         if bool then
-                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 0.6}, Enum.EasingStyle.Quad, 0.4)
-                                library:tween(items["colorpicker_holder"], {Position = dim_offset(basePos.X, basePos.Y + baseSize.Y + 10)}, Enum.EasingStyle.Quad, 0.4)
+                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 0.5}, Enum.EasingStyle.Quad, 0.4)
+                                library:tween(items["colorpicker_holder"], {Position = targetPos}, Enum.EasingStyle.Quad, 0.4)
                         else
                                 library:tween(items["colorpicker_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4)
-                                library:tween(items["colorpicker_holder"], {Position = dim_offset(basePos.X, basePos.Y + baseSize.Y + 30)}, Enum.EasingStyle.Quad, 0.4)
+                                library:tween(items["colorpicker_holder"], {Position = targetPos + dim_offset(0, 20)}, Enum.EasingStyle.Quad, 0.4)
                         end
 
                         if bool then
                                 library.current_open = cfg
-                        elseif library.current_open == cfg then
-                                library:close_element()
+                        else
+                                if library.current_open == cfg then
+                                        library:close_element()
+                                end
                         end
                 end
 
                 function cfg.set(color, alpha)
-                        if type(color) == "boolean" then
+                        if type(color) == "boolean" then 
                                 return
-                        end
+                        end 
 
-                        if color then
+                        if color then 
                                 h, s, v = color:ToHSV()
                         end
 
-                        if alpha then
+                        if alpha then 
                                 a = alpha
-                        end
+                        end 
 
                         local Color = hsv(h, s, v)
 
@@ -2780,6 +2759,7 @@
 
                         items["alpha_indicator"]:FindFirstChildOfClass("UIGradient").Color = rgbseq{rgbkey(0, rgb(112, 112, 112)), rgbkey(1, hsv(h, 1, 1))}
 
+                        items["colorpicker"].BackgroundColor3 = Color
                         items["colorpicker_inline"].BackgroundColor3 = Color
                         items["saturation_holder"].BackgroundColor3 = hsv(h, 1, 1)
 
@@ -2789,20 +2769,20 @@
 
                         flags[cfg.flag] = {
                                 Color = Color,
-                                Transparency = a
+                                Transparency = a 
                         }
 
-                        local color = items["colorpicker_inline"].BackgroundColor3
-                        items["input"].Text = string.format("%d, %d, %d, %.2f", library:round(color.R * 255), library:round(color.G * 255), library:round(color.B * 255), 1 - a)
+                        local color = items["colorpicker"].BackgroundColor3
+                        items["input"].Text = string.format("%s, %s, %s, %s", library:round(color.R * 255), library:round(color.G * 255), library:round(color.B * 255), library:round(1 - a, 0.01))
 
                         cfg.callback(Color, a)
                 end
 
-                function cfg.update_color()
-                        local mouse = uis:GetMouseLocation()
-                        local offset = vec2(mouse.X, mouse.Y - gui_offset)
+                function cfg.update_color() 
+                        local mouse = uis:GetMouseLocation() 
+                        local offset = vec2(mouse.X, mouse.Y - gui_offset) 
 
-                        if dragging_sat then
+                        if dragging_sat then    
                                 s = math.clamp((offset - items["sat"].AbsolutePosition).X / items["sat"].AbsoluteSize.X, 0, 1)
                                 v = 1 - math.clamp((offset - items["sat"].AbsolutePosition).Y / items["sat"].AbsoluteSize.Y, 0, 1)
                         elseif dragging_hue then
@@ -2814,14 +2794,14 @@
                         cfg.set()
                 end
 
-                items["colorpicker_click"].MouseButton1Click:Connect(function()
-                        cfg.open = not cfg.open
-                        cfg.set_visible(cfg.open)
+                items["colorpicker"].MouseButton1Click:Connect(function()
+                        cfg.open = not cfg.open 
+                        cfg.set_visible(cfg.open)            
                 end)
 
-                library:connection(uis.InputChanged, function(input)
+                uis.InputChanged:Connect(function(input)
                         if (dragging_sat or dragging_hue or dragging_alpha) and input.UserInputType == Enum.UserInputType.MouseMovement then
-                                cfg.update_color()
+                                cfg.update_color() 
                         end
                 end)
 
@@ -2831,27 +2811,27 @@
                                 dragging_hue = false
                                 dragging_alpha = false
                         end
-                end)
+                end)    
 
                 items["alpha_gradient"].MouseButton1Down:Connect(function()
-                        dragging_alpha = true
+                        dragging_alpha = true 
                 end)
 
                 items["hue_gradient"].MouseButton1Down:Connect(function()
-                        dragging_hue = true
+                        dragging_hue = true 
                 end)
 
                 items["sat"].MouseButton1Down:Connect(function()
-                        dragging_sat = true
+                        dragging_sat = true  
                 end)
 
                 items["input"].FocusLost:Connect(function()
                         local text = items["input"].Text
                         local r, g, b, a = library:convert(text)
 
-                        if r and g and b and a then
+                        if r and g and b and a then 
                                 cfg.set(rgb(r, g, b), 1 - a)
-                        end
+                        end 
                 end)
 
                 items["input"].Focused:Connect(function()
