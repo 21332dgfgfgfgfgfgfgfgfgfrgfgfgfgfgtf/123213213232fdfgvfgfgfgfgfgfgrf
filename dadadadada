@@ -904,15 +904,17 @@
                     ApplyStrokeMode = Enum.ApplyStrokeMode.Border
                 });
 
-                -- Add horizontal line under the button (only for tab, not column)
-                local line = library:create("Frame", {
-                    Parent = items["button"],
-                    BackgroundColor3 = rgb(30, 30, 32), -- Line color
-                    BorderSizePixel = 0,
-                    Size = dim2(1, 0, 0, 1),
-                    Position = dim2(0, 0, 1, 0),
-                    AnchorPoint = vec2(0, 1)
-                });
+                -- Add horizontal line only for top-level tab (not inside sub-tabs)
+                if not items["button"]:FindFirstAncestor("multi_section_button_holder") then
+                    local line = library:create("Frame", {
+                        Parent = items["button"],
+                        BackgroundColor3 = rgb(30, 30, 32), -- Line color
+                        BorderSizePixel = 0,
+                        Size = dim2(1, 0, 0, 1),
+                        Position = dim2(0, 0, 1, 0),
+                        AnchorPoint = vec2(0, 1)
+                    });
+                end
 
                 -- Multi Sections
                 items["multi_section_button_holder"] = library:create("Frame", {
@@ -1070,18 +1072,6 @@
                     multi_items["button"].MouseButton1Down:Connect(function()
                         data.open_page() 
                     end)
-
-                    -- Add horizontal line under multi-section button (only if not a column)
-                    if not properties.column then -- Avoid line for column
-                        local multiLine = library:create("Frame", {
-                            Parent = multi_items["button"],
-                            BackgroundColor3 = rgb(30, 30, 32), -- Line color
-                            BorderSizePixel = 0,
-                            Size = dim2(1, 0, 0, 1),
-                            Position = dim2(0, 0, 1, 0),
-                            AnchorPoint = vec2(0, 1)
-                        });
-                    end
 
                     cfg.pages[#cfg.pages + 1] = setmetatable(data, library)
                 end 
