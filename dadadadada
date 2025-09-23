@@ -792,8 +792,7 @@
                     BackgroundColor3 = rgb(255, 255, 255)
                 });
 
-                -- Tab button container with dynamic padding based on separator
-                local paddingTop = (cfg.separator and cfg.separator.name == "Aiming") and dim(0, 5) or dim(0, 15); -- More space after Aiming
+                -- Tab button container with dynamic positioning
                 items["button_frame"] = library:create("Frame", {
                     Parent = self.items["button_holder"],
                     BackgroundTransparency = 1,
@@ -804,25 +803,31 @@
                     Position = dim2(0, 0, 0, 0) -- Base position
                 });
 
-                -- Adjust position for space after Aiming separator
-                if cfg.separator and cfg.separator.name == "sub" and self.items["button_holder"]:FindFirstChild("prevSeparator") and self.items["button_holder"].prevSeparator.name == "Aiming" then
-                    items["button_frame"].Position = dim2(0, 0, 0, 10); -- 10 pixel space after Aiming
-                end
-
-                -- Separator box with darker black for Aiming or sub
-                if cfg.separator then
-                    local boxColor = (cfg.separator.name == "Aiming") and rgb(10, 10, 12) or rgb(15, 15, 17); -- Different shade for sub
-                    local separatorBox = library:create("Frame", {
-                        Parent = items["button_frame"],
-                        BackgroundColor3 = boxColor,
+                -- Large grayish box for Aiming separator
+                if cfg.separator and cfg.separator.name == "Aiming" then
+                    local aimingBox = library:create("Frame", {
+                        Parent = self.items["button_holder"],
+                        BackgroundColor3 = rgb(50, 50, 50), -- Grayish color
                         BorderSizePixel = 0,
-                        Size = dim2(1, -20, 1, -10),
-                        Position = dim2(0, 10, 0, 5),
+                        Size = dim2(1, -20, 0, 0), -- Dynamic height
+                        Position = dim2(0, 10, 0, 0),
+                        Name = "AimingBox"
                     });
                     library:create("UICorner", {
-                        Parent = separatorBox,
+                        Parent = aimingBox,
                         CornerRadius = dim(0, 5)
                     });
+                    items["button_frame"].Parent = aimingBox; -- Move button_frame into the box
+                end
+
+                -- Adjust position and space after previous Aiming box
+                if cfg.separator and cfg.separator.name == "Aiming" and self.items["button_holder"]:FindFirstChild("prevSeparator") and self.items["button_holder"].prevSeparator.name == "Aiming" then
+                    items["button_frame"].Position = dim2(0, 0, 0, 10); -- 10 pixel space after previous Aiming box
+                elseif cfg.separator and cfg.separator.name == "Aiming" and self.items["button_holder"]:FindFirstChild("AimingBox") then
+                    local prevBox = self.items["button_holder"]:FindFirstChild("AimingBox");
+                    if prevBox then
+                        items["button_frame"].Position = dim2(0, 0, 0, prevBox.Size.Y.Offset + 10); -- Space after previous box
+                    end
                 end
 
                 library:create("UIListLayout", {
@@ -835,7 +840,7 @@
                 library:create("UIPadding", {
                     PaddingLeft = dim(0, 10),
                     PaddingRight = dim(0, 10),
-                    PaddingTop = paddingTop, -- Dynamic padding
+                    PaddingTop = dim(0, 5),
                     PaddingBottom = dim(0, 5)
                 });
 
@@ -1134,6 +1139,10 @@
             -- Store the separator name in button_holder for next tab to check
             if cfg.separator then
                 self.items["button_holder"].prevSeparator = cfg.separator
+                if cfg.separator.name == "Aiming" and self.items["button_holder"]:FindFirstChild("AimingBox") then
+                    local aimingBox = self.items["button_holder"]:FindFirstChild("AimingBox");
+                    aimingBox.Size = dim2(1, -20, 0, aimingBox.Size.Y.Offset + items["button_frame"].Size.Y.Offset + 5); -- Expand box height
+                end
             end
 
             return unpack(cfg.pages)
