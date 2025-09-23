@@ -770,7 +770,7 @@
                                 BackgroundColor3 = rgb(255, 255, 255)
                         }); library:apply_theme(items["other_info"], "accent", "TextColor3");
 
-                        -- Search Textbox (Minimal)
+                        -- Search Textbox (Adjusted)
                         success, err = pcall(function()
                                 items["search_holder"] = library:create("Frame", {
                                         Parent = items["main"];
@@ -785,6 +785,7 @@
                         if not success then
                                 warn("Failed to create search_holder: " .. tostring(err))
                         end
+                        print("Search holder created")
 
                         success, err = pcall(function()
                                 items["search_input"] = library:create("TextBox", {
@@ -808,6 +809,7 @@
                         if not success then
                                 warn("Failed to create search_input: " .. tostring(err))
                         end
+                        print("Search input created")
 
                         library:create("UICorner", {
                                 Parent = items["search_input"];
@@ -822,10 +824,10 @@
 
                         success, err = pcall(function()
                                 items["search_dropdown"] = library:create("Frame", {
-                                        Parent = library["items"];
+                                        Parent = items["main"];
                                         Name = "\0";
                                         BackgroundTransparency = 1;
-                                        Position = dim2(0, 0, 0, 0);
+                                        Position = dim2(1, -150, 0, 40);
                                         Size = dim2(0, 140, 0, 0);
                                         BorderColor3 = rgb(0, 0, 0);
                                         BorderSizePixel = 0;
@@ -836,6 +838,7 @@
                         if not success then
                                 warn("Failed to create search_dropdown: " .. tostring(err))
                         end
+                        print("Search dropdown created")
 
                         library:create("UIListLayout", {
                                 Parent = items["search_dropdown"];
@@ -893,12 +896,15 @@
                                 warn("Resizify failed: " .. tostring(err))
                         end
 
-                        -- Search functionality
+                        -- Adjusted Search Events
                         success, err = pcall(function()
-                                items["search_input"].FocusLost:Connect(function()
+                                items["search_input"].FocusLost:Connect(function(enterPressed)
                                         cfg.search_open = false
                                         items["search_dropdown"].Visible = false
-                                        print("Search dropdown closed")
+                                        if enterPressed then
+                                                library:search(items["search_input"].Text, cfg)
+                                                print("Search executed on Enter: " .. items["search_input"].Text)
+                                        end
                                 end);
                         end)
                         if not success then
@@ -909,25 +915,11 @@
                                 items["search_input"].Focused:Connect(function()
                                         cfg.search_open = true
                                         items["search_dropdown"].Visible = true
-                                        items["search_dropdown"].Position = dim_offset(items["search_holder"].AbsolutePosition.X, items["search_holder"].AbsolutePosition.Y + items["search_holder"].AbsoluteSize.Y + 5)
-                                        library:search(items["search_input"].Text, cfg)
-                                        print("Search dropdown opened")
+                                        print("Search input focused")
                                 end);
                         end)
                         if not success then
                                 warn("Failed to connect Focused: " .. tostring(err))
-                        end
-
-                        success, err = pcall(function()
-                                items["search_input"].Changed:Connect(function(property)
-                                        if property == "Text" then
-                                                library:search(items["search_input"].Text, cfg)
-                                                print("Search query updated: " .. items["search_input"].Text)
-                                        end
-                                end);
-                        end)
-                        if not success then
-                                warn("Failed to connect Changed: " .. tostring(err))
                         end
                 end 
 
@@ -1039,7 +1031,6 @@
                 items["search_dropdown"].Visible = #results > 0 and window_cfg.search_open
                 print("Search results: " .. #results)
         end
-
         function library:tab(properties)
                 local cfg = {
                         name = properties.name or properties.Name or "visuals"; 
@@ -1673,7 +1664,7 @@
                                 items["Icon"] = library:create("ImageLabel", {
                                         ImageColor3 = themes.preset.accent;
                                         BorderColor3 = rgb(0, 0, 0);
-                                        Parent = items["button"];
+                                        Parent = items["main"];
                                         AnchorPoint = vec2(0.5, 0.5);
                                         Image = cfg.icon;
                                         BackgroundTransparency = 1;
