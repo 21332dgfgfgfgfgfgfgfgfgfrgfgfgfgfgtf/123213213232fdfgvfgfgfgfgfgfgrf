@@ -1084,70 +1084,68 @@
                         end 
 
                         cfg.pages[1].open_page();
-                        --
 
-                end 
+                        function cfg.open_tab() 
+                                local selected_tab = self.selected_tab;
 
-                function cfg.open_tab() 
-                        local selected_tab = self.selected_tab;
+                                if selected_tab then 
+                                        if selected_tab[4] ~= items["tab_holder"] then 
+                                                self.items["global_fade"].BackgroundTransparency = 0;
 
-                        if selected_tab then 
-                                if selected_tab[4] ~= items["tab_holder"] then 
-                                        self.items["global_fade"].BackgroundTransparency = 0;
+                                                library:tween(self.items["global_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4);
+                                                selected_tab[4].Size = dim2(1, -216, 1, -101);
+                                        end
 
-                                        library:tween(self.items["global_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4);
-                                        selected_tab[4].Size = dim2(1, -216, 1, -101);
+                                        library:tween(selected_tab[1], {BackgroundTransparency = 1});
+                                        library:tween(selected_tab[2], {ImageColor3 = rgb(72, 72, 73)});
+                                        library:tween(selected_tab[3], {TextColor3 = rgb(72, 72, 73)});
+
+                                        selected_tab[4].Visible = false;
+                                        selected_tab[4].Parent = library["cache"];
+                                        selected_tab[5].Visible = false;
+                                        selected_tab[5].Parent = library["cache"];
                                 end
 
-                                library:tween(selected_tab[1], {BackgroundTransparency = 1});
-                                library:tween(selected_tab[2], {ImageColor3 = rgb(72, 72, 73)});
-                                library:tween(selected_tab[3], {TextColor3 = rgb(72, 72, 73)});
+                                library:tween(items["button"], {BackgroundTransparency = 0});
+                                library:tween(items["icon"], {ImageColor3 = themes.preset.accent});
+                                library:tween(items["name"], {TextColor3 = rgb(255, 255, 255)});
+                                library:tween(items["tab_holder"], {Size = dim2(1, -196, 1, -81)}, Enum.EasingStyle.Quad, 0.4);
 
-                                selected_tab[4].Visible = false;
-                                selected_tab[4].Parent = library["cache"];
-                                selected_tab[5].Visible = false;
-                                selected_tab[5].Parent = library["cache"];
+                                items["tab_holder"].Visible = true;
+                                items["tab_holder"].Parent = self.items["main"];
+                                items["multi_section_button_holder"].Visible = true;
+                                items["multi_section_button_holder"].Parent = self.items["multi_holder"];
+
+                                self.selected_tab = {
+                                        items["button"];
+                                        items["icon"];
+                                        items["name"];
+                                        items["tab_holder"];
+                                        items["multi_section_button_holder"];
+                                };
+
+                                library:close_element();
                         end
 
-                        library:tween(items["button"], {BackgroundTransparency = 0});
-                        library:tween(items["icon"], {ImageColor3 = themes.preset.accent});
-                        library:tween(items["name"], {TextColor3 = rgb(255, 255, 255)});
-                        library:tween(items["tab_holder"], {Size = dim2(1, -196, 1, -81)}, Enum.EasingStyle.Quad, 0.4);
+                        items["button"].MouseButton1Down:Connect(function()
+                                cfg.open_tab();
+                        end);
 
-                        items["tab_holder"].Visible = true;
-                        items["tab_holder"].Parent = self.items["main"];
-                        items["multi_section_button_holder"].Visible = true;
-                        items["multi_section_button_holder"].Parent = self.items["multi_holder"];
-
-                        self.selected_tab = {
-                                items["button"];
-                                items["icon"];
-                                items["name"];
-                                items["tab_holder"];
-                                items["multi_section_button_holder"];
-                        };
-
-                        library:close_element();
-                end
-
-                items["button"].MouseButton1Down:Connect(function()
-                        cfg.open_tab();
-                end);
-
-                if not self.selected_tab then 
-                        cfg.open_tab(true);
-                end
-
-                -- Store the separator name in button_holder for next tab to check
-                if cfg.separator then
-                        self.items["button_holder"].prevSeparator = cfg.separator;
-                        if cfg.separator.name == "Aiming" and self.items["button_holder"]:FindFirstChild("AimingBox") then
-                                local aimingBox = self.items["button_holder"]:FindFirstChild("AimingBox");
-                                aimingBox.Size = dim2(1, -20, 0, aimingBox.Size.Y.Offset + items["button_frame"].Size.Y.Offset + 5); -- Expand box height
+                        if not self.selected_tab then 
+                                cfg.open_tab(true);
                         end
-                end
 
-                return unpack(cfg.pages);
+                        -- Store the separator name in button_holder for next tab to check
+                        if cfg.separator then
+                                self.items["button_holder"].prevSeparator = cfg.separator;
+                                if cfg.separator.name == "Aiming" and self.items["button_holder"]:FindFirstChild("AimingBox") then
+                                        local aimingBox = self.items["button_holder"]:FindFirstChild("AimingBox");
+                                        aimingBox.Size = dim2(1, -20, 0, aimingBox.Size.Y.Offset + items["button_frame"].Size.Y.Offset + 5); -- Expand box height
+                                end
+                        end
+
+                        return unpack(cfg.pages);
+                end
         end
 
         function library:seperator(properties)
@@ -1213,36 +1211,70 @@
                 return setmetatable(cfg, library)
             end 
 
-            function library:sub_tab(properties) 
-                local cfg = {items = {}, order = properties.order or 0; size = properties.size or 1}
+            function library:sub_tab(properties)
+                local cfg = {
+                        items = {}
+                }
 
-                local items = cfg.items; do 
-                    items[ "tab_parent" ] = library:create( "Frame" , {
-                        Parent = self.items[ "tab" ];
-                        BackgroundTransparency = 1;
-                        Name = "\0";
-                        Size = dim2(0,0,cfg.size,0);
-                        BorderColor3 = rgb(0, 0, 0);
-                        BorderSizePixel = 0;
-                        Visible = true;
-                        BackgroundColor3 = rgb(255, 255, 255)
-                    });
+                local items = cfg.items; do
+                        items["tab_parent"] = library:create("Frame", {
+                                Parent = self.page,
+                                BackgroundTransparency = 1,
+                                Name = "\0",
+                                BorderColor3 = rgb(0, 0, 0),
+                                Size = dim2(1, 0, 1, 0),
+                                BorderSizePixel = 0,
+                                BackgroundColor3 = rgb(255, 255, 255)
+                        });
 
-                    library:create( "UIListLayout" , {
-                        FillDirection = Enum.FillDirection.Horizontal;
-                        HorizontalFlex = Enum.UIFlexAlignment.Fill;
-                        VerticalFlex = Enum.UIFlexAlignment.Fill;
-                        Parent = items[ "tab_parent" ];
-                        Padding = dim(0, 7);
-                        SortOrder = Enum.SortOrder.LayoutOrder;
-                    });
+                        return cfg
+                end
+        end
+
+        function library:column(properties)
+                local cfg = {
+                        items = {}
+                }
+
+                local items = cfg.items; do
+                        -- Check if the parent tab has only one sub-tab
+                        local parent_tab = self
+                        local tab_count = #parent_tab.pages
+                        items["column"] = library:create("Frame", {
+                                Parent = self.items["tab_parent"],
+                                BackgroundTransparency = 1,
+                                Name = "\0",
+                                BorderColor3 = rgb(0, 0, 0),
+                                Size = dim2(0.5, -10, 1, -10),
+                                BorderSizePixel = 0,
+                                BackgroundColor3 = rgb(255, 255, 255),
+                                -- Center the column if there is only one sub-tab
+                                AnchorPoint = tab_count == 1 and vec2(0.5, 0) or vec2(0, 0),
+                                Position = tab_count == 1 and dim2(0.5, 0, 0, 0) or dim2(0, 5, 0, 0)
+                        });
+
+                        library:create("UIListLayout", {
+                                Parent = items["column"],
+                                FillDirection = Enum.FillDirection.Vertical,
+                                HorizontalFlex = Enum.UIFlexAlignment.Fill,
+                                Padding = dim(0, 7),
+                                SortOrder = Enum.SortOrder.LayoutOrder,
+                                VerticalFlex = Enum.UIFlexAlignment.Fill
+                        });
+
+                        library:create("UIPadding", {
+                                Parent = items["column"],
+                                PaddingTop = dim(0, 7),
+                                PaddingBottom = dim(0, 7),
+                                PaddingRight = dim(0, 7),
+                                PaddingLeft = dim(0, 7)
+                        });
                 end
 
-                return setmetatable(cfg, library)
-            end 
-        --
+                return cfg
+        end
 
-                function library:section(properties)
+        function library:section(properties)
                 local cfg = {
                         name = properties.name or properties.Name or "section"; 
                         side = properties.side or properties.Side or "left";
