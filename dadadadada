@@ -776,6 +776,7 @@
                 current_multi; 
                 items = {};
                 selected_tab = nil;
+                separator = properties.separator or nil; -- Track separator name
             } 
 
             local items = cfg.items; do 
@@ -791,21 +792,29 @@
                     BackgroundColor3 = rgb(255, 255, 255)
                 });
 
-                -- Tab button container
+                -- Tab button container with dynamic padding based on separator
+                local paddingTop = (cfg.separator and cfg.separator.name == "Aiming") and dim(0, 5) or dim(0, 15); -- More space after Aiming
                 items["button_frame"] = library:create("Frame", {
                     Parent = self.items["button_holder"],
                     BackgroundTransparency = 1,
                     Name = "\0",
                     Size = dim2(1, 0, 0, 40), -- Adjusted height for tabs
                     BorderSizePixel = 0,
-                    BackgroundColor3 = rgb(255, 255, 255)
+                    BackgroundColor3 = rgb(255, 255, 255),
+                    Position = dim2(0, 0, 0, 0) -- Base position
                 });
 
-                -- Separator box with darker black if specified
-                if properties.separator then
+                -- Adjust position for space after Aiming separator
+                if cfg.separator and cfg.separator.name == "sub" and self.items["button_holder"]:FindFirstChild("prevSeparator") and self.items["button_holder"].prevSeparator.name == "Aiming" then
+                    items["button_frame"].Position = dim2(0, 0, 0, 10); -- 10 pixel space after Aiming
+                end
+
+                -- Separator box with darker black for Aiming or sub
+                if cfg.separator then
+                    local boxColor = (cfg.separator.name == "Aiming") and rgb(10, 10, 12) or rgb(15, 15, 17); -- Different shade for sub
                     local separatorBox = library:create("Frame", {
                         Parent = items["button_frame"],
-                        BackgroundColor3 = rgb(10, 10, 12), -- Darker black shade
+                        BackgroundColor3 = boxColor,
                         BorderSizePixel = 0,
                         Size = dim2(1, -20, 1, -10),
                         Position = dim2(0, 10, 0, 5),
@@ -826,7 +835,7 @@
                 library:create("UIPadding", {
                     PaddingLeft = dim(0, 10),
                     PaddingRight = dim(0, 10),
-                    PaddingTop = dim(0, 5),
+                    PaddingTop = paddingTop, -- Dynamic padding
                     PaddingBottom = dim(0, 5)
                 });
 
@@ -1128,6 +1137,11 @@
 
             if not self.selected_tab then 
                 cfg.open_tab(true) 
+            end
+
+            -- Store the separator name in button_holder for next tab to check
+            if cfg.separator then
+                self.items["button_holder"].prevSeparator = cfg.separator
             end
 
             return unpack(cfg.pages)
