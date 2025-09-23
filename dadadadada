@@ -3652,7 +3652,6 @@
         end
 
         function library:init_config(window)
-                window:seperator({name = ""})
                 local config_tab = window:tab({name = "Config", tabs = {"Main"}, icon = 'rbxassetid://10734941499'})
         
                 -- Main Sub-Tab (Left Column)
