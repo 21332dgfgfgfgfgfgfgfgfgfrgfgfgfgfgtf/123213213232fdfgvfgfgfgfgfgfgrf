@@ -803,14 +803,14 @@
                     Position = dim2(0, 0, 0, 0) -- Base position
                 });
 
-                -- Large grayish box for Aiming separator
+                -- Large grayish box for Aiming separator with padding above
                 if cfg.separator and cfg.separator.name == "Aiming" then
                     local aimingBox = library:create("Frame", {
                         Parent = self.items["button_holder"],
                         BackgroundColor3 = rgb(50, 50, 50), -- Grayish color
                         BorderSizePixel = 0,
                         Size = dim2(1, -20, 0, 0), -- Dynamic height
-                        Position = dim2(0, 10, 0, 0),
+                        Position = dim2(0, 10, 0, 5), -- 5 pixel padding above
                         Name = "AimingBox"
                     });
                     library:create("UICorner", {
