@@ -705,7 +705,7 @@
                     BorderColor3 = rgb(0, 0, 0);
                     Size = dim2(1, 0, 0, 6);
                     BorderSizePixel = 0;
-                    BackgroundColor3 = rgb(23, 23, 25)
+                    BackgroundColor3 = rgb(14, 14, 16)
                 });
 
                 items[ "game" ] = library:create( "TextLabel" , {
