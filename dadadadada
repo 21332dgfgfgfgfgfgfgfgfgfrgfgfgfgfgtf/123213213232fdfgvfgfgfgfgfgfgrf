@@ -770,7 +770,8 @@
                                 BackgroundColor3 = rgb(255, 255, 255)
                         }); library:apply_theme(items["other_info"], "accent", "TextColor3");
 
-                        -- Search Textbox (Adjusted)
+                        -- Search Textbox (Temporarily Disabled)
+                        --[[
                         success, err = pcall(function()
                                 items["search_holder"] = library:create("Frame", {
                                         Parent = items["main"];
@@ -878,25 +879,8 @@
                                 CornerRadius = dim(0, 4);
                         });
 
-                        print("Window UI elements created successfully")
-                end
-
-                do -- Other
-                        success, err = pcall(function()
-                                library:draggify(items["main"])
-                        end)
-                        if not success then
-                                warn("Draggify failed: " .. tostring(err))
-                        end
-
-                        success, err = pcall(function()
-                                library:resizify(items["main"])
-                        end)
-                        if not success then
-                                warn("Resizify failed: " .. tostring(err))
-                        end
-
-                        -- Adjusted Search Events
+                        -- Adjusted Search Events (Disabled)
+                        --[[
                         success, err = pcall(function()
                                 items["search_input"].FocusLost:Connect(function(enterPressed)
                                         cfg.search_open = false
@@ -920,6 +904,26 @@
                         end)
                         if not success then
                                 warn("Failed to connect Focused: " .. tostring(err))
+                        end
+                        --]]
+                        --]]
+
+                        print("Window UI elements created successfully")
+                end
+
+                do -- Other
+                        success, err = pcall(function()
+                                library:draggify(items["main"])
+                        end)
+                        if not success then
+                                warn("Draggify failed: " .. tostring(err))
+                        end
+
+                        success, err = pcall(function()
+                                library:resizify(items["main"])
+                        end)
+                        if not success then
+                                warn("Resizify failed: " .. tostring(err))
                         end
                 end 
 
@@ -1031,6 +1035,7 @@
                 items["search_dropdown"].Visible = #results > 0 and window_cfg.search_open
                 print("Search results: " .. #results)
         end
+
         function library:tab(properties)
                 local cfg = {
                         name = properties.name or properties.Name or "visuals"; 
@@ -1056,13 +1061,14 @@
                                         BorderColor3 = rgb(0, 0, 0);
                                         Size = dim2(1, -216, 1, -101);
                                         BorderSizePixel = 0;
-                                        BackgroundColor3 = rgb(255, 255, 255)
+                                        BackgroundColor3 = rgb(255, 255, 255);
+                                        ZIndex = 10; -- Ensure it renders above other elements
                                 });
                         end)
                         if not success then
                                 warn("Failed to create tab_holder: " .. tostring(err))
                         end
-                        print("Tab holder created, Visible: " .. tostring(items["tab_holder"].Visible) .. ", Parent: " .. tostring(items["tab_holder"].Parent.Name))
+                        print("Tab holder created, Visible: " .. tostring(items["tab_holder"].Visible) .. ", Parent: " .. tostring(items["tab_holder"].Parent.Name) .. ", ZIndex: " .. tostring(items["tab_holder"].ZIndex))
 
                         -- Tab buttons 
                         success, err = pcall(function()
@@ -1084,6 +1090,7 @@
                         if not success then
                                 warn("Failed to create tab button: " .. tostring(err))
                         end
+                        print("Tab button created, Parent: " .. tostring(items["button"].Parent.Name))
 
                         success, err = pcall(function()
                                 items["icon"] = library:create("ImageLabel", {
@@ -1155,13 +1162,14 @@
                                         Size = dim2(1, -196, 0, 56);
                                         Position = dim2(0, 196, 0, 0);
                                         BorderSizePixel = 0;
-                                        BackgroundColor3 = rgb(255, 255, 255)
+                                        BackgroundColor3 = rgb(255, 255, 255);
+                                        ZIndex = 10; -- Ensure it renders above other elements
                                 });
                         end)
                         if not success then
                                 warn("Failed to create multi_section_button_holder: " .. tostring(err))
                         end
-                        print("Multi section button holder created, Visible: " .. tostring(items["multi_section_button_holder"].Visible) .. ", Parent: " .. tostring(items["multi_section_button_holder"].Parent.Name))
+                        print("Multi section button holder created, Visible: " .. tostring(items["multi_section_button_holder"].Visible) .. ", Parent: " .. tostring(items["multi_section_button_holder"].Parent.Name) .. ", ZIndex: " .. tostring(items["multi_section_button_holder"].ZIndex))
 
                         library:create("UIListLayout", {
                                 Parent = items["multi_section_button_holder"];
@@ -1664,7 +1672,7 @@
                                 items["Icon"] = library:create("ImageLabel", {
                                         ImageColor3 = themes.preset.accent;
                                         BorderColor3 = rgb(0, 0, 0);
-                                        Parent = items["main"];
+                                        Parent = items["button"];
                                         AnchorPoint = vec2(0.5, 0.5);
                                         Image = cfg.icon;
                                         BackgroundTransparency = 1;
