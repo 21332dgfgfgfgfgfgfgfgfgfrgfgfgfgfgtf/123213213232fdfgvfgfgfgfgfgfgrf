@@ -1044,6 +1044,7 @@
                                 data.button = multi_items["button"];
                                 data.page = multi_items["tab"];
                                 data.parent = setmetatable(data, library):sub_tab({}).items["tab_parent"];
+                                data.tab_config = cfg; -- Store parent tab config for column access
 
                                 function data.open_page()
                                         local page = cfg.current_multi; 
@@ -1180,48 +1181,6 @@
         end 
 
         -- Miscellaneous 
-            function library:column(properties)
-                    local cfg = {
-                            items = {}
-                    }
-
-                    local items = cfg.items; do
-                            -- Check if the parent tab has only one sub-tab
-                            local parent_tab = self
-                            local tab_count = #parent_tab.pages
-                            items["column"] = library:create("Frame", {
-                                    Parent = self.items["tab_parent"],
-                                    BackgroundTransparency = 1,
-                                    Name = "\0",
-                                    BorderColor3 = rgb(0, 0, 0),
-                                    Size = dim2(0.5, -10, 1, -10),
-                                    BorderSizePixel = 0,
-                                    BackgroundColor3 = rgb(255, 255, 255),
-                                    -- Center the column if there is only one sub-tab
-                                    AnchorPoint = tab_count == 1 and vec2(0.5, 0) or vec2(0, 0),
-                                    Position = tab_count == 1 and dim2(0.5, 0, 0, 0) or dim2(0, 5, 0, 0)
-                            });
-
-                            library:create("UIListLayout", {
-                                    Parent = items["column"],
-                                    FillDirection = Enum.FillDirection.Vertical,
-                                    HorizontalFlex = Enum.UIFlexAlignment.Fill,
-                                    Padding = dim(0, 7),
-                                    SortOrder = Enum.SortOrder.LayoutOrder,
-                                    VerticalFlex = Enum.UIFlexAlignment.Fill
-                             });
-
-                             library:create("UIPadding", {
-                                    Parent = items["column"],
-                                    PaddingTop = dim(0, 7),
-                                    PaddingBottom = dim(0, 7),
-                                    PaddingRight = dim(0, 7),
-                                    PaddingLeft = dim(0, 7)
-                            });
-                    end
-
-                    return cfg
-            end
 
             function library:sub_tab(properties)
                 local cfg = {
@@ -1241,6 +1200,49 @@
 
                         return cfg
                 end
+        end
+
+        function library:column(properties)
+                local cfg = {
+                        items = {}
+                }
+
+                local items = cfg.items; do
+                        -- Find the parent tab's configuration to count sub-tabs
+                        local parent_tab = self
+                        local tab_count = parent_tab.tab_config and #parent_tab.tab_config.pages or 1
+                        items["column"] = library:create("Frame", {
+                                Parent = self.items["tab_parent"],
+                                BackgroundTransparency = 1,
+                                Name = "\0",
+                                BorderColor3 = rgb(0, 0, 0),
+                                Size = dim2(0.5, -10, 1, -10),
+                                BorderSizePixel = 0,
+                                BackgroundColor3 = rgb(255, 255, 255),
+                                -- Center the column if there is only one sub-tab
+                                AnchorPoint = tab_count == 1 and vec2(0.5, 0) or vec2(0, 0),
+                                Position = tab_count == 1 and dim2(0.5, 0, 0, 0) or dim2(0, 5, 0, 0)
+                        });
+
+                        library:create("UIListLayout", {
+                                Parent = items["column"],
+                                FillDirection = Enum.FillDirection.Vertical,
+                                HorizontalFlex = Enum.UIFlexAlignment.Fill,
+                                Padding = dim(0, 7),
+                                SortOrder = Enum.SortOrder.LayoutOrder,
+                                VerticalFlex = Enum.UIFlexAlignment.Fill
+                        });
+
+                        library:create("UIPadding", {
+                                Parent = items["column"],
+                                PaddingTop = dim(0, 7),
+                                PaddingBottom = dim(0, 7),
+                                PaddingRight = dim(0, 7),
+                                PaddingLeft = dim(0, 7)
+                        });
+                end
+
+                return cfg
         end
 
         
