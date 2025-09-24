@@ -2371,15 +2371,25 @@
                 local a = cfg.alpha
                 local dragging_sat, dragging_hue, dragging_alpha = false, false, false
 
-                flags[cfg.flag] = {
-                        Color = cfg.default,
-                        Transparency = cfg.alpha
-                }
+                -- Initialize flags safely
+                if not flags[cfg.flag] then
+                        flags[cfg.flag] = {
+                                Color = cfg.default,
+                                Transparency = cfg.alpha
+                        }
+                end
 
                 local items = cfg.items
                 do
+                        -- Ensure self.items["elements"] exists, fallback to library["items"] if nil
+                        local parent = self and self.items and self.items["elements"] or library["items"]
+                        if not parent then
+                                warn("Parent for colorpicker not found, using coregui as fallback")
+                                parent = game:GetService("CoreGui")
+                        end
+
                         items["colorpicker"] = library:create("Frame", {
-                                Parent = self.items["elements"],
+                                Parent = parent,
                                 Name = "\0",
                                 Size = dim2(0, 30, 0, 30),
                                 BorderColor3 = rgb(0, 0, 0),
@@ -2410,7 +2420,7 @@
                         })
 
                         items["colorpicker_fade"] = library:create("Frame", {
-                                Parent = library["items"],
+                                Parent = library["items"] or game:GetService("CoreGui"),
                                 Name = "\0",
                                 BackgroundTransparency = 1,
                                 BorderColor3 = rgb(0, 0, 0),
@@ -2421,12 +2431,13 @@
                         })
 
                         items["colorpicker_holder"] = library:create("Frame", {
-                                Parent = library["other"],
+                                Parent = library["other"] or game:GetService("CoreGui"),
                                 Name = "\0",
                                 BorderColor3 = rgb(0, 0, 0),
                                 Size = dim2(0, 180, 0, 180),
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = rgb(25, 25, 29),
+                                Visible = false, -- Start hidden
                                 ZIndex = 12
                         })
 
@@ -2699,16 +2710,15 @@
                 end
 
                 function cfg.set_visible(bool)
-                        items["colorpicker_holder"].Parent = bool and library["items"] or library["other"]
+                        if not items["colorpicker_holder"] or not items["colorpicker_fade"] then return end
+                        items["colorpicker_holder"].Parent = bool and (library["items"] or game:GetService("CoreGui")) or (library["other"] or game:GetService("CoreGui"))
                         items["colorpicker_holder"].Visible = bool
-                        items["colorpicker_fade"].BackgroundTransparency = bool and 0 or 1
-                        items["colorpicker_holder"].Position = dim_offset(
-                                items["colorpicker"].AbsolutePosition.X,
-                                items["colorpicker"].AbsolutePosition.Y + items["colorpicker"].AbsoluteSize.Y + 10
-                        )
-
+                        items["colorpicker_fade"].BackgroundTransparency = bool and 0.5 or 1 -- Adjusted to 0.5 for fade effect
                         if bool then
-                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4)
+                                local pos = items["colorpicker"] and items["colorpicker"].AbsolutePosition or Vector2.new(0, 0)
+                                local size = items["colorpicker"] and items["colorpicker"].AbsoluteSize or Vector2.new(30, 30)
+                                items["colorpicker_holder"].Position = dim_offset(pos.X, pos.Y + size.Y + 10)
+                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 0.5}, Enum.EasingStyle.Quad, 0.4)
                                 library:tween(items["colorpicker_holder"], {Position = items["colorpicker_holder"].Position + dim_offset(0, 10)}, Enum.EasingStyle.Quad, 0.4)
                                 library.current_open = cfg
                         else
@@ -2717,38 +2727,40 @@
                 end
 
                 function cfg.set(color, alpha)
-                        if type(color) == "boolean" then
-                                return
-                        end
-
-                        if color then
-                                h, s, v = color:ToHSV()
-                        end
-                        if alpha then
-                                a = alpha
-                        end
-
+                        if type(color) == "boolean" then return end
+                        if color then h, s, v = color:ToHSV() end
+                        if alpha then a = alpha end
                         local Color = hsv(h, s, v)
 
-                        library:tween(items["hue_picker"], {Position = dim2(0, h * (items["hue_gradient"].AbsoluteSize.X - items["hue_picker"].AbsoluteSize.X), 0.5, 0)}, Enum.EasingStyle.Linear, 0.05)
-                        library:tween(items["alpha_picker"], {Position = dim2(0, (1 - a) * (items["alpha_gradient"].AbsoluteSize.X - items["alpha_picker"].AbsoluteSize.X), 0.5, 0)}, Enum.EasingStyle.Linear, 0.05)
-                        library:tween(items["satvalpicker"], {Position = dim2(0, s * (items["saturation_holder"].AbsoluteSize.X - items["satvalpicker"].AbsoluteSize.X), 1, (1 - v) * (items["saturation_holder"].AbsoluteSize.Y - items["satvalpicker"].AbsoluteSize.Y))}, Enum.EasingStyle.Linear, 0.05)
+                        if items["hue_picker"] then
+                                library:tween(items["hue_picker"], {Position = dim2(0, h * (items["hue_gradient"].AbsoluteSize.X - items["hue_picker"].AbsoluteSize.X), 0.5, 0)}, Enum.EasingStyle.Linear, 0.05)
+                        end
+                        if items["alpha_picker"] then
+                                library:tween(items["alpha_picker"], {Position = dim2(0, (1 - a) * (items["alpha_gradient"].AbsoluteSize.X - items["alpha_picker"].AbsoluteSize.X), 0.5, 0)}, Enum.EasingStyle.Linear, 0.05)
+                        end
+                        if items["satvalpicker"] then
+                                library:tween(items["satvalpicker"], {Position = dim2(0, s * (items["saturation_holder"].AbsoluteSize.X - items["satvalpicker"].AbsoluteSize.X), 1, (1 - v) * (items["saturation_holder"].AbsoluteSize.Y - items["satvalpicker"].AbsoluteSize.Y))}, Enum.EasingStyle.Linear, 0.05)
+                        end
 
-                        items["alpha_indicator"]:FindFirstChildOfClass("UIGradient").Color = rgbseq{rgbkey(0, rgb(112, 112, 112)), rgbkey(1, hsv(h, 1, 1))}
+                        if items["alpha_indicator"] and items["alpha_indicator"]:FindFirstChildOfClass("UIGradient") then
+                                items["alpha_indicator"]:FindFirstChildOfClass("UIGradient").Color = rgbseq{rgbkey(0, rgb(112, 112, 112)), rgbkey(1, hsv(h, 1, 1))}
+                        end
 
-                        items["colorpicker"].BackgroundColor3 = Color
-                        items["colorpicker_inline"].BackgroundColor3 = Color
-                        items["saturation_holder"].BackgroundColor3 = hsv(h, 1, 1)
-                        items["hue_picker"].BackgroundColor3 = hsv(h, 1, 1)
-                        items["alpha_picker"].BackgroundColor3 = hsv(h, 1, 1 - a)
-                        items["satvalpicker"].BackgroundColor3 = hsv(h, s, v)
+                        if items["colorpicker"] then items["colorpicker"].BackgroundColor3 = Color end
+                        if items["colorpicker_inline"] then items["colorpicker_inline"].BackgroundColor3 = Color end
+                        if items["saturation_holder"] then items["saturation_holder"].BackgroundColor3 = hsv(h, 1, 1) end
+                        if items["hue_picker"] then items["hue_picker"].BackgroundColor3 = hsv(h, 1, 1) end
+                        if items["alpha_picker"] then items["alpha_picker"].BackgroundColor3 = hsv(h, 1, 1 - a) end
+                        if items["satvalpicker"] then items["satvalpicker"].BackgroundColor3 = hsv(h, s, v) end
 
                         flags[cfg.flag] = {
                                 Color = Color,
                                 Transparency = a
                         }
 
-                        items["input"].Text = string.format("%d, %d, %d, %.2f", Color.R * 255, Color.G * 255, Color.B * 255, 1 - a)
+                        if items["input"] then
+                                items["input"].Text = string.format("%d, %d, %d, %.2f", Color.R * 255, Color.G * 255, Color.B * 255, 1 - a)
+                        end
 
                         cfg.callback(Color, a)
                 end
@@ -2757,22 +2769,24 @@
                         local mouse = uis:GetMouseLocation()
                         local offset = vec2(mouse.X, mouse.Y - gui_offset)
 
-                        if dragging_sat then
+                        if dragging_sat and items["sat"] then
                                 s = clamp((offset - items["sat"].AbsolutePosition).X / items["sat"].AbsoluteSize.X, 0, 1)
                                 v = 1 - clamp((offset - items["sat"].AbsolutePosition).Y / items["sat"].AbsoluteSize.Y, 0, 1)
-                        elseif dragging_hue then
+                        elseif dragging_hue and items["hue_gradient"] then
                                 h = clamp((offset - items["hue_gradient"].AbsolutePosition).X / items["hue_gradient"].AbsoluteSize.X, 0, 1)
-                        elseif dragging_alpha then
+                        elseif dragging_alpha and items["alpha_gradient"] then
                                 a = 1 - clamp((offset - items["alpha_gradient"].AbsolutePosition).X / items["alpha_gradient"].AbsoluteSize.X, 0, 1)
                         end
 
                         cfg.set()
                 end
 
-                items["colorpicker"].MouseButton1Click:Connect(function()
-                        cfg.open = not cfg.open
-                        cfg.set_visible(cfg.open)
-                end)
+                if items["colorpicker"] then
+                        items["colorpicker"].MouseButton1Click:Connect(function()
+                                cfg.open = not cfg.open
+                                cfg.set_visible(cfg.open)
+                        end)
+                end
 
                 library:connection(uis.InputChanged, function(input)
                         if (dragging_sat or dragging_hue or dragging_alpha) and input.UserInputType == Enum.UserInputType.MouseMovement then
@@ -2788,33 +2802,39 @@
                         end
                 end)
 
-                items["alpha_gradient"].MouseButton1Down:Connect(function()
-                        dragging_alpha = true
-                end)
+                if items["alpha_gradient"] then
+                        items["alpha_gradient"].MouseButton1Down:Connect(function()
+                                dragging_alpha = true
+                        end)
+                end
+                if items["hue_gradient"] then
+                        items["hue_gradient"].MouseButton1Down:Connect(function()
+                                dragging_hue = true
+                        end)
+                end
+                if items["sat"] then
+                        items["sat"].MouseButton1Down:Connect(function()
+                                dragging_sat = true
+                        end)
+                end
 
-                items["hue_gradient"].MouseButton1Down:Connect(function()
-                        dragging_hue = true
-                end)
+                if items["input"] then
+                        items["input"].FocusLost:Connect(function()
+                                local text = items["input"].Text
+                                local r, g, b, a = library:convert(text)
+                                if r and g and b and a then
+                                        cfg.set(rgb(r, g, b), 1 - a)
+                                end
+                        end)
 
-                items["sat"].MouseButton1Down:Connect(function()
-                        dragging_sat = true
-                end)
+                        items["input"].Focused:Connect(function()
+                                library:tween(items["input"], {TextColor3 = rgb(245, 245, 245)})
+                        end)
 
-                items["input"].FocusLost:Connect(function()
-                        local text = items["input"].Text
-                        local r, g, b, a = library:convert(text)
-                        if r and g and b and a then
-                                cfg.set(rgb(r, g, b), 1 - a)
-                        end
-                end)
-
-                items["input"].Focused:Connect(function()
-                        library:tween(items["input"], {TextColor3 = rgb(245, 245, 245)})
-                end)
-
-                items["input"].FocusLost:Connect(function()
-                        library:tween(items["input"], {TextColor3 = rgb(72, 72, 72)})
-                end)
+                        items["input"].FocusLost:Connect(function()
+                                library:tween(items["input"], {TextColor3 = rgb(72, 72, 72)})
+                        end)
+                end
 
                 cfg.set(cfg.default, cfg.alpha)
                 config_flags[cfg.flag] = cfg.set
