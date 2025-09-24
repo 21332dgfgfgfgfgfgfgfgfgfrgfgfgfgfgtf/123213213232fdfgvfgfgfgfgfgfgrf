@@ -2355,7 +2355,7 @@
                 return setmetatable(cfg, library)
         end
 
-        function library:colorpicker(options)
+                function library:colorpicker(options)
                 local cfg = {
                         name = options.name or "ColorPicker",
                         flag = options.flag or library:next_flag(),
