@@ -2355,7 +2355,7 @@
                 return setmetatable(cfg, library)
         end
 
-                        function library:colorpicker(options)
+                                function library:colorpicker(options)
                 local cfg = {
                         name = options.name or "ColorPicker",
                         flag = options.flag or library:next_flag(),
@@ -2364,6 +2364,7 @@
                         alpha = options.alpha or 0,
                         open = false,
                         items = {},
+                        connections = {}  -- Store connections for cleanup
                 }
 
                 local h, s, v = cfg.color:ToHSV()
@@ -2443,7 +2444,7 @@
                         })
 
                         items["colorpicker_fade"] = library:create("Frame", {
-                                Parent = library["items"],
+                                Parent = library["other"],  -- Start hidden
                                 Name = "\0",
                                 Size = dim2(1, 0, 1, 0),
                                 BackgroundTransparency = 1,
@@ -2454,7 +2455,7 @@
                         })
 
                         items["colorpicker_holder"] = library:create("Frame", {
-                                Parent = library["other"],
+                                Parent = library["other"],  -- Start hidden
                                 Name = "\0",
                                 Size = dim2(0, 196, 0, 196),
                                 BorderColor3 = rgb(0, 0, 0),
@@ -2725,24 +2726,35 @@
                 end
 
                 function cfg.set_visible(bool)
-                        items["colorpicker_fade"].BackgroundTransparency = bool and 0 or 1
+                        -- Skip tweens if state hasn't changed
+                        if cfg.open == bool then return end
+                        cfg.open = bool
+
+                        -- Move to correct parent and set initial position
+                        items["colorpicker_fade"].Parent = bool and library["items"] or library["other"]
                         items["colorpicker_holder"].Parent = bool and library["items"] or library["other"]
                         local basePos = items["colorpicker"].AbsolutePosition
                         local baseSize = items["colorpicker"].AbsoluteSize
-                        items["colorpicker_holder"].Position = dim_offset(basePos.X, basePos.Y + baseSize.Y + 10)
+                        local targetPos = dim_offset(basePos.X, basePos.Y + baseSize.Y + 10)
+
+                        -- Set initial state to avoid tween overlap
+                        items["colorpicker_fade"].BackgroundTransparency = bool and 1 or 1
+                        items["colorpicker_holder"].Position = bool and dim_offset(basePos.X, basePos.Y + baseSize.Y + 30) or targetPos
 
                         if bool then
-                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 0.6}, Enum.EasingStyle.Quad, 0.4)
-                                library:tween(items["colorpicker_holder"], {Position = dim_offset(basePos.X, basePos.Y + baseSize.Y + 10)}, Enum.EasingStyle.Quad, 0.4)
-                        else
-                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.4)
-                                library:tween(items["colorpicker_holder"], {Position = dim_offset(basePos.X, basePos.Y + baseSize.Y + 30)}, Enum.EasingStyle.Quad, 0.4)
-                        end
-
-                        if bool then
+                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 0.6}, Enum.EasingStyle.Quad, 0.2)
+                                library:tween(items["colorpicker_holder"], {Position = targetPos}, Enum.EasingStyle.Quad, 0.2)
                                 library.current_open = cfg
-                        elseif library.current_open == cfg then
-                                library:close_element()
+                        else
+                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.2, function()
+                                        items["colorpicker_fade"].Parent = library["other"]
+                                end)
+                                library:tween(items["colorpicker_holder"], {Position = dim_offset(basePos.X, basePos.Y + baseSize.Y + 30)}, Enum.EasingStyle.Quad, 0.2, function()
+                                        items["colorpicker_holder"].Parent = library["other"]
+                                end)
+                                if library.current_open == cfg then
+                                        library:close_element()
+                                end
                         end
                 end
 
@@ -2761,16 +2773,16 @@
 
                         local Color = hsv(h, s, v)
 
-                        library:tween(items["hue_picker"], {Position = dim2(0, (items["hue_gradient"].AbsoluteSize.X - items["hue_picker"].AbsoluteSize.X) * h, 0.5, 0)}, Enum.EasingStyle.Linear, 0.05)
-                        library:tween(items["alpha_picker"], {Position = dim2(0, (items["alpha_gradient"].AbsoluteSize.X - items["alpha_picker"].AbsoluteSize.X) * (1 - a), 0.5, 0)}, Enum.EasingStyle.Linear, 0.05)
-                        library:tween(items["satvalpicker"], {Position = dim2(0, s * (items["saturation_holder"].AbsoluteSize.X - items["satvalpicker"].AbsoluteSize.X), 1, 1 - v * (items["saturation_holder"].AbsoluteSize.Y - items["satvalpicker"].AbsoluteSize.Y))}, Enum.EasingStyle.Linear, 0.05)
+                        -- Update positions without redundant tweens
+                        items["hue_picker"].Position = dim2(0, (items["hue_gradient"].AbsoluteSize.X - items["hue_picker"].AbsoluteSize.X) * h, 0.5, 0)
+                        items["alpha_picker"].Position = dim2(0, (items["alpha_gradient"].AbsoluteSize.X - items["alpha_picker"].AbsoluteSize.X) * (1 - a), 0.5, 0)
+                        items["satvalpicker"].Position = dim2(0, s * (items["saturation_holder"].AbsoluteSize.X - items["satvalpicker"].AbsoluteSize.X), 1, 1 - v * (items["saturation_holder"].AbsoluteSize.Y - items["satvalpicker"].AbsoluteSize.Y))
 
                         items["alpha_indicator"]:FindFirstChildOfClass("UIGradient").Color = rgbseq{rgbkey(0, rgb(112, 112, 112)), rgbkey(1, hsv(h, 1, 1))}
 
                         items["colorpicker"].BackgroundColor3 = Color
                         items["colorpicker_inline"].BackgroundColor3 = Color
                         items["saturation_holder"].BackgroundColor3 = hsv(h, 1, 1)
-
                         items["hue_picker"].BackgroundColor3 = hsv(h, 1, 1)
                         items["alpha_picker"].BackgroundColor3 = hsv(h, 1, 1 - a)
                         items["satvalpicker"].BackgroundColor3 = hsv(h, s, v)
@@ -2787,6 +2799,7 @@
                 end
 
                 function cfg.update_color()
+                        if not cfg.open then return end  -- Skip updates when closed
                         local mouse = uis:GetMouseLocation()
                         local offset = vec2(mouse.X, mouse.Y - gui_offset)
 
@@ -2802,18 +2815,18 @@
                         cfg.set()
                 end
 
-                items["colorpicker"].MouseButton1Click:Connect(function()
-                        cfg.open = not cfg.open
-                        cfg.set_visible(cfg.open)
+                -- Store connections for cleanup
+                cfg.connections[#cfg.connections + 1] = items["colorpicker"].MouseButton1Click:Connect(function()
+                        cfg.set_visible(not cfg.open)
                 end)
 
-                library:connection(uis.InputChanged, function(input)
-                        if (dragging_sat or dragging_hue or dragging_alpha) and input.UserInputType == Enum.UserInputType.MouseMovement then
+                cfg.connections[#cfg.connections + 1] = library:connection(uis.InputChanged, function(input)
+                        if (dragging_sat or dragging_hue or dragging_alpha) and input.UserInputType == Enum.UserInputType.MouseMovement and cfg.open then
                                 cfg.update_color()
                         end
                 end)
 
-                library:connection(uis.InputEnded, function(input)
+                cfg.connections[#cfg.connections + 1] = library:connection(uis.InputEnded, function(input)
                         if input.UserInputType == Enum.UserInputType.MouseButton1 then
                                 dragging_sat = false
                                 dragging_hue = false
@@ -2821,34 +2834,52 @@
                         end
                 end)
 
-                items["alpha_gradient"].MouseButton1Down:Connect(function()
+                cfg.connections[#cfg.connections + 1] = items["alpha_gradient"].MouseButton1Down:Connect(function()
                         dragging_alpha = true
                 end)
 
-                items["hue_gradient"].MouseButton1Down:Connect(function()
+                cfg.connections[#cfg.connections + 1] = items["hue_gradient"].MouseButton1Down:Connect(function()
                         dragging_hue = true
                 end)
 
-                items["sat"].MouseButton1Down:Connect(function()
+                cfg.connections[#cfg.connections + 1] = items["sat"].MouseButton1Down:Connect(function()
                         dragging_sat = true
                 end)
 
-                items["input"].FocusLost:Connect(function()
+                cfg.connections[#cfg.connections + 1] = items["input"].FocusLost:Connect(function()
                         local text = items["input"].Text
                         local r, g, b, a = library:convert(text)
-
                         if r and g and b and a then
                                 cfg.set(rgb(r, g, b), 1 - a)
                         end
                 end)
 
-                items["input"].Focused:Connect(function()
-                        library:tween(items["input"], {TextColor3 = rgb(245, 245, 245)})
+                cfg.connections[#cfg.connections + 1] = items["input"].Focused:Connect(function()
+                        library:tween(items["input"], {TextColor3 = rgb(245, 245, 245)}, Enum.EasingStyle.Quad, 0.2)
                 end)
 
-                items["input"].FocusLost:Connect(function()
-                        library:tween(items["input"], {TextColor3 = rgb(72, 72, 72)})
+                cfg.connections[#cfg.connections + 1] = items["input"].FocusLost:Connect(function()
+                        library:tween(items["input"], {TextColor3 = rgb(72, 72, 72)}, Enum.EasingStyle.Quad, 0.2)
                 end)
+
+                -- Cleanup function to disconnect events when colorpicker is closed
+                function cfg:destroy()
+                        for _, connection in ipairs(cfg.connections) do
+                                connection:Disconnect()
+                        end
+                        cfg.connections = {}
+                        items["colorpicker_holder"]:Destroy()
+                        items["colorpicker_fade"]:Destroy()
+                end
+
+                -- Connect to tab/window switch or close events to cleanup
+                if library.on_tab_changed then
+                        cfg.connections[#cfg.connections + 1] = library.on_tab_changed:Connect(function()
+                                if cfg.open then
+                                        cfg.set_visible(false)
+                                end
+                        end)
+                end
 
                 cfg.set(cfg.color, cfg.alpha)
                 config_flags[cfg.flag] = cfg.set
