@@ -2355,7 +2355,7 @@
                 return setmetatable(cfg, library)
         end
 
-                                function library:colorpicker(options)
+                function library:colorpicker(options)
                 local cfg = {
                         name = options.name or "ColorPicker",
                         flag = options.flag or library:next_flag(),
@@ -2390,7 +2390,8 @@
                                 BorderSizePixel = 0,
                                 TextSize = 14,
                                 BackgroundColor3 = cfg.color,
-                                ZIndex = 10
+                                ZIndex = 10,
+                                Visible = true
                         })
 
                         library:create("UICorner", {
@@ -2411,7 +2412,8 @@
                                 AutomaticSize = Enum.AutomaticSize.XY,
                                 TextSize = 16,
                                 BackgroundColor3 = rgb(255, 255, 255),
-                                ZIndex = 11
+                                ZIndex = 11,
+                                Visible = true
                         })
 
                         library:create("UIPadding", {
@@ -2428,7 +2430,8 @@
                                 Size = dim2(0, 36, 0, 26),
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = cfg.color,
-                                ZIndex = 11
+                                ZIndex = 11,
+                                Visible = true
                         })
 
                         library:create("UICorner", {
@@ -2444,25 +2447,27 @@
                         })
 
                         items["colorpicker_fade"] = library:create("Frame", {
-                                Parent = library["other"],  -- Start hidden
+                                Parent = library["other"],
                                 Name = "\0",
                                 Size = dim2(1, 0, 1, 0),
                                 BackgroundTransparency = 1,
                                 BorderColor3 = rgb(0, 0, 0),
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = rgb(0, 0, 0),
-                                ZIndex = 9
+                                ZIndex = 9,
+                                Visible = false
                         })
 
                         items["colorpicker_holder"] = library:create("Frame", {
-                                Parent = library["other"],  -- Start hidden
+                                Parent = library["other"],
                                 Name = "\0",
                                 Size = dim2(0, 196, 0, 196),
                                 BorderColor3 = rgb(0, 0, 0),
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = rgb(25, 25, 29),
                                 ZIndex = 10,
-                                ClipsDescendants = true
+                                ClipsDescendants = true,
+                                Visible = false
                         })
 
                         items["colorpicker_components"] = library:create("Frame", {
@@ -2473,7 +2478,8 @@
                                 Size = dim2(1, -2, 1, -2),
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = rgb(22, 22, 24),
-                                ZIndex = 10
+                                ZIndex = 10,
+                                Visible = true
                         })
 
                         library:create("UICorner", {
@@ -2489,7 +2495,8 @@
                                 Size = dim2(1, -20, 1, -80),
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = hsv(h, 1, 1),
-                                ZIndex = 10
+                                ZIndex = 10,
+                                Visible = true
                         })
 
                         items["sat"] = library:create("TextButton", {
@@ -2501,7 +2508,8 @@
                                 BorderColor3 = rgb(0, 0, 0),
                                 ZIndex = 12,
                                 BorderSizePixel = 0,
-                                BackgroundColor3 = rgb(255, 255, 255)
+                                BackgroundColor3 = rgb(255, 255, 255),
+                                Visible = true
                         })
 
                         library:create("UICorner", {
@@ -2522,7 +2530,8 @@
                                 BorderColor3 = rgb(0, 0, 0),
                                 Size = dim2(1, 0, 1, 0),
                                 BorderSizePixel = 0,
-                                BackgroundColor3 = rgb(255, 255, 255)
+                                BackgroundColor3 = rgb(255, 255, 255),
+                                Visible = true
                         })
 
                         library:create("UIGradient", {
@@ -2551,7 +2560,8 @@
                                 Size = dim2(0, 8, 0, 8),
                                 ZIndex = 15,
                                 BorderSizePixel = 0,
-                                BackgroundColor3 = hsv(h, s, v)
+                                BackgroundColor3 = hsv(h, s, v),
+                                Visible = true
                         })
 
                         library:create("UICorner", {
@@ -2575,7 +2585,8 @@
                                 BackgroundColor3 = rgb(255, 255, 255),
                                 AutoButtonColor = false,
                                 Text = "",
-                                ZIndex = 10
+                                ZIndex = 10,
+                                Visible = true
                         })
 
                         library:create("UIGradient", {
@@ -2607,7 +2618,8 @@
                                 Size = dim2(0, 8, 0, 8),
                                 ZIndex = 15,
                                 BorderSizePixel = 0,
-                                BackgroundColor3 = hsv(h, 1, 1)
+                                BackgroundColor3 = hsv(h, 1, 1),
+                                Visible = true
                         })
 
                         library:create("UICorner", {
@@ -2631,7 +2643,8 @@
                                 BackgroundColor3 = rgb(25, 25, 29),
                                 AutoButtonColor = false,
                                 Text = "",
-                                ZIndex = 10
+                                ZIndex = 10,
+                                Visible = true
                         })
 
                         library:create("UICorner", {
@@ -2650,7 +2663,8 @@
                                 Size = dim2(0, 8, 0, 8),
                                 ZIndex = 15,
                                 BorderSizePixel = 0,
-                                BackgroundColor3 = hsv(h, 1, 1 - a)
+                                BackgroundColor3 = hsv(h, 1, 1 - a),
+                                Visible = true
                         })
 
                         library:create("UICorner", {
@@ -2680,7 +2694,8 @@
                                 TileSize = dim2(0, 6, 0, 6),
                                 BorderSizePixel = 0,
                                 BackgroundColor3 = rgb(0, 0, 0),
-                                ZIndex = 10
+                                ZIndex = 10,
+                                Visible = true
                         })
 
                         library:create("UIGradient", {
@@ -2711,7 +2726,8 @@
                                 BorderColor3 = rgb(0, 0, 0),
                                 Position = dim2(1, -8, 1, -11),
                                 Size = dim2(1, -16, 0, 18),
-                                ZIndex = 10
+                                ZIndex = 10,
+                                Visible = true
                         })
 
                         library:create("UICorner", {
@@ -2726,30 +2742,31 @@
                 end
 
                 function cfg.set_visible(bool)
-                        -- Skip tweens if state hasn't changed
                         if cfg.open == bool then return end
                         cfg.open = bool
 
-                        -- Move to correct parent and set initial position
+                        items["colorpicker_fade"].Visible = bool
+                        items["colorpicker_holder"].Visible = bool
                         items["colorpicker_fade"].Parent = bool and library["items"] or library["other"]
                         items["colorpicker_holder"].Parent = bool and library["items"] or library["other"]
                         local basePos = items["colorpicker"].AbsolutePosition
                         local baseSize = items["colorpicker"].AbsoluteSize
                         local targetPos = dim_offset(basePos.X, basePos.Y + baseSize.Y + 10)
 
-                        -- Set initial state to avoid tween overlap
                         items["colorpicker_fade"].BackgroundTransparency = bool and 1 or 1
                         items["colorpicker_holder"].Position = bool and dim_offset(basePos.X, basePos.Y + baseSize.Y + 30) or targetPos
 
                         if bool then
-                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 0.6}, Enum.EasingStyle.Quad, 0.2)
-                                library:tween(items["colorpicker_holder"], {Position = targetPos}, Enum.EasingStyle.Quad, 0.2)
+                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 0.6}, Enum.EasingStyle.Quad, 0.15)
+                                library:tween(items["colorpicker_holder"], {Position = targetPos}, Enum.EasingStyle.Quad, 0.15)
                                 library.current_open = cfg
                         else
-                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.2, function()
+                                library:tween(items["colorpicker_fade"], {BackgroundTransparency = 1}, Enum.EasingStyle.Quad, 0.15, function()
+                                        items["colorpicker_fade"].Visible = false
                                         items["colorpicker_fade"].Parent = library["other"]
                                 end)
-                                library:tween(items["colorpicker_holder"], {Position = dim_offset(basePos.X, basePos.Y + baseSize.Y + 30)}, Enum.EasingStyle.Quad, 0.2, function()
+                                library:tween(items["colorpicker_holder"], {Position = dim_offset(basePos.X, basePos.Y + baseSize.Y + 30)}, Enum.EasingStyle.Quad, 0.15, function()
+                                        items["colorpicker_holder"].Visible = false
                                         items["colorpicker_holder"].Parent = library["other"]
                                 end)
                                 if library.current_open == cfg then
@@ -2773,7 +2790,6 @@
 
                         local Color = hsv(h, s, v)
 
-                        -- Update positions without redundant tweens
                         items["hue_picker"].Position = dim2(0, (items["hue_gradient"].AbsoluteSize.X - items["hue_picker"].AbsoluteSize.X) * h, 0.5, 0)
                         items["alpha_picker"].Position = dim2(0, (items["alpha_gradient"].AbsoluteSize.X - items["alpha_picker"].AbsoluteSize.X) * (1 - a), 0.5, 0)
                         items["satvalpicker"].Position = dim2(0, s * (items["saturation_holder"].AbsoluteSize.X - items["satvalpicker"].AbsoluteSize.X), 1, 1 - v * (items["saturation_holder"].AbsoluteSize.Y - items["satvalpicker"].AbsoluteSize.Y))
@@ -2799,7 +2815,7 @@
                 end
 
                 function cfg.update_color()
-                        if not cfg.open then return end  -- Skip updates when closed
+                        if not cfg.open then return end
                         local mouse = uis:GetMouseLocation()
                         local offset = vec2(mouse.X, mouse.Y - gui_offset)
 
@@ -2815,7 +2831,6 @@
                         cfg.set()
                 end
 
-                -- Store connections for cleanup
                 cfg.connections[#cfg.connections + 1] = items["colorpicker"].MouseButton1Click:Connect(function()
                         cfg.set_visible(not cfg.open)
                 end)
@@ -2855,24 +2870,38 @@
                 end)
 
                 cfg.connections[#cfg.connections + 1] = items["input"].Focused:Connect(function()
-                        library:tween(items["input"], {TextColor3 = rgb(245, 245, 245)}, Enum.EasingStyle.Quad, 0.2)
+                        library:tween(items["input"], {TextColor3 = rgb(245, 245, 245)}, Enum.EasingStyle.Quad, 0.15)
                 end)
 
                 cfg.connections[#cfg.connections + 1] = items["input"].FocusLost:Connect(function()
-                        library:tween(items["input"], {TextColor3 = rgb(72, 72, 72)}, Enum.EasingStyle.Quad, 0.2)
+                        library:tween(items["input"], {TextColor3 = rgb(72, 72, 72)}, Enum.EasingStyle.Quad, 0.15)
                 end)
 
-                -- Cleanup function to disconnect events when colorpicker is closed
+                -- Cleanup function
                 function cfg:destroy()
                         for _, connection in ipairs(cfg.connections) do
                                 connection:Disconnect()
                         end
                         cfg.connections = {}
-                        items["colorpicker_holder"]:Destroy()
-                        items["colorpicker_fade"]:Destroy()
+                        for _, item in pairs(items) do
+                                if typeof(item) == "Instance" then
+                                        item:Destroy()
+                                end
+                        end
+                        items = {}
+                        cfg.open = false
+                        if library.current_open == cfg then
+                                library:close_element()
+                        end
                 end
 
-                -- Connect to tab/window switch or close events to cleanup
+                -- Handle respawn
+                local player = game:GetService("Players").LocalPlayer
+                cfg.connections[#cfg.connections + 1] = player.CharacterAdded:Connect(function()
+                        cfg:destroy()
+                end)
+
+                -- Handle tab/window switch
                 if library.on_tab_changed then
                         cfg.connections[#cfg.connections + 1] = library.on_tab_changed:Connect(function()
                                 if cfg.open then
